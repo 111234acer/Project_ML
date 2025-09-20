@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
     private CharacterController controller;
     private Vector3 velocity;                                   // 현재 속도 (점프/중력 포함)
 
+    public PlayerAttack attack;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();

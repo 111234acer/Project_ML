@@ -8,7 +8,7 @@ public abstract class PlayerAttack : MonoBehaviour
     public Transform firePoint;         // 발사 위치
     public float fireRate = 1.0f;       // 공격 속도
     protected float nextFireTime = 0f;
-    public float coolTime = 1f;
+    public float coolDown = 1f;         // 쿨타임
 
     public abstract void Attack();      // 공격 실행 메서드(각 캐릭터별 구현)
     
@@ -19,6 +19,6 @@ public abstract class PlayerAttack : MonoBehaviour
 
     protected void UpdateFireTime()     // 공격 후 쿨타임 갱신
     {
-        nextFireTime = Time.time + coolTime / fireRate;   
+        nextFireTime = Time.time + coolDown / fireRate;   
     }
 }
