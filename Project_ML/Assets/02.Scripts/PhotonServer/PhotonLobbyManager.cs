@@ -34,6 +34,8 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
         else
             Destroy(this);
 
+        PhotonNetwork.AutomaticallySyncScene = true; // 추가
+
         //포톤 클라우드 서버 접속 여부 확인(인게임에서 빠져나온 경우가 있기 때문에...)
         if (!PhotonNetwork.IsConnected)
         {
@@ -119,12 +121,9 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
     //PhotonNetwork.JoinRandomRoom(); 함수가 성공해도 자동으로 호출되는 함수
     public override void OnJoinedRoom()
     {
-        // 서버역할인 경우         [6번 : 방입장]
-        // 클라이언트 역할인 경우  [5번 : 방입장]
-        Debug.Log("방 참가 완료");
+        //StartCoroutine(this.LoadGameScene());     기존
 
-        //룸 씬으로 이동하는 코루틴 실행
-        StartCoroutine(this.LoadGameScene());
+        PhotonNetwork.LoadLevel(nextSceneName); //  수정
     }
 
     //(같은 이름의 방이 있을 때 실패함)
@@ -137,7 +136,8 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
     }
 
     //룸 씬으로 이동하는 코루틴 함수
-    IEnumerator LoadGameScene() // 최종 게임 씬 로딩 --> 6번 or 5번
+    // 수정 2
+    /*IEnumerator LoadGameScene() // 최종 게임 씬 로딩 --> 6번 or 5번
     {
         //씬을 이동하는 동안 포톤 클라우드 서버로부터 네트워크 메시지 수신 중단
         PhotonNetwork.IsMessageQueueRunning = false;
@@ -145,10 +145,15 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
 
         Time.timeScale = 1.0f;  //게임에 들어갈 때는 원래 속도로...
 
+        // 기존
         AsyncOperation ao =
-          UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(nextSceneName);
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(nextSceneName);
 
         yield return ao;
-    }
+
+        // 수정
+        PhotonNetwork.LoadLevel(nextSceneName);
+        yield break;
+    }*/
     #endregion
 }
