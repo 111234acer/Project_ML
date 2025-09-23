@@ -11,7 +11,6 @@ public abstract class PlayerAttack : MonoBehaviour
     public float coolDown = 1f;         // 쿨타임
 
     public abstract void Attack();      // 공격 실행 메서드(각 캐릭터별 구현)
-    
     protected bool CanAttack()          // 현재 공격이 가능한지 체크
     {
         return Time.time >= nextFireTime;

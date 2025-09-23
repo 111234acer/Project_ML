@@ -6,9 +6,9 @@ public class PlayerLook : MonoBehaviour
 {
     [Header("Camera Settings")]
     public Transform playerCamera;                              // 카메라 Transform
-    public float mouseSensitivity;                              // 마우스 감도
-    public float xRotationLimit;                                // 상하 회전 제한
-    public float smoothSpeed;                                   // 회전 부드럽게 적용하는 속도
+    public float mouseSensitivity = 200f;                              // 마우스 감도
+    public float xRotationLimit = 80f;                                // 상하 회전 제한
+    public float smoothSpeed = 10f;                                   // 회전 부드럽게 적용하는 속도
 
     private float xRotation = 0f;                               // 카메라 상하 회전 값
 

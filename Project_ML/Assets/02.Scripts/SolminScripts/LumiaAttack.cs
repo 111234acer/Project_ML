@@ -4,32 +4,57 @@ using UnityEngine;
 
 public class LumiaAttack : PlayerAttack
 {
-    public GameObject arrowPrefab;                  // 화살 프리팹
-    public float arrowSpeed = 20f;
+    [Header("Arrow Settings")]
+    public GameObject arrowPrefab;         // 화살 프리팹
+    public float minArrowSpeed = 10f;      // 최소 속도
+    public float maxArrowSpeed = 50f;      // 최대 속도
+    public float chargeTime = 1.5f;        // 최대 충전 시간
+    private float currentCharge = 0f;
+
+    [Header("References")]
+    public Camera playerCamera;            // 플레이어 카메라 (MainCamera)
 
     private void Update()
     {
-        // 좌클릭 입력 공격 가능하면 Attack 호출
-        if(Input.GetButtonDown("Fire1") && CanAttack())
+        // 공격 버튼 누르고 있으면 충전
+        if (Input.GetButton("Fire1"))
+        {
+            currentCharge += Time.deltaTime;
+            currentCharge = Mathf.Min(currentCharge, chargeTime);
+        }
+
+        // 버튼 떼면 발사
+        if (Input.GetButtonUp("Fire1") && CanAttack())
         {
             Attack();
+            UpdateFireTime();
         }
     }
+
     public override void Attack()
     {
-        if(arrowPrefab == null || firePoint == null) return;
+        if (arrowPrefab == null || playerCamera == null) return;
 
-        // 화살 생성
-        GameObject arrow = Instantiate(arrowPrefab, firePoint.position, firePoint.rotation);
-        // Rigidbody 가져와서 발사 
+        // 발사 방향 = 카메라 중앙
+        Vector3 shootDir = playerCamera.transform.forward;
+
+        // 충전 비율 (0 ~ 1)
+        float chargePercent = currentCharge / chargeTime;
+
+        // 속도 계산
+        float arrowSpeed = Mathf.Lerp(minArrowSpeed, maxArrowSpeed, chargePercent);
+
+        // 화살 생성 (카메라 앞에서)
+        Vector3 spawnPos = playerCamera.transform.position + shootDir * 0.5f;
+        GameObject arrow = Instantiate(arrowPrefab, spawnPos, Quaternion.LookRotation(shootDir));
         Rigidbody rb = arrow.GetComponent<Rigidbody>();
 
-        if(rb != null)
+        if (rb != null)
         {
-            rb.useGravity = false;      // 직선 발사
-            rb.velocity = firePoint.forward * arrowSpeed;
+            rb.velocity = shootDir * arrowSpeed;
         }
 
-        UpdateFireTime() ;
+        // 초기화
+        currentCharge = 0f;
     }
 }
