@@ -302,7 +302,10 @@ MonoBehaviour:
   coolDown: 1
   arrowPrefab: {fileID: 603823539970451106, guid: 28388304856659a4ba1b8250d844e9e1,
     type: 3}
-  arrowSpeed: 10
+  minArrowSpeed: 10
+  maxArrowSpeed: 50
+  chargeTime: 1.5
+  playerCamera: {fileID: 0}
 --- !u!114 &5896627657643998527
 MonoBehaviour:
   m_ObjectHideFlags: 0
