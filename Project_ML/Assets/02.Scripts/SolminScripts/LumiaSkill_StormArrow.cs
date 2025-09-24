@@ -16,7 +16,7 @@ public class LumiaSkill_StormArrow : PlayerSkill
 
     private void Awake()
     {
-        skillName = "연속 화살";
+        skillName = "폭풍 화살";
         cooldown = 6f;
     }
 
@@ -24,7 +24,6 @@ public class LumiaSkill_StormArrow : PlayerSkill
     {
         if(arrowPrefab == null || firePoint == null || isFiring) return;
 
-        Debug.Log($"{skillName} 발동 ! 3발 연속 화살");
         StartCoroutine(FireArrows());
     }
 

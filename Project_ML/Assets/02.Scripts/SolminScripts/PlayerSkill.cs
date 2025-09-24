@@ -22,7 +22,7 @@ public abstract class PlayerSkill : MonoBehaviour
         }
         else
         {
-            Debug.Log($"{skillName} 쿨타임 중... {Mathf.Ceil(nextUseTime - Time.time)}초 남음");
+            //Debug.Log($"{skillName} 쿨타임 중... {Mathf.Ceil(nextUseTime - Time.time)}초 남음");
         }
     }
 
