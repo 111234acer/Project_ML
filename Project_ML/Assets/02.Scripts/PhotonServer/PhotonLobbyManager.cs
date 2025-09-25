@@ -11,7 +11,7 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
 {
     public static PhotonLobbyManager instance;  // 싱글톤 인스턴스
     
-    string nextSceneName = "PhotonInGame";
+    string nextSceneName = "PhotonRoom";
 
     public TextMeshProUGUI loadingText;         // 로딩 텍스트
 
@@ -42,7 +42,7 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
         if (instance == null)
             instance = this;
         else
-            Destroy(this);
+            Destroy(gameObject);
 
         PhotonNetwork.AutomaticallySyncScene = true; // 추가
 
@@ -55,6 +55,9 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
         }
 
         roomNameIF.text = "Room_" + Random.Range(0, 999).ToString("000");
+
+        createRoomBtn.gameObject.SetActive(false);
+        joinRandomRoomBtn.gameObject.SetActive(false);
     }
 
     void Start()
@@ -101,8 +104,8 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
         //PhotonNetwork.JoinRandomRoom(roomProperties, 4);
         //PhotonNetwork.JoinRandomRoom();
 
-        // 로비 접속이 완료되어야 버튼 활성화
-        // 로비화면 플레이어 캐릭터 셋팅
+        createRoomBtn.gameObject.SetActive(true);
+        joinRandomRoomBtn.gameObject.SetActive(true);
     }
     #endregion
 
@@ -132,13 +135,12 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
     //PhotonNetwork.JoinRandomRoom(); 함수가 성공해도 자동으로 호출되는 함수
     public override void OnJoinedRoom()
     {
-        //StartCoroutine(this.LoadGameScene());     기존
-        PhotonNetwork.LoadLevel(nextSceneName); //  수정
         // 서버역할인 경우         [6번 : 방입장]
         // 클라이언트 역할인 경우  [5번 : 방입장]
         Debug.Log("방 참가 완료");
         //룸 씬으로 이동하는 코루틴 실행
-        //StartCoroutine(this.LoadGameScene());
+        //StartCoroutine(this.LoadGameScene());     //기존
+        PhotonNetwork.LoadLevel(nextSceneName); //  수정
     }
 
     //(같은 이름의 방이 있을 때 실패함)
@@ -154,6 +156,7 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
     void CreateRoom()
     {
         //룸 생성
+        PhotonNetwork.LocalPlayer.NickName = nicknameIF.text;
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.IsVisible = true;
         roomOptions.IsOpen = true;
