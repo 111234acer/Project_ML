@@ -3953,7 +3953,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 3869
+  m_VersionIndex: 3875
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -6927,6 +6927,111 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &7129763770859657666
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2452304260227488364}
+  - component: {fileID: 3070130896105440080}
+  - component: {fileID: 4941644977573513000}
+  - component: {fileID: 2767764474324508478}
+  m_Layer: 0
+  m_Name: Cube (96)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2452304260227488364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7129763770859657666}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 16.34, y: 7.12, z: -7.31}
+  m_LocalScale: {x: 0.7933718, y: 5.5850763, z: 4.4341264}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6952590618488466494}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!33 &3070130896105440080
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7129763770859657666}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &4941644977573513000
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7129763770859657666}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2767764474324508478
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7129763770859657666}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7235496158203150184
 GameObject:
   m_ObjectHideFlags: 0
@@ -8578,7 +8683,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 16141
+  m_VersionIndex: 16147
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -10945,7 +11050,7 @@ PrefabInstance:
     - target: {fileID: 102984127951710684, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 4193
+      value: 4199
       objectReference: {fileID: 0}
     - target: {fileID: 294022249903415146, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
@@ -11065,7 +11170,17 @@ PrefabInstance:
     - target: {fileID: 3200771129749276590, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 3869
+      value: 3875
+      objectReference: {fileID: 0}
+    - target: {fileID: 5586980190221137241, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 15.680996
+      objectReference: {fileID: 0}
+    - target: {fileID: 5586980190221137241, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.45
       objectReference: {fileID: 0}
     - target: {fileID: 5589384802258649220, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
@@ -11090,7 +11205,7 @@ PrefabInstance:
     - target: {fileID: 8622409223795832826, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 16280
+      value: 16286
       objectReference: {fileID: 0}
     - target: {fileID: 8622409223795832826, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
@@ -17067,23 +17182,27 @@ PrefabInstance:
       addedObject: {fileID: 431896573596032169}
     - targetCorrespondingSourceObject: {fileID: 294022249903415146, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
-      insertIndex: 72
-      addedObject: {fileID: 1772281046431747424}
+      insertIndex: 56
+      addedObject: {fileID: 2452304260227488364}
     - targetCorrespondingSourceObject: {fileID: 294022249903415146, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
       insertIndex: 73
+      addedObject: {fileID: 1772281046431747424}
+    - targetCorrespondingSourceObject: {fileID: 294022249903415146, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
+        type: 3}
+      insertIndex: 74
       addedObject: {fileID: 2237616381871211237}
     - targetCorrespondingSourceObject: {fileID: 294022249903415146, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
-      insertIndex: 76
+      insertIndex: 77
       addedObject: {fileID: 4204757052792068174}
     - targetCorrespondingSourceObject: {fileID: 294022249903415146, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
-      insertIndex: 77
+      insertIndex: 78
       addedObject: {fileID: 8055403906767398558}
     - targetCorrespondingSourceObject: {fileID: 294022249903415146, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
-      insertIndex: 90
+      insertIndex: 91
       addedObject: {fileID: 7374399341930138111}
     - targetCorrespondingSourceObject: {fileID: 294022249903415146, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
