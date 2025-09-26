@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 velocity;                                   // 현재 속도 (점프/중력 포함)
 
     public PlayerAttack attack;
-
+    [HideInInspector] public bool isDashing = false;            // 루미아 캐릭터 대시 중인지 확인
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -32,9 +32,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        GroundCheck();
-        HandleJumpInput();
-        Move();
+        if (!isDashing)              // 대시 중일때 입력 이동 중력 무시
+        {
+            GroundCheck();
+            HandleJumpInput();
+            Move();
+        }
     }
 
     void GroundCheck()

@@ -185,10 +185,28 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6876505359712270318, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c,
+        type: 3}
+      propertyPath: skill1
+      value: 
+      objectReference: {fileID: 882497146}
+    - target: {fileID: 6876505359712270318, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c,
+        type: 3}
+      propertyPath: skill2
+      value: 
+      objectReference: {fileID: 882497145}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1692468126580653705, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 882497146}
+    - targetCorrespondingSourceObject: {fileID: 1692468126580653705, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 882497145}
   m_SourcePrefab: {fileID: 100100000, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}
 --- !u!43 &199024258
 Mesh:
@@ -2804,6 +2822,48 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 994c28a834c539e4f902e1046667adf3, type: 3}
+--- !u!1 &882497127 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1692468126580653705, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c,
+    type: 3}
+  m_PrefabInstance: {fileID: 37943574}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &882497145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882497127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95e017721396f754d89e68dbd84808be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillName: Dash
+  cooldown: 6
+  dashDistance: 4
+  dashDuration: 0.2
+--- !u!114 &882497146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882497127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f80956733c90580478d9efd1d1207646, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillName: StormArrow
+  cooldown: 5
+  arrowPrefab: {fileID: 603823539970451106, guid: 28388304856659a4ba1b8250d844e9e1,
+    type: 3}
+  firePoint: {fileID: 985478973}
+  arrowSpeed: 100
+  fireInterval: 0.3
+  arrowCount: 3
 --- !u!1 &884011446
 GameObject:
   m_ObjectHideFlags: 0
@@ -2879,6 +2939,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 884011446}
   m_CullTransparentMesh: 1
+--- !u!4 &985478973 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9168580677779717321, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c,
+    type: 3}
+  m_PrefabInstance: {fileID: 37943574}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1021886304
 GameObject:
   m_ObjectHideFlags: 0
