@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-public class PhotonArrow : MonoBehaviourPunCallbacks//, IPunObservable
+public class PhotonArrow : MonoBehaviour//, IPunObservable
 {
     //Vector3 nextPos;
     //Quaternion nextRot;
