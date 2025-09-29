@@ -1,42 +1,85 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
 
-public class GameManager : MonoBehaviourPunCallbacks
+public class GameManager : MonoBehaviour
 {
-    [Header("Spawn Points")]
-    public Transform[] redSpawnPoints;
-    public Transform[] blueSpawnPoints;
+    public BoxCollider redSpawnPoint;
+    public BoxCollider blueSpawnPoint;
 
-    [Header("Player Prefab")]
-    public string playerPrefabName = "PlayerPrefab"; // Resources/PlayerPrefab
+    public GameObject playerPrefab;
+    public GameObject hudCanvasPrefab;
 
-    void Start()
+    private GameObject hudInstance;
+
+    private void Start()
     {
-        StartCoroutine(SpawnWhenReady());
+        SpawnHUD();
+
+        SpawnPlayer();
+
+        BindHUD();
+    }
+    void SpawnHUD()
+    {
+        if (hudInstance == null && hudCanvasPrefab != null)
+            hudInstance = Instantiate(hudCanvasPrefab);
     }
 
-    IEnumerator SpawnWhenReady()
+    void SpawnPlayer()
     {
-        // 방에 붙어 있을 때까지 대기 (로비 → 인게임 씬 이후에도 true 상태)
-        yield return new WaitUntil(() => PhotonNetwork.IsConnectedAndReady && PhotonNetwork.InRoom);
+        if (FindObjectOfType<Player>() != null) return;
 
-        // 이미 스폰된 적 있으면 중복 생성 방지
-        if (PhotonNetwork.LocalPlayer.TagObject != null) yield break;
+        var playerObj = Instantiate(playerPrefab, transform.position, transform.rotation);
 
-        // 임시 스폰 위치 (팀 배정 전)
-        Transform spawn = (redSpawnPoints != null && redSpawnPoints.Length > 0)
-            ? redSpawnPoints[0]
-            : transform;
+        var player = playerObj.GetComponent<Player>();
+        if (player != null) player.AssignTeam();
 
-        var playerObj = PhotonNetwork.Instantiate(playerPrefabName, spawn.position, spawn.rotation);
+        BoxCollider area = null;
+        if (player != null && player.team == 0) area = redSpawnPoint;
+        else if (player != null && player.team == 1) area = blueSpawnPoint;
 
-        // 중복 스폰 방지용으로 내 플레이어 보관
-        PhotonNetwork.LocalPlayer.TagObject = playerObj;
+        if (area != null)
+        {
+            Vector3 pos = RandomPointInBox(area);
+            playerObj.transform.position = pos; 
+        }
 
-        // 팀 배정 요청 (PlayerPrefab의 PhotonView로 RPC를 쏘는 게 가장 안전)
-        var pv = playerObj.GetComponent<PhotonView>();
-        pv.RPC("RequestTeamAssignment", RpcTarget.MasterClient, pv.ViewID);
+        if (player != null)
+        {
+            Vector3 forward = (player.team == 0) ? -Vector3.forward : Vector3.forward;
+            playerObj.transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
+        }
+
+        var cap = FindObjectOfType<CapturePointManager>();
+        if (cap != null) cap.myPlayer = player;
+    }
+
+    Vector3 RandomPointInBox(BoxCollider box)
+    {
+        Vector3 c = box.center;
+        Vector3 e = box.size * 0.5f;
+        Vector3 local = new Vector3(Random.Range(-e.x, e.x),0f, Random.Range(-e.z, e.z));
+        return box.transform.TransformPoint(c + local);
+    }
+
+    void BindHUD()
+    {
+        if (hudInstance == null) return;
+
+        var player = FindObjectOfType<Player>();
+        if (player == null) return;
+
+        var hp = player.GetComponent<PlayerHealth>();
+        var mgr = player.GetComponent<PlayerSkillManager>();
+
+        // PlayerHUD 연결
+        var pHud = hudInstance.GetComponentInChildren<PlayerHUD>(true);
+        if (pHud != null) pHud.Init(hp, mgr);
+
+        // Capture UI 연결
+        var cap = FindObjectOfType<CapturePointManager>();
+        var capUI = hudInstance.GetComponentInChildren<CaptureUIManager>(true);
+        if (capUI != null) capUI.Init(cap);
     }
 }
