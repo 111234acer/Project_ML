@@ -226,8 +226,6 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
         return -1;
     }
 
-
-
     // 생성된 방 목록이 변경됐을 때 호출되는 콜백 함수
     // 방 리스트 갱신은 로비에서만 가능
     // 내가 로비로 진입할 때도 OnRoomListUpdate() 함수를 받고

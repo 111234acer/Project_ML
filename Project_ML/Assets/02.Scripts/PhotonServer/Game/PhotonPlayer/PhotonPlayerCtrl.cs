@@ -23,6 +23,7 @@ public class PhotonPlayerCtrl : MonoBehaviourPun
     private float jumpBufferCounter;
     private bool isGrounded;
 
+    PhotonView pv;
     void Start()
     {
         controller = GetComponent<CharacterController>();

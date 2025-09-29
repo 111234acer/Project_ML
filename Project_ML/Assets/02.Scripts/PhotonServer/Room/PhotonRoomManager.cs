@@ -58,6 +58,8 @@ public class PhotonRoomManager : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
+        readyBtn.gameObject.SetActive(false);
+
         //if (instance == null)
         //    instance = this;
         //else
@@ -67,6 +69,7 @@ public class PhotonRoomManager : MonoBehaviourPunCallbacks
 
         // 모든 클라우드의 네트워크 메세지 수신을 다시 연결
         PhotonNetwork.IsMessageQueueRunning = true;
+        PhotonNetwork.AutomaticallySyncScene = true; // 추가
 
         // 방에 입장 후 기존 접속자 수 나타내기 ( 현재인원 / 입장가능한총인원 )
         GetConnectPlayerCount();
@@ -104,13 +107,23 @@ public class PhotonRoomManager : MonoBehaviourPunCallbacks
 
         startGameBtn.onClick.AddListener(() =>
         {
-            pv.RPC("GameStart", RpcTarget.AllBuffered);
+            GameStart();
+            //pv.RPC("GameStart", RpcTarget.AllBuffered);
         });
 
         ExitRoomBtn.onClick.AddListener(() =>
         {
             OnClickExitRoom();
         });
+
+        // 방 만드는 입장에서는 로비에서 이미 OnJoinedRoom이 호출된다. 따라서 방장은 여기서 프로퍼티를 초기화한다.
+        // 만들어진 방에 입장하는 사람은 이 씬에서 OnJoinedRoom이 호출된다.
+        if(PhotonNetwork.IsMasterClient)
+        {
+        Debug.Log("예아...");
+            InitSelTeamProps();
+            InitReadyProps();
+        }
     }
 
     void Update()
@@ -197,7 +210,9 @@ public class PhotonRoomManager : MonoBehaviourPunCallbacks
         playerReady.Clear();
         playerReady.Add(readyKey, 0); // 기본적으로 아직 준비전 상태로 시작
         PhotonNetwork.LocalPlayer.SetCustomProperties(playerReady);
-        Debug.Log("프로퍼티 설정 완료");
+
+        // 프로퍼티 정보가 초기화 되기전에 레디버튼을 누르면 에러뜸.
+        readyBtn.gameObject.SetActive(true);
     }
 
     // 레디 신호 보내기
@@ -212,17 +227,16 @@ public class PhotonRoomManager : MonoBehaviourPunCallbacks
 
         if (playerReady.ContainsKey(readyKey) == true)
         {
-            Debug.Log(PhotonNetwork.LocalPlayer.CustomProperties[readyKey]);
             // 레디 상태가 아니었다면 -> 레디 상태로 전환
             if ((int)PhotonNetwork.LocalPlayer.CustomProperties[readyKey] == 0)
             {
-                Debug.Log("레디");
                 playerReady[readyKey] = 1;
+                ExitRoomBtn.gameObject.SetActive(false);
             }
             else // 레디 상태였다면 -> 레디 풀기
             {
-                Debug.Log("레디풀기");
                 playerReady[readyKey] = 0;
+                ExitRoomBtn.gameObject.SetActive(true);
             }
         }
         else
@@ -409,7 +423,6 @@ public class PhotonRoomManager : MonoBehaviourPunCallbacks
         }
     }
 
-    [PunRPC]
     void GameStart()
     {
         // (이 부분은 방의 모든 멤버가 호출) 누가 발생시켰든 동기화
@@ -418,7 +431,7 @@ public class PhotonRoomManager : MonoBehaviourPunCallbacks
             PhotonNetwork.CurrentRoom.IsOpen = false; // 게임이 시작되면 다른 유저들이 들어오지 못하도록 막는 부분
             PhotonNetwork.CurrentRoom.IsVisible = false; // 로비에서 방 목록에서도 보이지 않게 하기
         }
-
+        PhotonNetwork.IsMessageQueueRunning = false;
         // 인게임으로 이동...
         PhotonNetwork.LoadLevel(inGameScene); //  수정
     }
