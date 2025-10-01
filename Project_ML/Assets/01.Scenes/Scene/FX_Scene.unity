@@ -5703,6 +5703,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4756493824829731839, guid: 47e7dacd943e24344b84985fba7d8851,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.ctime1
+      value: 21781
+      objectReference: {fileID: 0}
     - target: {fileID: 6339382071848567939, guid: 47e7dacd943e24344b84985fba7d8851,
         type: 3}
       propertyPath: ColorModule.gradient.maxGradient.ctime0
@@ -5747,6 +5752,11 @@ PrefabInstance:
         type: 3}
       propertyPath: ColorModule.gradient.maxGradient.m_NumColorKeys
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7972445254133419529, guid: 47e7dacd943e24344b84985fba7d8851,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.ctime1
+      value: 21781
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
