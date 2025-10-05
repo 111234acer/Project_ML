@@ -287,6 +287,12 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!4 &430865513 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5850544975403252535, guid: 77fb662128627344b9a2902804b1fb90,
+    type: 3}
+  m_PrefabInstance: {fileID: 3117318531926353501}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &475356010
 Mesh:
   m_ObjectHideFlags: 0
@@ -685,6 +691,18 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!114 &543322698 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5746058614852344, guid: 77fb662128627344b9a2902804b1fb90,
+    type: 3}
+  m_PrefabInstance: {fileID: 3117318531926353501}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e927d7f277af6b43940631a92f33739, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &661550107
 GameObject:
   m_ObjectHideFlags: 0
@@ -1772,6 +1790,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lumia Blue_Test
       objectReference: {fileID: 0}
+    - target: {fileID: 5753833739239799346, guid: 77fb662128627344b9a2902804b1fb90,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 6860339675051050675, guid: 77fb662128627344b9a2902804b1fb90,
+        type: 3}
+      propertyPath: health
+      value: 
+      objectReference: {fileID: 543322698}
+    - target: {fileID: 6860339675051050675, guid: 77fb662128627344b9a2902804b1fb90,
+        type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 430865513}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
