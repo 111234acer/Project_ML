@@ -18,20 +18,28 @@ public class PlayerHealth : MonoBehaviour
     public float respawnDelay = 8f;     // 리스폰 시간
     public Transform spawnPoint;        // 지정 스폰 포인트
 
+    [Header("Invincible Settings")]
+    public float invincibleTime = 0.2f;         // 피격 직후 무적 시간 
+    public float respawnInvincibleTime = 2f;    // 리스폰 후 무적 유지 시간
+    private bool isInvincible = false;          // 현재 무적 상태 여부
+
     private void Start()
     {
-        currentHealth = MaxHealth;      // 게임 시작 시 체력을 최대 체력으로 초기화
-        Debug.Log($"{characterName} 시작 ! 채력 : {currentHealth}, 공격력 : {attackDamage}");          // 로그로 캐릭터 시작 상태 출력
+        currentHealth = MaxHealth;                                                                     // 게임 시작 시 체력을 최대 체력으로 초기화
+        Debug.Log($"{characterName} 시작 ! 체력 : {currentHealth}, 공격력 : {attackDamage}");          // 로그로 캐릭터 시작 상태 출력
     }
 
     public void TakeDamage(int damage) // 데미지 함수
     {
-        if(isDead) return;                                              // 죽으면 데미지 무시
+        if(isDead || isInvincible) return;                              // 죽으면 데미지 무시
 
         currentHealth -= damage;                                        // 체력을 데미지 받는 만큼 깍고
         currentHealth = Mathf.Max(currentHealth, 0);                    // 최소값을 0으로 제한
 
         Debug.Log($"{characterName} 피해 {damage} -> 남은 체력 : {currentHealth}");
+
+        // 피격 직후 짧은 무적 프레임 적용(중복 피격 방지)
+        StartCoroutine(InvincibleCoroutine(invincibleTime));
 
         if(currentHealth <= 0) // 체력이 0이되면 Die 함수 실행
         {
@@ -46,6 +54,13 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = Mathf.Min(currentHealth,MaxHealth); // 최대 체력을 넘지않도록 제한
 
         Debug.Log($"{characterName} 회복 {amount} -> 체력 : {currentHealth}");  // 로그로 회복 -> 체력 상태 출력
+    }
+
+    private IEnumerator InvincibleCoroutine(float duration)
+    {
+        isInvincible = true;        // 무적 시간
+        yield return new WaitForSeconds(duration);  // duration초 기다림
+        isInvincible = false;       // 무적 해제
     }
 
     void Die()  // 사망 처리 함수
@@ -76,6 +91,9 @@ public class PlayerHealth : MonoBehaviour
         isDead = false;
 
         Debug.Log($"{characterName} 리스폰 완료 → 체력 {currentHealth}");
+
+        // 리스폰 후 2초간 무적
+        StartCoroutine(InvincibleCoroutine(respawnInvincibleTime));
     }
 
     // 현재 체력 비율 (UI용)

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun.Demo.Cockpit;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -22,7 +23,11 @@ public class PlayerController : MonoBehaviour
     private CharacterController controller;
     private Vector3 velocity;                                   // 현재 속도 (점프/중력 포함)
 
-    public PlayerAttack attack;
+    [Header("References")]
+    public Transform playerCamera;                              // 카메라 transform (PlayerLook에서 참조)
+    public PlayerHealth health;                                 // 체력 참조(사망 상태 확인용)
+
+    public PlayerAttack attack;                                 // PlayerAttack에서 attack 참조
     [HideInInspector] public bool isDashing = false;            // 루미아 캐릭터 대시 중인지 확인
     void Start()
     {
@@ -32,7 +37,23 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (!isDashing)              // 대시 중일때 입력 이동 중력 무시
+        // 사망 상태면 입력 완전 차단
+        if(health != null && health.isDead)
+            return;
+
+        // Look 방향 (카메라 Y 회전)을 플레이어가 따라가도록
+        if(playerCamera != null)
+        {
+            Vector3 lookDir = playerCamera.forward;
+            lookDir.y = 0;  // 상하 회전 제거 (수평 방향만)
+            if(lookDir.sqrMagnitude > 0.001f)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
+            }
+        }
+
+        // 대시 중일때 입력 이동 중력 무시
+        if (!isDashing)            
         {
             GroundCheck();
             HandleJumpInput();
