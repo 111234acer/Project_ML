@@ -38,16 +38,6 @@ public class AOEDamageZone_Copy : MonoBehaviour, IPunInstantiateMagicCallback
             StartCoroutine(DamageRoutine());
     }
 
-    // (호환용) 오프라인 호출이 남아있을 수 있어 유지하되, 네트워크 우선
-    public void Initialize(float dps, float dur)
-    {
-        damagePerSecond = dps;
-        duration = dur;
-
-        if (pv == null || pv.IsMine)
-            StartCoroutine(DamageRoutine());
-    }
-
     private IEnumerator DamageRoutine()
     {
         float timer = 0f;

@@ -46,9 +46,6 @@ public class OtherPlayerHealthBar : MonoBehaviour
         if (canvas != null)
             canvasRect = canvas.GetComponent<RectTransform>();
 
-        if (healthSlider == null) 
-            healthSlider = GetComponentInChildren<Slider>(true);
-
         cg = GetComponentInChildren<CanvasGroup>(true);
 
         if (cg == null && healthSlider != null) 

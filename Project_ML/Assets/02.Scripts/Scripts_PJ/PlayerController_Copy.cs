@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using System.Xml.Serialization;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController_Copy : MonoBehaviour

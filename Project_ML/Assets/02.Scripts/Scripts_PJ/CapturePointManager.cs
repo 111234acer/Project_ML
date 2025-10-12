@@ -127,12 +127,7 @@ public class CapturePointManager : MonoBehaviour, IPunObservable
 
         bool dead = false;
         var hpC = myPlayer.GetComponent<PlayerHealth_Copy>();
-        if (hpC != null) dead = hpC.isDead;
-        else
-        {
-            var hp = myPlayer.GetComponent<PlayerHealth>();
-            if (hp != null) dead = hp.isDead;
-        }
+        dead = (hpC != null && hpC.isDead);
 
         if (dead) 
         { 
@@ -153,8 +148,7 @@ public class CapturePointManager : MonoBehaviour, IPunObservable
         for (int i = 0; i < players.Length; i++)
         {
             var hpCopy = players[i].GetComponent<PlayerHealth_Copy>();
-            var hpOrig = (hpCopy == null) ? players[i].GetComponent<PlayerHealth>() : null;
-            bool isDead = (hpCopy != null && hpCopy.isDead) || (hpOrig != null && hpOrig.isDead);
+            bool isDead = (hpCopy != null && hpCopy.isDead);
             if (isDead) continue;
 
             if (!IsInsideArea(players[i].transform.position)) continue;

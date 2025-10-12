@@ -47,9 +47,6 @@ public class GameManager : MonoBehaviour
         BoxCollider area = (myTeam == 0) ? redSpawnPoint : blueSpawnPoint;
         if (area == null) area = redSpawnPoint ?? blueSpawnPoint;
 
-        // 폴백
-        if (area == null) area = redSpawnPoint ?? blueSpawnPoint;
-
         // 3) 영역 안 좌표를 먼저 뽑아서 그 위치로 네트워크 생성
         Vector3 spawnPos = (area != null) ? RandomPointInBox(area) : transform.position;
         Quaternion spawnRot = (myTeam == 0)
@@ -57,7 +54,6 @@ public class GameManager : MonoBehaviour
             : Quaternion.LookRotation(Vector3.forward, Vector3.up);  // BLUE 기본 방향
 
         var playerObj = PhotonNetwork.Instantiate(playerPrefab.name, spawnPos, spawnRot);
-        BindOtherHPBar(playerObj);
 
         // 4) 플레이어 컴포넌트에 팀 주입(AssignTeam()이 로컬 계산이면 건너뛰고 직접 세팅)
         var player = playerObj.GetComponent<PlayerTeam>();

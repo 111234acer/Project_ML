@@ -116,7 +116,7 @@ public class PlayerHealth_Copy : MonoBehaviour
             _colBackup.Clear();
             foreach (var c in cols)
             {
-                if (!c) continue;
+                if (!c || c is CharacterController) continue;
                 _colBackup[c] = c.isTrigger;
                 c.isTrigger = true;            // 전부 통과 가능
             }
