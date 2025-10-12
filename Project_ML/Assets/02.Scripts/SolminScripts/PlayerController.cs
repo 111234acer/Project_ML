@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;                                // 플레이어 이동속도
+    public float moveSpeed = 5.0f;                               // 플레이어 이동속도
     public float gravity = -20f;                                 // 중력 값
 
     [Header("Jump Settings")]

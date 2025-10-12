@@ -8,7 +8,7 @@ public class LumiaSkill_StormArrow : PlayerSkill
     [Header("Arrow Settings")]
     public GameObject arrowPrefab;          // 화살 프리팹
     public Transform firePoint;             // 발사 위치
-    public float arrowSpeed = 25f;          // 화살 속도
+    public float arrowSpeed = 20f;          // 화살 속도
     public float fireInterval = 0.3f;       // 화살 발사 간격 (3발 = 1초)
     public int arrowCount = 3;              // 발사할 화살 개수
 

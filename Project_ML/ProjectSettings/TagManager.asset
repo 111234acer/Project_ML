@@ -7,11 +7,13 @@ TagManager:
   - Arrow
   - Head
   - RespawnPoint
+  - RedPlayer
+  - Red Player
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - pp
+  - Player
   - Water
   - UI
   - Ground

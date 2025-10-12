@@ -21,6 +21,7 @@ public class LumiaAttack : PlayerAttack
         {
             currentCharge += Time.deltaTime;
             currentCharge = Mathf.Min(currentCharge, chargeTime);
+            
         }
 
         // 버튼 떼면 발사
@@ -57,4 +58,4 @@ public class LumiaAttack : PlayerAttack
         // 초기화
         currentCharge = 0f;
     }
-}
+}

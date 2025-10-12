@@ -26,7 +26,7 @@ public class PlayerHealth : MonoBehaviour
     private void Start()
     {
         currentHealth = MaxHealth;                                                                     // 게임 시작 시 체력을 최대 체력으로 초기화
-        Debug.Log($"{characterName} 시작 ! 체력 : {currentHealth}, 공격력 : {attackDamage}");          // 로그로 캐릭터 시작 상태 출력
+        //Debug.Log($"{characterName} 시작 ! 체력 : {currentHealth}, 공격력 : {attackDamage}");          // 로그로 캐릭터 시작 상태 출력
     }
 
     public void TakeDamage(int damage) // 데미지 함수
@@ -71,7 +71,14 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log($"{characterName} 사망!");
 
         // 사망 에니메이션 추가 예정
-        StartCoroutine(Respawn());      // 리스폰 되는 코루틴 실행
+
+
+        // 이동 공격 입력 차단
+        GetComponent<PlayerController>().enabled = false;
+        GetComponent<PlayerAttack>().enabled = false;
+
+        // 리스폰 되는 코루틴 실행
+        StartCoroutine(Respawn());      
     }
 
     // 리스폰 처리
@@ -80,10 +87,21 @@ public class PlayerHealth : MonoBehaviour
         yield return new WaitForSeconds(respawnDelay); // 리스폰 시간 기다린 후 리스폰
 
         // 위치 초기화
-        if(spawnPoint != null)              // spawnPoint가 지정 되어있으면 해당 위치로 이동
+        if (spawnPoint != null)              // spawnPoint가 지정 되어있으면 해당 위치로 이동
         {
-            transform.position = spawnPoint.position;
-            transform.rotation = spawnPoint.rotation;
+            CharacterController cc = GetComponent<CharacterController>();
+            if (cc != null)
+            {
+                cc.enabled = false;
+                transform.position = spawnPoint.position;
+                transform.rotation = spawnPoint.rotation;
+                cc.enabled = true;
+            }
+            else
+            {
+                transform.position = spawnPoint.position;
+                transform.rotation = spawnPoint.rotation;
+            }
         }
 
         // 체력 리셋

@@ -389,7 +389,6 @@ GameObject:
   - component: {fileID: 1998378574892268604}
   - component: {fileID: 3189815609250190564}
   - component: {fileID: 3959251436321069386}
-  - component: {fileID: 5084774314097110734}
   - component: {fileID: 4912326674396058579}
   - component: {fileID: 3685114655249141621}
   m_Layer: 0
@@ -488,6 +487,8 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
+  playerCamera: {fileID: 0}
+  health: {fileID: 0}
   attack: {fileID: 1998378574892268604}
   isDashing: 0
 --- !u!114 &5746058614852344
@@ -509,6 +510,8 @@ MonoBehaviour:
   isDead: 0
   respawnDelay: 8
   spawnPoint: {fileID: 0}
+  invincibleTime: 0.2
+  respawnInvincibleTime: 2
 --- !u!114 &9205666460324369354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -660,29 +663,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7b00ee14cf14bb4e843f57aca065e53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skill1: {fileID: 5084774314097110734}
+  skill1: {fileID: 0}
   skill2: {fileID: 4912326674396058579}
   ultimate: {fileID: 0}
---- !u!114 &5084774314097110734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5753833739239799346}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f80956733c90580478d9efd1d1207646, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skillName: StormAroow
-  cooldown: 5
-  arrowPrefab: {fileID: 4848342049009375338, guid: 7ea86e6c635356046aaf5bd649fdd812,
-    type: 3}
-  firePoint: {fileID: 8678422183395709713}
-  arrowSpeed: 100
-  fireInterval: 0.3
-  arrowCount: 3
 --- !u!114 &4912326674396058579
 MonoBehaviour:
   m_ObjectHideFlags: 0
