@@ -1,3 +1,5 @@
+using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +7,10 @@ using UnityEngine;
 
 public class LumiaAttack_Copy : PlayerAttack
 {
+    PlayerSkillManager_Copy skillMgr;
+    PlayerHealth_Copy health;
+    PhotonView pv;
+
     [Header("Arrow Settings")]
     public GameObject arrowPrefab;         // 화살 프리팹
     public float minArrowSpeed = 10f;      // 최소 속도
@@ -17,8 +23,30 @@ public class LumiaAttack_Copy : PlayerAttack
 
     public static Action<float, bool> OnChargeUpdate;
 
+    private void Awake()
+    {
+        pv = GetComponent<PhotonView>();
+        skillMgr = GetComponentInParent<PlayerSkillManager_Copy>();
+        health = GetComponent<PlayerHealth_Copy>();
+    }
+
     private void Update()
     {
+        if (pv != null && PhotonNetwork.InRoom && !pv.IsMine) return;
+
+        if (health != null && health.isDead)
+        {
+            if (currentCharge > 0f && OnChargeUpdate != null) OnChargeUpdate(0f, false);
+            return;
+        }
+
+        if (pv != null && pv.IsMine && skillMgr != null && Time.time < skillMgr.suppressFire1Until)
+        {
+            if (currentCharge > 0f && OnChargeUpdate != null) OnChargeUpdate(0f, false);
+            currentCharge = 0f;
+            return;
+        }
+
         if (Input.GetButtonDown("Fire1"))
         {
             if (!CanAttack())
@@ -62,6 +90,8 @@ public class LumiaAttack_Copy : PlayerAttack
 
     public override void Attack()
     {
+        if (health != null && health.isDead) return;
+
         if (arrowPrefab == null || playerCamera == null) return;
 
         // 발사 방향 = 카메라 중앙
@@ -75,15 +105,18 @@ public class LumiaAttack_Copy : PlayerAttack
 
         // 화살 생성 (카메라 앞에서)
         Vector3 spawnPos = playerCamera.transform.position + shootDir * 0.5f;
-        GameObject arrow = Instantiate(arrowPrefab, spawnPos, Quaternion.LookRotation(shootDir));
-        Rigidbody rb = arrow.GetComponent<Rigidbody>();
 
-        if (rb != null)
-        {
-            rb.velocity = shootDir * arrowSpeed;
-        }
+        int ownerTeam = -1;
+        var teamA = GetComponentInParent<PlayerTeam>();
+        if (teamA != null) ownerTeam = teamA.team;        
+        int ownerViewID = (pv != null) ? pv.ViewID : -1;
 
-        // 초기화
+        object[] data = new object[] { ownerTeam, ownerViewID };
+        var arrow = PhotonNetwork.Instantiate(arrowPrefab.name, spawnPos, Quaternion.LookRotation(shootDir), 0, data);
+
+        var rb = arrow.GetComponent<Rigidbody>();
+        if (rb != null) rb.velocity = shootDir * arrowSpeed;
+
         currentCharge = 0f;
     }
 }

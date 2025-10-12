@@ -11,8 +11,8 @@ public class PlayerHUD : MonoBehaviour
 
     public SkillSlot[] skillSlots;
 
-    private PlayerHealth health;
-    private PlayerSkillManager skillMgr;
+    private PlayerHealth_Copy health;
+    private PlayerSkillManager_Copy skillMgr;
 
     [System.Serializable]
     public class SkillSlot
@@ -20,9 +20,9 @@ public class PlayerHUD : MonoBehaviour
         public string slotName;        // 조작키
         public Image cooldownMask;
         public TMP_Text cooldownText;
-        [HideInInspector] public PlayerSkill skill; // 런타임에 매핑됨
+        [HideInInspector] public PlayerSkill_Copy skill; // 런타임에 매핑됨
     }
-    public void Init(PlayerHealth h, PlayerSkillManager mgr)
+    public void Init(PlayerHealth_Copy h, PlayerSkillManager_Copy mgr)
     {
         health = h;
         skillMgr = mgr;
@@ -95,7 +95,7 @@ public class PlayerHUD : MonoBehaviour
 
             string n = skillSlots[i].slotName;
 
-            if(n == "Q")
+            if(n == "Mouse1")
             {
                 skillSlots[i].skill = skillMgr.skill1;
             }

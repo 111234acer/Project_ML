@@ -20,7 +20,7 @@ public class HealPack : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        PlayerHealth health = other.GetComponent<PlayerHealth>();
+        PlayerHealth_Copy health = other.GetComponent<PlayerHealth_Copy>();
         if (health != null && !health.IsDead())
         {
             if (health.currentHealth >= health.MaxHealth)

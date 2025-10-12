@@ -47,6 +47,13 @@ MonoBehaviour:
   - Attack
   - InitPosition
   - Attack2
+  - RPC_Heal
+  - TakeDamage
+  - RPC_UseSkill
+  - RPC_SetTeam
+  - RPC_CommitUltCooldown
+  - RPC_UseUlt_Start
+  - RPC_RespawnAt
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

@@ -28,7 +28,7 @@ public class PhotonPlayer : MonoBehaviour
             var players = GameObject.FindGameObjectsWithTag("Player");
             for (int i = 0; i < players.Length; i++)
             {
-                var p = players[i].GetComponent<Player>();
+                var p = players[i].GetComponent<PlayerTeam>();
                 if (p == null) continue;
                 if (p.team == 0) red++;
                 else if (p.team == 1) blue++;

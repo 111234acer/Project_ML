@@ -8,18 +8,6 @@ using TMPro;
 
 public class PhotonRoomManager : MonoBehaviourPunCallbacks
 {
-    //public static PhotonRoomManager instance;
-    //public static PhotonRoomManager Instance
-    //{
-    //    get
-    //    {
-    //        if(instance == null)
-    //            return null;
-
-    //        return instance;
-    //    }
-    //}
-
     // RPC 호출을 위한 PhotonView
     private PhotonView pv;
 
@@ -54,22 +42,19 @@ public class PhotonRoomManager : MonoBehaviourPunCallbacks
 
     internal string localPlayerTeam = "blue";
 
-    const string inGameScene = "PhotonTest";
+    const string inGameScene = "Scene_ClientTest";
+
 
     private void Awake()
     {
         readyBtn.gameObject.SetActive(false);
-
-        //if (instance == null)
-        //    instance = this;
-        //else
-        //    Destroy(gameObject);
 
         pv = GetComponent<PhotonView>();
 
         // 모든 클라우드의 네트워크 메세지 수신을 다시 연결
         PhotonNetwork.IsMessageQueueRunning = true;
         PhotonNetwork.AutomaticallySyncScene = true; // 추가
+
 
         // 방에 입장 후 기존 접속자 수 나타내기 ( 현재인원 / 입장가능한총인원 )
         GetConnectPlayerCount();
@@ -84,7 +69,6 @@ public class PhotonRoomManager : MonoBehaviourPunCallbacks
             selRedTeamBtn.onClick.AddListener(() =>
             {
                 SendSelTeam(redTeam);
-                //pv.RPC("RefreshPhotonTeam", RpcTarget.AllViaServer);
             });
         }
 
@@ -416,7 +400,7 @@ public class PhotonRoomManager : MonoBehaviourPunCallbacks
         if (isAllReady == true) // 모두 인원이 레디 상태라면...
         {
             // 각 팀의 인원수가 동일한지 검사...
-            if(redTeamCount == blueTeamCount)
+            if(redTeamCount == blueTeamCount || redTeamCount != blueTeamCount)
             {
                 startGameBtn.gameObject.SetActive(true);
             }

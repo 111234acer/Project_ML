@@ -1,8 +1,10 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
+using System.Collections.Generic;
 
-public class CapturePointManager : MonoBehaviour
+public class CapturePointManager : MonoBehaviour, IPunObservable
 {
     public float preLockDuration = 30f;     //시작 대기 시간
     public float sustainToFlip = 10f;       // 점령하기위한 유지 시간
@@ -10,7 +12,12 @@ public class CapturePointManager : MonoBehaviour
     public float timeToFill100 = 120f;      //점령 총시간 2분
     public float overtimeBonus = 5f;        // 추가시간
 
-    public Player myPlayer;
+    public Transform captureCenter;       // 없으면 this.transform
+    public float captureRadius = 5f;      // 없으면 콜라이더로 자동 추정
+
+    public PlayerTeam myPlayer;
+    private Collider areaCol;
+    const float insideEps = 1e-4f;
 
     private int redInside = 0;
     private int blueInside = 0;
@@ -46,6 +53,25 @@ public class CapturePointManager : MonoBehaviour
     public float OvertimeRemain => overtimeRemain;
     public bool GameEnded => gameEnded;
 
+    PhotonView pv;
+
+    private void Awake()
+    {
+        pv = GetComponent<PhotonView>();
+        if (captureCenter == null) captureCenter = transform;
+
+        areaCol = GetComponent<Collider>();                 // (+)
+        //  반경 자동추정은 '콜라이더 없을 때만' 폴백으로 남겨둠
+        if (areaCol == null && captureRadius <= 0f)
+            captureRadius = 5f;
+
+        if (pv != null)
+        {
+            if (pv.ObservedComponents == null) pv.ObservedComponents = new System.Collections.Generic.List<Component>();
+            if (!pv.ObservedComponents.Contains(this)) pv.ObservedComponents.Add(this);
+        }
+    }
+
     void Start()
     {
         preLockTimer = preLockDuration;
@@ -54,6 +80,12 @@ public class CapturePointManager : MonoBehaviour
     void Update()
     {
         totalGameTime += Time.deltaTime;
+
+        UpdateAmInsideForLocal();
+
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        SampleInsideCounts();
 
         if (preLockTimer > 0f)
         {
@@ -66,6 +98,70 @@ public class CapturePointManager : MonoBehaviour
         HandleScoreGain();
         HandleNinetyNineBonus();
         CheckWinCondition();
+    }
+    bool IsInsideArea(Vector3 worldPos)
+    {
+        if (areaCol != null)
+        {
+            Vector3 cp = areaCol.ClosestPoint(worldPos);
+            return (cp - worldPos).sqrMagnitude <= insideEps; // 내부면 동일점이 반환됨
+        }
+
+        // 콜라이더가 없을 때만 구형 반경(3D)으로 폴백
+        Vector3 c = (captureCenter != null) ? captureCenter.position : transform.position;
+        Vector3 d = worldPos - c;
+        return d.sqrMagnitude <= captureRadius * captureRadius;
+    }
+
+    void UpdateAmInsideForLocal()
+    {
+        if (myPlayer == null) 
+        { 
+            myPlayer = FindObjectOfType<PlayerTeam>();
+
+            if (myPlayer == null) 
+            { 
+                amInside = false; return; 
+            } 
+        }
+
+        bool dead = false;
+        var hpC = myPlayer.GetComponent<PlayerHealth_Copy>();
+        if (hpC != null) dead = hpC.isDead;
+        else
+        {
+            var hp = myPlayer.GetComponent<PlayerHealth>();
+            if (hp != null) dead = hp.isDead;
+        }
+
+        if (dead) 
+        { 
+            amInside = false; return;
+        }
+
+        amInside = IsInsideArea(myPlayer.transform.position);
+    }
+
+    void SampleInsideCounts()
+    {
+        redInside = 0;
+        blueInside = 0;
+
+        var players = FindObjectsOfType<PlayerTeam>();
+
+
+        for (int i = 0; i < players.Length; i++)
+        {
+            var hpCopy = players[i].GetComponent<PlayerHealth_Copy>();
+            var hpOrig = (hpCopy == null) ? players[i].GetComponent<PlayerHealth>() : null;
+            bool isDead = (hpCopy != null && hpCopy.isDead) || (hpOrig != null && hpOrig.isDead);
+            if (isDead) continue;
+
+            if (!IsInsideArea(players[i].transform.position)) continue;
+
+            if (players[i].team == 0) redInside++;
+            else if (players[i].team == 1) blueInside++;
+        }
     }
 
     private void HandleFlipLogic()
@@ -203,26 +299,31 @@ public class CapturePointManager : MonoBehaviour
         SceneManager.LoadScene("PhotonLobby");
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        var p = other.GetComponent<Player>();
-        if (p == null) return;
-
-        if (p.team == 0) redInside++;
-        else if (p.team == 1) blueInside++;
-
-        if (myPlayer != null && p == myPlayer)
-            amInside = true;
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        var p = other.GetComponent<Player>();
-        if (p == null) return;
-
-        if (p.team == 0) redInside = Mathf.Max(0, redInside - 1);
-        else if (p.team == 1) blueInside = Mathf.Max(0, blueInside - 1);
-
-        if (myPlayer != null && p == myPlayer) amInside = false;
+        if (stream.IsWriting)
+        {
+            stream.SendNext(ownerTeam);
+            stream.SendNext(flipCandidateTeam);
+            stream.SendNext(flipTimer);
+            stream.SendNext(preLockTimer);
+            stream.SendNext(totalGameTime);
+            stream.SendNext(redScore);
+            stream.SendNext(blueScore);
+            stream.SendNext(overtimeRemain);
+            stream.SendNext(gameEnded);
+        }
+        else
+        {
+            ownerTeam = (int)stream.ReceiveNext();
+            flipCandidateTeam = (int)stream.ReceiveNext();
+            flipTimer = (float)stream.ReceiveNext();
+            preLockTimer = (float)stream.ReceiveNext();
+            totalGameTime = (float)stream.ReceiveNext();
+            redScore = (float)stream.ReceiveNext();
+            blueScore = (float)stream.ReceiveNext();
+            overtimeRemain = (float)stream.ReceiveNext();
+            gameEnded = (bool)stream.ReceiveNext();
+        }
     }
 }

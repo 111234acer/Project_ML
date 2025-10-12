@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '?'
+  m_text: 2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -702,7 +702,7 @@ MonoBehaviour:
   healthSlider: {fileID: 2546470844134439453}
   healthText: {fileID: 3853641764131623287}
   skillSlots:
-  - slotName: Q
+  - slotName: Mouse1
     cooldownMask: {fileID: 2845890968715676598}
     cooldownText: {fileID: 3164051279082960336}
     skill: {fileID: 0}
@@ -710,7 +710,7 @@ MonoBehaviour:
     cooldownMask: {fileID: 2505184304280084694}
     cooldownText: {fileID: 6787970705932956378}
     skill: {fileID: 0}
-  - slotName: Ult
+  - slotName: R
     cooldownMask: {fileID: 8548851133804666413}
     cooldownText: {fileID: 3651620693000002128}
     skill: {fileID: -3507596593209026743, guid: 9c981b057917f7847b4a6d256ca0194d,
@@ -738,6 +738,7 @@ MonoBehaviour:
   victoryPanel: {fileID: 7484856250936724933}
   defeatPanel: {fileID: 3342176921077559484}
   overtimeBar: {fileID: 3564381003071695155}
+  barLerpSpeed: 20
 --- !u!1 &2277510568009934233
 GameObject:
   m_ObjectHideFlags: 0
@@ -2269,7 +2270,7 @@ GameObject:
   - component: {fileID: 7366097217258705474}
   - component: {fileID: 4092717029187711531}
   m_Layer: 5
-  m_Name: Ult
+  m_Name: R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2535,7 +2536,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ???
+  m_text: R
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3629,7 +3630,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Q
+  m_text: M1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4479,7 +4480,7 @@ GameObject:
   - component: {fileID: 5198003301409797679}
   - component: {fileID: 2146759884414408665}
   m_Layer: 5
-  m_Name: Q
+  m_Name: Mouse1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
