@@ -122,37 +122,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &254221938
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 254221939}
-  m_Layer: 0
-  m_Name: SpawnPoint
-  m_TagString: RespawnPoint
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &254221939
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 254221938}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 5, z: -55}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &287258078
 Mesh:
   m_ObjectHideFlags: 0
@@ -843,6 +812,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 503317607}
+    - target: {fileID: 2401828810668963768, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 2417900180250299853, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
       propertyPath: m_Mesh
@@ -873,6 +847,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1827995388}
+    - target: {fileID: 4361521538699117334, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
+        type: 3}
+      propertyPath: m_TagString
+      value: RespawnPoint
+      objectReference: {fileID: 0}
     - target: {fileID: 4506481450511829024, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
       propertyPath: m_Mesh
@@ -959,7 +938,10 @@ PrefabInstance:
       value: Level B
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5607548789336028106, guid: 8c6ac0a73a2275f4cb9e2756d1368784, type: 3}
+    - {fileID: 471448172284265088, guid: 8c6ac0a73a2275f4cb9e2756d1368784, type: 3}
+    - {fileID: 946033648407350855, guid: 8c6ac0a73a2275f4cb9e2756d1368784, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c6ac0a73a2275f4cb9e2756d1368784, type: 3}
@@ -1740,6 +1722,12 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!4 &2060482138 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3035094368890957058, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
+    type: 3}
+  m_PrefabInstance: {fileID: 823626260}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3117318531926353501
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1751,7 +1739,22 @@ PrefabInstance:
     - target: {fileID: 5746058614852344, guid: 77fb662128627344b9a2902804b1fb90, type: 3}
       propertyPath: spawnPoint
       value: 
-      objectReference: {fileID: 254221939}
+      objectReference: {fileID: 2060482138}
+    - target: {fileID: 1998378574892268604, guid: 77fb662128627344b9a2902804b1fb90,
+        type: 3}
+      propertyPath: maxArrowSpeed
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 1998378574892268604, guid: 77fb662128627344b9a2902804b1fb90,
+        type: 3}
+      propertyPath: minArrowSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2760754349982997331, guid: 77fb662128627344b9a2902804b1fb90,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4679260298774085822, guid: 77fb662128627344b9a2902804b1fb90,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1765,7 +1768,7 @@ PrefabInstance:
     - target: {fileID: 4679260298774085822, guid: 77fb662128627344b9a2902804b1fb90,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -55
+      value: -49.64
       objectReference: {fileID: 0}
     - target: {fileID: 4679260298774085822, guid: 77fb662128627344b9a2902804b1fb90,
         type: 3}
@@ -1822,4 +1825,3 @@ SceneRoots:
   - {fileID: 1073820690}
   - {fileID: 823626260}
   - {fileID: 3117318531926353501}
-  - {fileID: 254221939}
