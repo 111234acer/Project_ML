@@ -150,4 +150,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   segments: 60
-  radius: 0.2
+  radius: 2

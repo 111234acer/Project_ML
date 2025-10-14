@@ -348,7 +348,7 @@ Transform:
   m_GameObject: {fileID: 4265697265440173058}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.4, y: 0.3, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -531,7 +531,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
-  playerCamera: {fileID: 5850544975403252535}
+  playerCamera: {fileID: 1422333063327574789}
   health: {fileID: 5746058614852344}
   attack: {fileID: 1998378574892268604}
   isDashing: 0
@@ -788,7 +788,7 @@ MonoBehaviour:
     type: 3}
   aoeEffectPrefab: {fileID: 2893411714665299601, guid: 47e7dacd943e24344b84985fba7d8851,
     type: 3}
-  range: 2
+  range: 20
   duration: 5
   damagePerSecond: 100
   playerCamera: {fileID: 8371241346178131869}
