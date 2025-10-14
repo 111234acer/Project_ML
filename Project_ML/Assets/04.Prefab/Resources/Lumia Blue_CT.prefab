@@ -31,6 +31,47 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1234830103252394173}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4892110024773268679
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8619258595248538013}
+  - component: {fileID: 7791572002572657403}
+  m_Layer: 0
+  m_Name: Camera Position
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8619258595248538013
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4892110024773268679}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.4, z: 0.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3369926030344987804}
+  m_Father: {fileID: 1234830103252394173}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!81 &7791572002572657403
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4892110024773268679}
+  m_Enabled: 1
 --- !u!1 &4930222119191757182
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,7 +343,7 @@ Transform:
   - {fileID: 2036692933400856391}
   - {fileID: 1852225249723610683}
   - {fileID: 7452223269851582365}
-  - {fileID: 3369926030344987804}
+  - {fileID: 8619258595248538013}
   - {fileID: 3358794554718539268}
   - {fileID: 4315655998863055369}
   m_Father: {fileID: 0}
@@ -368,7 +409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8de461ec2191f9a4084e80be30a0a1f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 10
   gravity: -20
   jumpHeight: 2
   fallMultiplier: 2.5
@@ -376,7 +417,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
-  playerCamera: {fileID: 3369926030344987804}
+  playerCamera: {fileID: 8619258595248538013}
   health: {fileID: 631650054558760567}
   attack: {fileID: -1210323178702149906}
   isDashing: 0
@@ -396,7 +437,7 @@ MonoBehaviour:
   deathToggleColliders: []
   characterName: Lumia
   MaxHealth: 200
-  attackDamage: 50
+  attackDamage: 40
   currentHealth: 0
   isDead: 0
   respawnDelay: 8
@@ -419,9 +460,9 @@ MonoBehaviour:
   coolDown: 1
   arrowPrefab: {fileID: 5428142936862869010, guid: fca93bf4255ebe44aa2f6c4bc2535285,
     type: 3}
-  minArrowSpeed: 10
-  maxArrowSpeed: 50
-  chargeTime: 1.5
+  minArrowSpeed: 25
+  maxArrowSpeed: 100
+  chargeTime: 0.5
   playerCamera: {fileID: 1725391514129727518}
 --- !u!114 &-5763926294719838313
 MonoBehaviour:
@@ -446,7 +487,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7019567109801188797}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -573,7 +614,7 @@ MonoBehaviour:
   arrowPrefab: {fileID: 5428142936862869010, guid: fca93bf4255ebe44aa2f6c4bc2535285,
     type: 3}
   firePoint: {fileID: 3358794554718539268}
-  arrowSpeed: 25
+  arrowSpeed: 100
   fireInterval: 0.3
   arrowCount: 3
 --- !u!114 &-6906629480442863799
@@ -611,7 +652,7 @@ MonoBehaviour:
   aoeEffectPrefab: {fileID: 7763575340890952865, guid: 217026c249712f443bfd0dc42cfdd90a,
     type: 3}
   range: 20
-  aoeRadius: 5
+  aoeRadius: 2
   duration: 5
   damagePerSecond: 30
   playerCamera: {fileID: 1725391514129727518}
@@ -810,12 +851,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8100329294792481089}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.4, z: 0.2}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.382, y: 0.277, z: -1.947}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1234830103252394173}
+  m_Father: {fileID: 8619258595248538013}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &1725391514129727518
 Camera:
@@ -875,4 +916,4 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8100329294792481089}
-  m_Enabled: 1
+  m_Enabled: 0
