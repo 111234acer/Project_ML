@@ -114,6 +114,47 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4679260298774085822}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1940158915967950719
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1422333063327574789}
+  - component: {fileID: 4034762248778955226}
+  m_Layer: 3
+  m_Name: Camera Position
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1422333063327574789
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1940158915967950719}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.4, z: 0.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5850544975403252535}
+  m_Father: {fileID: 4679260298774085822}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!81 &4034762248778955226
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1940158915967950719}
+  m_Enabled: 1
 --- !u!1 &2760754349982997331
 GameObject:
   m_ObjectHideFlags: 0
@@ -306,12 +347,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4265697265440173058}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.4, z: 0.2}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4679260298774085822}
+  m_Father: {fileID: 1422333063327574789}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &8371241346178131869
 Camera:
@@ -371,7 +412,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4265697265440173058}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!1 &5753833739239799346
 GameObject:
   m_ObjectHideFlags: 0
@@ -416,7 +457,7 @@ Transform:
   - {fileID: 3782454282140157564}
   - {fileID: 7305262886412447296}
   - {fileID: 8092623998070904965}
-  - {fileID: 5850544975403252535}
+  - {fileID: 1422333063327574789}
   - {fileID: 8678422183395709713}
   - {fileID: 2092233894323365344}
   m_Father: {fileID: 0}
@@ -482,7 +523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10008db243984ae439dd5f8c47295b0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 10
   gravity: -20
   jumpHeight: 2
   fallMultiplier: 2.5
@@ -508,7 +549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Lumia
   MaxHealth: 200
-  attackDamage: 30
+  attackDamage: 40
   currentHealth: 0
   isDead: 0
   respawnDelay: 8
@@ -549,8 +590,8 @@ MonoBehaviour:
   arrowPrefab: {fileID: 6135757702434522918, guid: d80f8637a2b6a7942ba7d6edeee99f14,
     type: 3}
   minArrowSpeed: 10
-  maxArrowSpeed: 60
-  chargeTime: 1.5
+  maxArrowSpeed: 80
+  chargeTime: 0.5
   playerCamera: {fileID: 8371241346178131869}
 --- !u!120 &3189815609250190564
 LineRenderer:
@@ -560,7 +601,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5753833739239799346}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -687,7 +728,7 @@ MonoBehaviour:
   arrowPrefab: {fileID: 6135757702434522918, guid: d80f8637a2b6a7942ba7d6edeee99f14,
     type: 3}
   firePoint: {fileID: 8678422183395709713}
-  arrowSpeed: 60
+  arrowSpeed: 100
   fireInterval: 0.3
   arrowCount: 3
 --- !u!114 &4912326674396058579
@@ -747,7 +788,7 @@ MonoBehaviour:
     type: 3}
   aoeEffectPrefab: {fileID: 2893411714665299601, guid: 47e7dacd943e24344b84985fba7d8851,
     type: 3}
-  range: 10
+  range: 2
   duration: 5
   damagePerSecond: 100
   playerCamera: {fileID: 8371241346178131869}
