@@ -102,7 +102,7 @@ public class PlayerController : MonoBehaviour
         float vertical = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * horizontal + transform.forward * vertical;
-        controller.Move(move * moveSpeed * Time.deltaTime);
+        controller.Move(move * moveSpeed * Time.deltaTime); 
 
         ApplyGravity();
         controller.Move(velocity * Time.deltaTime);

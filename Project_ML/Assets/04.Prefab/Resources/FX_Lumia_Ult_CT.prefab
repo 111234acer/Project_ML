@@ -29524,9 +29524,9 @@ GameObject:
   - component: {fileID: 7473762522234429261}
   - component: {fileID: 1460431928632577452}
   - component: {fileID: 5930470140759489887}
-  - component: {fileID: 5289025611946919081}
   - component: {fileID: -3493286087584441139}
   - component: {fileID: 8946867404160636805}
+  - component: {fileID: -4975009414460237061}
   m_Layer: 0
   m_Name: FX_Lumia_Ult_CT
   m_TagString: Untagged
@@ -34405,19 +34405,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &5289025611946919081
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7763575340890952865}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7f64eec51a9e27488f8c55411be6328, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: 5
 --- !u!114 &-3493286087584441139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34457,6 +34444,19 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 0
+--- !u!114 &-4975009414460237061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7763575340890952865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd30092f3c3699c4e9bf2e9dd5f3ae8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 3
 --- !u!1 &7921442826027030599
 GameObject:
   m_ObjectHideFlags: 0

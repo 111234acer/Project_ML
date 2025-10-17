@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 9125517338200646254}
   - component: {fileID: 6728856532959728106}
   - component: {fileID: 7515396588856986409}
-  - component: {fileID: -84010485752139220}
   - component: {fileID: 1823148963991174610}
   - component: {fileID: -46126591730062797}
+  - component: {fileID: -2623799038195322077}
   m_Layer: 0
   m_Name: arrow
   m_TagString: Arrow
@@ -114,21 +114,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 2
---- !u!114 &-84010485752139220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6135757702434522918}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3277b206bd311054685e87c474898397, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 30
-  lifeTime: 5
-  targetTag: RedPlayer
 --- !u!65 &1823148963991174610
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -263,3 +248,18 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!114 &-2623799038195322077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6135757702434522918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1164b5385eb53ee478cddf13c28d1c38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 20
+  lifeTime: 5
+  headshotMultiplier: 2
