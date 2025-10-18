@@ -11,8 +11,8 @@ public class PlayerHUD : MonoBehaviour
 
     public SkillSlot[] skillSlots;
 
-    private PlayerHealth_Copy health;
-    private PlayerSkillManager_Copy skillMgr;
+    private PlayerHealth_Server health;
+    private PlayerSkillManager_Net skillMgr;
 
     [System.Serializable]
     public class SkillSlot
@@ -20,9 +20,9 @@ public class PlayerHUD : MonoBehaviour
         public string slotName;        // 조작키
         public Image cooldownMask;
         public TMP_Text cooldownText;
-        [HideInInspector] public PlayerSkill_Copy skill; // 런타임에 매핑됨
+        [HideInInspector] public PlayerSkill_Net skill; // 런타임에 매핑됨
     }
-    public void Init(PlayerHealth_Copy h, PlayerSkillManager_Copy mgr)
+    public void Init(PlayerHealth_Server h, PlayerSkillManager_Net mgr)
     {
         health = h;
         skillMgr = mgr;
@@ -48,12 +48,12 @@ public class PlayerHUD : MonoBehaviour
     {
         if (healthSlider != null)
         {
-            healthSlider.maxValue = health.MaxHealth;
+            healthSlider.maxValue = health.maxHealth;
             healthSlider.value = health.currentHealth;
         }
         if (healthText != null)
         {
-            healthText.text = health.currentHealth + "/" + health.MaxHealth;
+            healthText.text = health.currentHealth + "/" + health.maxHealth;
         }
     }
 
@@ -97,15 +97,15 @@ public class PlayerHUD : MonoBehaviour
 
             if(n == "Mouse1")
             {
-                skillSlots[i].skill = skillMgr.skill1;
+                skillSlots[i].skill = skillMgr.skillMouse1;
             }
             else if(n == "Shift")
             {
-                skillSlots[i].skill = skillMgr.skill2;
+                skillSlots[i].skill = skillMgr.skillShift;
             }
             else if(n == "R")
             {
-                skillSlots[i].skill = skillMgr.ultimate;
+                skillSlots[i].skill = skillMgr.skillR;
             }
         }
     }

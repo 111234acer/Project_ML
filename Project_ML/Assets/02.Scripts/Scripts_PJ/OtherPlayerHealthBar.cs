@@ -6,7 +6,7 @@ using Photon.Pun;
 
 public class OtherPlayerHealthBar : MonoBehaviour
 {
-    public PlayerHealth_Copy playerHealth;
+    public PlayerHealth_Server playerHealth;
     public Slider healthSlider;
     public Transform target;      // 머리 기준점(없으면 playerHealth.transform)
     public Vector3 offset = new Vector3(0, 0, 0);
@@ -82,7 +82,7 @@ public class OtherPlayerHealthBar : MonoBehaviour
         }
 
         // 값 동기화
-        healthSlider.maxValue = playerHealth.MaxHealth;
+        healthSlider.maxValue = playerHealth.maxHealth;
         healthSlider.value = playerHealth.currentHealth;
 
         // 기준 월드 위치(머리) + 월드 오프셋

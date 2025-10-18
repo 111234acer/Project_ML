@@ -126,7 +126,7 @@ public class CapturePointManager : MonoBehaviour, IPunObservable
         }
 
         bool dead = false;
-        var hpC = myPlayer.GetComponent<PlayerHealth_Copy>();
+        var hpC = myPlayer.GetComponent<PlayerHealth_Server>();
         dead = (hpC != null && hpC.isDead);
 
         if (dead) 
@@ -147,7 +147,7 @@ public class CapturePointManager : MonoBehaviour, IPunObservable
 
         for (int i = 0; i < players.Length; i++)
         {
-            var hpCopy = players[i].GetComponent<PlayerHealth_Copy>();
+            var hpCopy = players[i].GetComponent<PlayerHealth_Server>();
             bool isDead = (hpCopy != null && hpCopy.isDead);
             if (isDead) continue;
 

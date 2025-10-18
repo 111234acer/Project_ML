@@ -12,12 +12,12 @@ public class CrosshairChargeUI : MonoBehaviour
 
     private void OnEnable()
     {
-        LumiaAttack_Copy.OnChargeUpdate += UpdateUI;
+        LumiaAttack_Net.OnChargeUpdate += UpdateUI;
     }
 
     private void OnDisable()
     {
-        LumiaAttack_Copy.OnChargeUpdate -= UpdateUI;
+        LumiaAttack_Net.OnChargeUpdate -= UpdateUI;
     }
 
     private void UpdateUI(float percent, bool active)

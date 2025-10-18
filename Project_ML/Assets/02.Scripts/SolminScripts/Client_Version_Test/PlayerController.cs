@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;                                    // 직접 체크한 바닥 여부 
 
     private CharacterController controller;
-    private Vector3 velocity;                                   // 현재 속도 (점프/중력 포함)
+    public Vector3 velocity;                                   // 현재 속도 (점프/중력 포함)
 
     [Header("References")]
     public Transform playerCamera;                              // 카메라 transform (PlayerLook에서 참조)
@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
 
     public PlayerAttack attack;                                 // PlayerAttack에서 attack 참조
     [HideInInspector] public bool isDashing = false;            // 루미아 캐릭터 대시 중인지 확인
+
     void Start()
     {
         controller = GetComponent<CharacterController>();

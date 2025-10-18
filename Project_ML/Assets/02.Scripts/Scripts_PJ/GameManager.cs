@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
     {
         if (HealthBar == null || mainCanvas == null || player == null) return;
 
-        var ph = player.GetComponent<PlayerHealth_Copy>();
+        var ph = player.GetComponent<PlayerHealth_Server>();
         if (ph == null) return;
 
         // 이미 바인딩된 UI가 있으면 생성하지 않음 (중복 방지)
@@ -126,8 +126,8 @@ public class GameManager : MonoBehaviour
         var player = FindObjectOfType<PlayerTeam>();
         if (player == null) return;
 
-        var hp = player.GetComponent<PlayerHealth_Copy>();
-        var mgr = player.GetComponent<PlayerSkillManager_Copy>();
+        var hp = player.GetComponent<PlayerHealth_Server>();
+        var mgr = player.GetComponent<PlayerSkillManager_Net>();
 
         // PlayerHUD 연결
         var pHud = hudInstance.GetComponentInChildren<PlayerHUD>(true);
@@ -162,8 +162,8 @@ public class GameManager : MonoBehaviour
         Vector3 forward = (team == 0) ? -Vector3.forward : Vector3.forward;
 
         // 체력 상한
-        var ph = target.GetComponent<PlayerHealth_Copy>();
-        int hp = (ph != null) ? ph.MaxHealth : 100;
+        var ph = target.GetComponent<PlayerHealth_Server>();
+        int hp = (ph != null) ? ph.maxHealth : 100;
 
         // 전체 동기화
         target.RPC("RPC_RespawnAt", RpcTarget.AllViaServer, spawnPos, forward, hp, 1.0f);

@@ -1,5 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
+using System;
 
 public class LumiaAttack_Net : PlayerAttack_Net
 {
@@ -13,19 +14,34 @@ public class LumiaAttack_Net : PlayerAttack_Net
     [Header("References")]
     public Camera playerCamera;
 
+    private bool isCharging = false;
+
+    public static Action<float, bool> OnChargeUpdate;
+
     void Update()
     {
         if (!photonView.IsMine) return;
 
-        // 충전 입력
-        if (Input.GetButton("Fire1"))
-            currentCharge = Mathf.Min(currentCharge + Time.deltaTime, chargeTime);
-
-        // 발사
-        if (Input.GetButtonUp("Fire1"))
+        if (Input.GetMouseButtonDown(0))
         {
-            RequestAttack(currentCharge);
+            isCharging = true;
             currentCharge = 0f;
+            OnChargeUpdate?.Invoke(0f, true);
+        }
+
+        if (isCharging && Input.GetMouseButton(0))
+        {
+            currentCharge = Mathf.Min(currentCharge + Time.deltaTime, chargeTime);
+            float percent = Mathf.Clamp01(currentCharge / chargeTime);
+            OnChargeUpdate?.Invoke(percent, true);
+        }
+
+        if (isCharging && Input.GetMouseButtonUp(0))
+        {
+            float sendCharge = currentCharge; // chargeTime 기준 원본 값 전달
+            isCharging = false;
+            OnChargeUpdate?.Invoke(0f, false);
+            RequestAttack(sendCharge); // 서버 권위 경로로 발사
         }
     }
 
