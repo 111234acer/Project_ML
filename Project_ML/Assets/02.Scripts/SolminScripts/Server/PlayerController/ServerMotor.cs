@@ -92,7 +92,7 @@ public class ServerMotor : MonoBehaviourPun
         if (snapshotTimer >= snapshotInterval)
         {
             snapshotTimer = 0f;
-            photonView.RPC(nameof(ClientMotor.Client_ApplySnapshot), RpcTarget.All,
+            photonView.RPC("Client_ApplySnapshot", RpcTarget.All,
                 transform.position, transform.rotation, velocityY, isGrounded);
         }
     }
