@@ -4,36 +4,26 @@ using Photon.Pun;
 public abstract class PlayerSkill_Net : MonoBehaviourPun
 {
     [Header("Skill Info")]
-    public string skillName;
-    public float cooldown = 5f;
-    protected float nextUseTime = 0f;
+    public string skillName;          // 스킬 이름 (UI 식별용)
+    public float cooldown = 5f;       // 쿨다운
+    protected float nextUseTime = 0f; // 다음 사용 가능 시간
 
-    // 실제 스킬 효과  서버에서만 실행
+    // 실제 스킬 효과 (서버에서만 실행)
     public abstract void Activate();
 
-    // 클라에서 서버로 스킬 사용 요청
+    // 클라에서 스킬 사용 요청
     public void RequestUse()
     {
+        // 쿨타임 체크
         if (Time.time < nextUseTime) return;
-
         nextUseTime = Time.time + cooldown;
 
-        if (PhotonNetwork.IsMasterClient)
+        // PlayerSkillManager_Net에 위임
+        var mgr = GetComponent<PlayerSkillManager_Net>();
+        if (mgr != null)
         {
-            Activate();
+            mgr.RequestSkillUse(skillName);
         }
-        else
-        {
-            photonView.RPC(nameof(Server_RequestSkillUse), RpcTarget.MasterClient);
-        }
-    }
-
-    // 서버에서 스킬 실행 승인
-    [PunRPC]
-    protected void Server_RequestSkillUse(PhotonMessageInfo info)
-    {
-        if (!PhotonNetwork.IsMasterClient) return;
-        Activate();
     }
 
     // UI용 쿨다운 비율
@@ -42,7 +32,7 @@ public abstract class PlayerSkill_Net : MonoBehaviourPun
         return Mathf.Clamp01((nextUseTime - Time.time) / cooldown);
     }
 
-    // 모든 스킬 종료 시 호출 -> 공격 다시 가능하게
+    // 모든 스킬 종료 시 호출 -> 공격/이동 다시 가능하게
     protected void EndSkill()
     {
         PlayerSkillManager_Net.SetSkillLock(false);

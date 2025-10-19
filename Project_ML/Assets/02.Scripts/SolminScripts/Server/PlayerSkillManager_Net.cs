@@ -1,58 +1,65 @@
 using UnityEngine;
 using Photon.Pun;
-using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerSkillManager_Net : MonoBehaviourPun
 {
+    [Header("Skill References")]
     public PlayerSkill_Net skillMouse1;
     public PlayerSkill_Net skillShift;
     public PlayerSkill_Net skillR;
 
-    // 전역 스킬 사용 상태
+    // 전역 스킬 사용 잠금 상태
     public static bool IsUsingAnySkill { get; private set; } = false;
+
+    // 스킬 이름으로 관리
+    private Dictionary<string, PlayerSkill_Net> skillDict = new();
+
+    void Awake()
+    {
+        // 이름 기반 등록 (UI slotName과 일치해야 함)
+        if (skillMouse1 != null) skillDict["Mouse1"] = skillMouse1;
+        if (skillShift != null) skillDict["Shift"] = skillShift;
+        if (skillR != null) skillDict["R"] = skillR;
+    }
 
     void Update()
     {
-        if (!photonView.IsMine) return;
+        if (!photonView.IsMine || IsUsingAnySkill) return;
 
-        // 마우스 우클릭
-        if (Input.GetKeyDown(KeyCode.Mouse1))
-            skillMouse1?.RequestUse();
-
-        // Shift
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-            skillShift?.RequestUse();
-
-        // R
-        if (Input.GetKeyDown(KeyCode.R))
-            skillR?.RequestUse();
+        // 입력 처리
+        if (Input.GetKeyDown(KeyCode.Mouse1)) RequestSkillUse("Mouse1");
+        if (Input.GetKeyDown(KeyCode.LeftShift)) RequestSkillUse("Shift");
+        if (Input.GetKeyDown(KeyCode.R)) RequestSkillUse("R");
     }
 
-    void TryUseSkill(PlayerSkill_Net skill)
+    // 스킬 사용 요청 (클라 → 서버)
+    public void RequestSkillUse(string key)
     {
-        if(skill == null) return;
+        if (!skillDict.ContainsKey(key)) return;
 
-        // 아마 스킬 사용 중이면 무시
-        if (IsUsingAnySkill) return;
-
-        StartCoroutine(UseSkillRoutine(skill));
+        if (PhotonNetwork.IsMasterClient)
+        {
+            // 내가 서버면 직접 실행
+            skillDict[key].Activate();
+        }
+        else
+        {
+            // 클라이언트면 서버에 요청
+            photonView.RPC(nameof(Server_RequestSkillUse), RpcTarget.MasterClient, key);
+        }
     }
 
-    IEnumerator UseSkillRoutine(PlayerSkill_Net skill)
+    // 서버에서 실제 Activate 실행
+    [PunRPC]
+    void Server_RequestSkillUse(string key)
     {
-        // 스킬 사용 시작 → 공격 잠금
-        IsUsingAnySkill = true;
-
-        skill.RequestUse();
-
-        // 기본적으로 짧은 딜레이 후 자동 해제
-        // (스킬 내부에서 EndSkill()을 호출하면 더 일찍 풀림)
-        yield return new WaitForSeconds(0.25f);
-
-        IsUsingAnySkill = false;
+        if (!PhotonNetwork.IsMasterClient) return;
+        if (skillDict.TryGetValue(key, out var skill))
+            skill.Activate();
     }
 
-    // 외부에서도 스킬 잠금 수동 제어 가능
+    // 스킬 잠금 상태 수동 설정
     public static void SetSkillLock(bool active)
     {
         IsUsingAnySkill = active;
