@@ -94,6 +94,7 @@ public class ServerMotor : MonoBehaviourPun
             snapshotTimer = 0f;
             photonView.RPC("Client_ApplySnapshot", RpcTarget.All,
                 transform.position, transform.rotation, velocityY, isGrounded);
+            //Debug.Log($"[ServerMotor] Snapshot broadcast pos:{transform.position}"); 멀티테스트 오류 확인용
         }
     }
 
@@ -121,6 +122,8 @@ public class ServerMotor : MonoBehaviourPun
         lastH = h;
         lastV = v;
         if (jump) requestJump = true;
+
+        //Debug.Log($"[ServerMotor] Receive input from {info.Sender.ActorNumber} h:{h} v:{v}"); 멀티플레이 오류 확인용
     }
 
     // 서버가 마우스 회전 수신

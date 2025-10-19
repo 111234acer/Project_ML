@@ -28,5 +28,7 @@ public class ClientSender : MonoBehaviourPun
 
         photonView.RPC("Server_ReceiveInput", RpcTarget.MasterClient,
             photonView.ViewID, h, v, jump, dash, Time.time);
+
+        //Debug.Log($"[ClentSender] SendInput h {h} v : {v}");    멀티플레이 테스트 오류 확인용
     }
 }

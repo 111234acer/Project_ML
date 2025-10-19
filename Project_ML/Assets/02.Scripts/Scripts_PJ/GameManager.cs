@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
 
     void SpawnPlayer()
     {
-        if (FindObjectOfType<PlayerTeam>() != null) return;
+        if (PhotonNetwork.LocalPlayer.TagObject != null) return;
 
         // 1) 내 팀 구하기(커스텀 프로퍼티 우선, 없으면 안전한 폴백)
         int myTeam = GetMyTeam(); // 0=RED, 1=BLUE
