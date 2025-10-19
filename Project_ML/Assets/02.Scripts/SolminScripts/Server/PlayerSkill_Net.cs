@@ -41,4 +41,10 @@ public abstract class PlayerSkill_Net : MonoBehaviourPun
     {
         return Mathf.Clamp01((nextUseTime - Time.time) / cooldown);
     }
+
+    // 모든 스킬 종료 시 호출 -> 공격 다시 가능하게
+    protected void EndSkill()
+    {
+        PlayerSkillManager_Net.SetSkillLock(false);
+    }
 }

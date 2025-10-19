@@ -121,7 +121,15 @@ public class ServerMotor : MonoBehaviourPun
         lastH = h;
         lastV = v;
         if (jump) requestJump = true;
+    }
 
-        // dash 신호는 더 이상 사용하지 않음 (루미아 스킬 시스템에서 처리)
+    // 서버가 마우스 회전 수신
+    [PunRPC]
+    public void Server_ReceiveLook(float mouseX,PhotonMessageInfo info)
+    {
+        if(!PhotonNetwork.IsMasterClient) return;
+
+        // Y축 회전 적용(몸체만)
+        transform.Rotate(Vector3.up * mouseX);
     }
 }

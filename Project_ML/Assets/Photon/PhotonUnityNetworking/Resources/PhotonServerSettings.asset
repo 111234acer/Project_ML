@@ -73,6 +73,7 @@ MonoBehaviour:
   - Server_RequestSkillUse
   - Client_SetHealth
   - Server_Heal
+  - Server_ReceiveLook
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

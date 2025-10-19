@@ -43,15 +43,19 @@ public class PlayerLook_Net : MonoBehaviourPun
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        // 좌우 회전 (플레이어 본체)
-        Quaternion targetBodyRotation = Quaternion.Euler(0, mouseX, 0) * transform.rotation;
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetBodyRotation, smoothSpeed * Time.deltaTime);
+        // 서버에 Y축 회전 전달
+        if (Mathf.Abs(mouseX) > 0.001f)
+            photonView.RPC("Server_ReceiveLook", RpcTarget.MasterClient, mouseX);
 
-        // 상하 회전 (카메라)
+        // X축 회전은 로컬 카메라에만 적용
         xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -xRotationLimit, xRotationLimit);
-
-        Quaternion targetCameraRotation = Quaternion.Euler(xRotation, 0, 0);
-        playerCamera.localRotation = Quaternion.Slerp(playerCamera.localRotation, targetCameraRotation, smoothSpeed * Time.deltaTime);
+        xRotation = Mathf.Clamp(xRotation, -xRotation, xRotationLimit);
+        
+        Quaternion targetRot = Quaternion.Euler(xRotation, 0, 0);
+        playerCamera.localRotation = Quaternion.Slerp(
+            playerCamera.localRotation,
+            targetRot,
+            smoothSpeed * Time.deltaTime
+            );
     }
 }
