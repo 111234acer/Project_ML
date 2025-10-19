@@ -30,6 +30,10 @@ public class LumiaUltimate_Net : PlayerSkill_Net
     {
         if (!photonView.IsMine) return;
         if (isTargeting) return;
+
+        // 궁극기 시작 시 기본 공격 잠금
+        PlayerSkillManager_Net.SetSkillLock(true);
+
         StartCoroutine(TargetingRoutine());
     }
 
@@ -65,6 +69,12 @@ public class LumiaUltimate_Net : PlayerSkill_Net
 
             yield return null;
         }
+
+        // 루프가 끝났으니 잠금 해제
+        PlayerSkillManager_Net.SetSkillLock(false);
+
+        // 스킬 끝 처리
+        EndSkill();
     }
 
     [PunRPC]

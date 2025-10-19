@@ -34457,6 +34457,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 3
+  damagePerSecond: 30
+  duration: 5
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &7921442826027030599
 GameObject:
   m_ObjectHideFlags: 0

@@ -586,8 +586,8 @@ MonoBehaviour:
   arrowPrefab: {fileID: 5428142936862869010, guid: fca93bf4255ebe44aa2f6c4bc2535285,
     type: 3}
   minArrowSpeed: 10
-  maxArrowSpeed: 50
-  chargeTime: 1.5
+  maxArrowSpeed: 100
+  chargeTime: 1
   playerCamera: {fileID: 1725391514129727518}
 --- !u!114 &3722403317478618768
 MonoBehaviour:
@@ -637,7 +637,7 @@ MonoBehaviour:
   arrowPrefab: {fileID: 5428142936862869010, guid: fca93bf4255ebe44aa2f6c4bc2535285,
     type: 3}
   firePoint: {fileID: 3358794554718539268}
-  arrowSpeed: 25
+  arrowSpeed: 80
   fireInterval: 0.25
   arrowCount: 3
 --- !u!114 &1829276847453002016
