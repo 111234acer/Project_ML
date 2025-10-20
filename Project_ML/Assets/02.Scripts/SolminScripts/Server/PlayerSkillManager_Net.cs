@@ -28,9 +28,9 @@ public class PlayerSkillManager_Net : MonoBehaviourPun
         if (!photonView.IsMine || IsUsingAnySkill) return;
 
         // 입력 처리
-        if (Input.GetKeyDown(KeyCode.Mouse1)) RequestSkillUse("Mouse1");
-        if (Input.GetKeyDown(KeyCode.LeftShift)) RequestSkillUse("Shift");
-        if (Input.GetKeyDown(KeyCode.R)) RequestSkillUse("R");
+        if (Input.GetKeyDown(KeyCode.Mouse1) && skillMouse1 != null) skillMouse1.RequestUse();
+        if (Input.GetKeyDown(KeyCode.LeftShift) && skillShift != null) skillShift.RequestUse();
+        if (Input.GetKeyDown(KeyCode.R) && skillR != null) skillR.RequestUse();
     }
 
     // 스킬 사용 요청 (클라 → 서버)

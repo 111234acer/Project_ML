@@ -22,7 +22,12 @@ public abstract class PlayerSkill_Net : MonoBehaviourPun
         var mgr = GetComponent<PlayerSkillManager_Net>();
         if (mgr != null)
         {
-            mgr.RequestSkillUse(skillName);
+            string key =
+                (mgr.skillMouse1 == this) ? "Mouse1" :
+                (mgr.skillShift == this) ? "Shift" :
+                (mgr.skillR == this) ? "R" :
+                skillName; // ¿¹¿ÜÀû fallback
+            mgr.RequestSkillUse(key);
         }
     }
 

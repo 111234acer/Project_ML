@@ -30,10 +30,15 @@ public class PlayerController : MonoBehaviour
     public PlayerAttack attack;                                 // PlayerAttack에서 attack 참조
     [HideInInspector] public bool isDashing = false;            // 루미아 캐릭터 대시 중인지 확인
 
+    private AnimationHandler animationHandler;
+    private bool canJump = true;
+    private bool wasGrounded;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;               // 마우스 커서 고정
+        animationHandler = GetComponentInChildren<AnimationHandler>();
     }
 
     void Update()
@@ -64,20 +69,42 @@ public class PlayerController : MonoBehaviour
 
     void GroundCheck()
     {
-        Vector3 spherePos = new Vector3(controller.bounds.center.x,
-                                        controller.bounds.min.y + 0.05f,
-                                        controller.bounds.center.z);
+        wasGrounded = isGrounded;
+
+        Vector3 spherePos = new Vector3(controller.bounds.center.x, controller.bounds.min.y + 0.05f, controller.bounds.center.z);
         float checkRadius = Mathf.Max(controller.radius * 0.9f, 0.2f);
         isGrounded = Physics.CheckSphere(spherePos, checkRadius, groundMask);
 
-        if (isGrounded && velocity.y < 0)
-            velocity.y = -2f; // 바닥에 붙도록 살짝 눌러줌
+        if (!wasGrounded && isGrounded)
+        {
+            animationHandler.LandTrigger();
+            if (!Input.GetButton("Jump"))
+            {
+                canJump = true;
+            }
+        }
+        else if (wasGrounded && !isGrounded)
+        {
+            animationHandler.OnFall();
+            canJump = false;
+        }
+        else
+        {
+            if (isGrounded && Input.GetButtonUp("Jump"))
+            {
+                canJump = true;
+            }
+            if (isGrounded && velocity.y < 0)
+                velocity.y = -2f; // 바닥에 붙도록 살짝 눌러줌
+        }
     }
 
     void HandleJumpInput()
     {
-        if (Input.GetButtonDown("Jump"))
-            jumpBufferCounter = jumpBufferTime;
+        if (Input.GetButtonDown("Jump") && isGrounded && canJump)
+        {
+            jumpBufferCounter = jumpBufferTime;            
+        }
         else
             jumpBufferCounter = Mathf.Max(jumpBufferCounter - Time.deltaTime, 0);
 
@@ -85,6 +112,8 @@ public class PlayerController : MonoBehaviour
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity); // 점프 속도 계산
             jumpBufferCounter = 0; // 사용했으니 초기화
+            canJump = false;
+            animationHandler.JumpTrigger();
         }
     }
 
@@ -102,6 +131,8 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
+        animationHandler.OnMovement(horizontal, vertical);
+        
         Vector3 move = transform.right * horizontal + transform.forward * vertical;
         controller.Move(move * moveSpeed * Time.deltaTime); 
 

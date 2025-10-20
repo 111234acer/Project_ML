@@ -14,6 +14,14 @@ public class LumiaAttack : PlayerAttack
     [Header("References")]
     public Camera playerCamera;            // 플레이어 카메라 (MainCamera)
 
+    private AnimationHandler animationHandler;
+
+
+    private void Awake()
+    {
+        animationHandler = GetComponentInChildren<AnimationHandler>();
+    }
+
     private void Update()
     {
         // 공격 버튼 누르고 있으면 충전
@@ -21,7 +29,7 @@ public class LumiaAttack : PlayerAttack
         {
             currentCharge += Time.deltaTime;
             currentCharge = Mathf.Min(currentCharge, chargeTime);
-            
+            animationHandler.OnAim();
         }
 
         // 버튼 떼면 발사
@@ -29,12 +37,13 @@ public class LumiaAttack : PlayerAttack
         {
             Attack();
             UpdateFireTime();
+            animationHandler.ShootTrigger();
         }
     }
 
     public override void Attack()
     {
-        if (arrowPrefab == null || playerCamera == null) return;
+        if (arrowPrefab == null || playerCamera == null) return;        
 
         // 발사 방향 = 카메라 중앙
         Vector3 shootDir = playerCamera.transform.forward;
