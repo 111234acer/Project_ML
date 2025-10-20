@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: crack 02
+  m_Name: trail
   m_Shader: {fileID: 4800000, guid: a217af7a275341146beb0c40473bf188, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -77,7 +77,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Main_Tex:
-        m_Texture: {fileID: 2800000, guid: 192a4f8cdb14d1c4cb1fbe41e7fff66a, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6b3bedb793727844aa3353417d1a941d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -146,8 +146,8 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Intencity: 1
-    - _Intensity: 35
-    - _InvFade: 0.01
+    - _Intensity: 5
+    - _InvFade: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -191,5 +191,5 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SubColor: {r: 1, g: 1, b: 1, a: 0}
     - _Sub_Speed: {r: 0, g: 0, b: 0, a: 0}
-    - _TintColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _TintColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
   m_BuildTextureStacks: []
