@@ -15,6 +15,7 @@ public class AnimationHandler : MonoBehaviour
     private static readonly int hashIsAim = Animator.StringToHash("isAim");
     private static readonly int hashShootT = Animator.StringToHash("shootTrigger");
     private static readonly int hashSkill1T = Animator.StringToHash("skillTrigger1");
+    private static readonly int hashSkill2T = Animator.StringToHash("skillTrigger2");
 
     private void Awake()
     {
@@ -80,5 +81,11 @@ public class AnimationHandler : MonoBehaviour
     public void Skill1Trigger()
     {
         animator.SetTrigger(hashSkill1T);
+    }
+
+    public void Skill2Trigger()
+    {
+        animator.SetTrigger(hashSkill2T);
+        
     }
 }

@@ -27,7 +27,10 @@ public class PlayerSkillManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            skill2.Use();
+            if(skill2.Use())
+            {
+                animationHandler.Skill2Trigger();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.R))
