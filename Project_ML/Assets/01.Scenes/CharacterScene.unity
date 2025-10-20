@@ -2336,7 +2336,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.8, z: 0}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!1 &1872703584500005758
 GameObject:
   m_ObjectHideFlags: 0
@@ -3862,12 +3862,12 @@ PrefabInstance:
     - target: {fileID: 2609864076695859039, guid: 3c67c2dce0a623b4a9845e242942db55,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 4.509
       objectReference: {fileID: 0}
     - target: {fileID: 2609864076695859039, guid: 3c67c2dce0a623b4a9845e242942db55,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -49.8
+      value: -48.616
       objectReference: {fileID: 0}
     - target: {fileID: 2609864076695859039, guid: 3c67c2dce0a623b4a9845e242942db55,
         type: 3}
@@ -4278,7 +4278,7 @@ Transform:
   m_GameObject: {fileID: 7249469375072033903}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.34, y: 5, z: -49.64}
+  m_LocalPosition: {x: -0.34, y: 6.405, z: -47.36}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4441,12 +4441,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55594d39885bef0408b9b588e725559a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 3244847162687991102}
-  playerController: {fileID: 8391932504316682478}
-  playerHealth: {fileID: 3122853484239432869}
-  speedDampTime: 0.1
-  jumpUpwardThreshold: 0.1
-  fallDownThreshold: -0.1
 --- !u!95 &8391932504316682480
 Animator:
   serializedVersion: 5
