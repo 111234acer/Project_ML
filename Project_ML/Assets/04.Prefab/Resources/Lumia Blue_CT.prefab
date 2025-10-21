@@ -499,6 +499,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   positionLerpSpeed: 10
+  selfLerpMultiplier: 3
   rotationLerpSpeed: 10
 --- !u!114 &8788910501507704520
 MonoBehaviour:
