@@ -23,10 +23,12 @@ public class PlayerHealth : MonoBehaviour
     public float respawnInvincibleTime = 2f;    // 리스폰 후 무적 유지 시간
     private bool isInvincible = false;          // 현재 무적 상태 여부
 
+    private AnimationHandler animationHandler;
+
     private void Start()
     {
         currentHealth = MaxHealth;                                                                     // 게임 시작 시 체력을 최대 체력으로 초기화
-        //Debug.Log($"{characterName} 시작 ! 체력 : {currentHealth}, 공격력 : {attackDamage}");          // 로그로 캐릭터 시작 상태 출력
+        animationHandler = GetComponentInChildren<AnimationHandler>();
     }
 
     public void TakeDamage(int damage) // 데미지 함수
@@ -68,9 +70,7 @@ public class PlayerHealth : MonoBehaviour
         if(isDead) return;      // 이미 죽어있으면 중복 실행 방지
         isDead = true;
 
-        Debug.Log($"{characterName} 사망!");
-
-        // 사망 에니메이션 추가 예정
+        animationHandler.OnDead();
 
 
         // 이동 공격 입력 차단
@@ -107,6 +107,8 @@ public class PlayerHealth : MonoBehaviour
         // 체력 리셋
         currentHealth = MaxHealth;
         isDead = false;
+
+        animationHandler.Respawn();
 
         Debug.Log($"{characterName} 리스폰 완료 → 체력 {currentHealth}");
 

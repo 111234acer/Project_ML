@@ -13,13 +13,16 @@ public abstract class PlayerSkill : MonoBehaviour
     public abstract void Activate();
 
     // 스킬 사용 함수 (쿨타임 체크)
-    public void Use()
+    public bool Use()
     {
         if(Time.time >= nextUseTime)
         {
             Activate();
             nextUseTime = Time.time + cooldown;
+            return true;
         }
+
+        return false;
     }
 
     // 쿨타임 진행 비율 (UI)
