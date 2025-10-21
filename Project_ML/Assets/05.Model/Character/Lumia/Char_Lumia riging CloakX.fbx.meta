@@ -13,7 +13,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Lumia_face
-    second: {fileID: 2100000, guid: 69306edb2e2c6574ca63bd1f59d8a080, type: 2}
+    second: {fileID: 2100000, guid: 2bc06b64a43c9b94e938a96a87badf29, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
