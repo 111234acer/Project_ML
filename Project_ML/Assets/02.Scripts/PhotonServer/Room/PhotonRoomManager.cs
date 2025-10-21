@@ -104,7 +104,6 @@ public class PhotonRoomManager : MonoBehaviourPunCallbacks
         // 만들어진 방에 입장하는 사람은 이 씬에서 OnJoinedRoom이 호출된다.
         if(PhotonNetwork.IsMasterClient)
         {
-        Debug.Log("예아...");
             InitSelTeamProps();
             InitReadyProps();
         }

@@ -8,22 +8,21 @@ using Photon.Pun;
 public class ServerMotor : MonoBehaviourPun
 {
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;            // 이동 속도
-    public float gravity = -20f;            // 중력 값
+    public float moveSpeed = 5f;
+    public float gravity = -20f;
 
     [Header("Jump Settings")]
-    public float jumpHeight = 2f;           // 점프 높이
-    public float fallMultiplier = 2.5f;     // 하강 중 중력 배수
-    public float jumpBufferTime = 0.1f;     // 점프 입력 버퍼 시간
+    public float jumpHeight = 2f;
+    public float fallMultiplier = 2.5f;
+    public float jumpBufferTime = 0.1f;
 
     [Header("Ground Settings")]
-    public LayerMask groundMask;            // 지면 레이어
+    public LayerMask groundMask;
 
     [Header("Snapshot Settings")]
-    [Tooltip("서버가 상태를 방송하는 주기 (1/15 = 15Hz 권장)")]
+    [Tooltip("서버가 상태를 방송하는 주기")]
     public float snapshotInterval = 1f / 15f;
 
-    // 내부 구성요소
     private CharacterController controller;
     private PlayerHealth_Server health;
 
@@ -35,6 +34,9 @@ public class ServerMotor : MonoBehaviourPun
     private bool isGrounded;
     private float snapshotTimer;
 
+    // 서버가 유지하는 회전값
+    private float serverYaw = 0f;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -43,10 +45,10 @@ public class ServerMotor : MonoBehaviourPun
 
     private void Update()
     {
-        if (!PhotonNetwork.IsMasterClient) return; // 서버만 실행
+        if (!PhotonNetwork.IsMasterClient) return;
         if (health != null && health.isDead) return;
 
-        // 점프 입력 버퍼 처리
+        // 점프 입력 버퍼
         if (requestJump)
         {
             jumpBufferCounter = jumpBufferTime;
@@ -60,19 +62,21 @@ public class ServerMotor : MonoBehaviourPun
 
     private void FixedUpdate()
     {
-        if (!PhotonNetwork.IsMasterClient) return; // 서버만 실행
+        if (!PhotonNetwork.IsMasterClient) return;
         if (health != null && health.isDead) return;
 
         GroundCheck();
+
+        // 서버 회전값 적용 (yaw 기준)
+        transform.rotation = Quaternion.Euler(0f, serverYaw, 0f);
 
         // 이동 방향 계산
         Vector3 move = transform.right * lastH + transform.forward * lastV;
         if (move.sqrMagnitude > 1f) move.Normalize();
 
-        // 이동
         controller.Move(move * moveSpeed * Time.fixedDeltaTime);
 
-        // 점프 처리
+        // 점프
         if (isGrounded && jumpBufferCounter > 0f)
         {
             velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
@@ -85,16 +89,15 @@ public class ServerMotor : MonoBehaviourPun
         else
             velocityY += gravity * Time.fixedDeltaTime;
 
-        controller.Move(new Vector3(0f, velocityY, 0f) * Time.fixedDeltaTime);
+        controller.Move(Vector3.up * velocityY * Time.fixedDeltaTime);
 
-        // 상태 스냅샷 전송 (15Hz)
+        // 스냅샷 주기 전송 (15Hz)
         snapshotTimer += Time.fixedDeltaTime;
         if (snapshotTimer >= snapshotInterval)
         {
             snapshotTimer = 0f;
             photonView.RPC("Client_ApplySnapshot", RpcTarget.All,
                 transform.position, transform.rotation, velocityY, isGrounded);
-            //Debug.Log($"[ServerMotor] Snapshot broadcast pos:{transform.position}"); 멀티테스트 오류 확인용
         }
     }
 
@@ -103,36 +106,30 @@ public class ServerMotor : MonoBehaviourPun
         Vector3 center = controller.bounds.center;
         Vector3 spherePos = new Vector3(center.x, controller.bounds.min.y + 0.05f, center.z);
         float checkRadius = Mathf.Max(controller.radius * 0.9f, 0.2f);
-
         isGrounded = Physics.CheckSphere(spherePos, checkRadius, groundMask);
         if (isGrounded && velocityY < 0f)
-            velocityY = -2f; // 바닥에 붙이기
+            velocityY = -2f;
     }
 
-    // ===== 클라이언트 입력 수신 (서버만 호출) =====
+    // ===== 클라이언트 입력 수신 =====
     [PunRPC]
     public void Server_ReceiveInput(int viewID, float h, float v, bool jump, bool dash, float clientTime, PhotonMessageInfo info)
     {
         if (!PhotonNetwork.IsMasterClient) return;
-        if (photonView.ViewID != viewID) return; // 내 플레이어만
+        if (photonView.ViewID != viewID) return;
 
         h = Mathf.Clamp(h, -1f, 1f);
         v = Mathf.Clamp(v, -1f, 1f);
-
         lastH = h;
         lastV = v;
         if (jump) requestJump = true;
-
-        //Debug.Log($"[ServerMotor] Receive input from {info.Sender.ActorNumber} h:{h} v:{v}"); 멀티플레이 오류 확인용
     }
 
-    // 서버가 마우스 회전 수신
+    // ===== 클라이언트에서 회전값 수신 (절대 yaw) =====
     [PunRPC]
-    public void Server_ReceiveLook(float mouseX,PhotonMessageInfo info)
+    public void Server_ReceiveYaw(float yaw)
     {
-        if(!PhotonNetwork.IsMasterClient) return;
-
-        // Y축 회전 적용(몸체만)
-        transform.Rotate(Vector3.up * mouseX);
+        if (!PhotonNetwork.IsMasterClient) return;
+        serverYaw = yaw;
     }
 }

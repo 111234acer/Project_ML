@@ -190,7 +190,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 69306edb2e2c6574ca63bd1f59d8a080, type: 2}
+  - {fileID: 2100000, guid: 91dbd30df2ac76b45b52d199abd48446, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -498,7 +498,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1c175fbff9782241b8e89a6f1fa0bb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interpolationDelay: 0.1
   positionLerpSpeed: 10
+  selfLerpMultiplier: 3
   rotationLerpSpeed: 10
 --- !u!114 &8788910501507704520
 MonoBehaviour:

@@ -74,6 +74,7 @@ MonoBehaviour:
   - Client_SetHealth
   - Server_Heal
   - Server_ReceiveLook
+  - Server_ReceiveYaw
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
