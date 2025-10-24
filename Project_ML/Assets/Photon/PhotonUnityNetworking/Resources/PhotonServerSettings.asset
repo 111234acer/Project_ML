@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
   AppSettings:
-    AppIdRealtime: f359c94e-b6c0-4d77-90c0-2cf6a21e1780
+    AppIdRealtime: 9f8a0f10-3075-42c1-87e7-7edb79f7e1ca
     AppIdFusion: 
     AppIdChat: 
     AppIdVoice: 
@@ -34,47 +34,28 @@ MonoBehaviour:
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - Attack2
   - ClickRpc
+  - Client_ApplySnapshot
+  - Client_OnAttack
+  - Client_SetHealth
   - DestroyRpc
   - DestroySpaceship
   - Fire
-  - RespawnSpaceship
-  - SyncCaptureUI
-  - ConfirmTeamAssignment
-  - RequestTeamAssignment
   - LogMsg
-  - GameStart
-  - Attack
-  - InitPosition
-  - Attack2
+  - RespawnSpaceship
   - RPC_Heal
-  - TakeDamage
-  - RPC_UseSkill
-  - RPC_SetTeam
-  - RPC_CommitUltCooldown
-  - RPC_UseUlt_Start
   - RPC_RespawnAt
-  - Client_ApplySnapshot
-  - Server_ReceiveInput
-  - Client_OnDeath
-  - Client_OnRespawn
-  - Client_UpdateHealth
-  - Server_TakeDamage
-  - Client_OnAttack
-  - Server_Attack
-  - Client_OnSkillUsed
-  - Server_UseSkill
-  - Server_SpawnAOE
-  - Initialize
-  - RPC_OnDeath
-  - RPC_OnRespawn
-  - RPC_SyncHealth
+  - RPC_SetTeam
+  - RPC_UseSkill
   - Server_ApplyDamage
-  - Server_RequestSkillUse
-  - Client_SetHealth
+  - Server_Attack
   - Server_Heal
-  - Server_ReceiveLook
+  - Server_ReceiveInput
   - Server_ReceiveYaw
+  - Server_RequestSkillUse
+  - Server_SpawnAOE
+  - TakeDamage
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
+  ShowSettings: 1
   DevRegionSetOnce: 1
