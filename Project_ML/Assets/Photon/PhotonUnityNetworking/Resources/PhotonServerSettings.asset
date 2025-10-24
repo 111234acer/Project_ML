@@ -56,6 +56,7 @@ MonoBehaviour:
   - Server_RequestSkillUse
   - Server_SpawnAOE
   - TakeDamage
+  - RPC_NotifySelectionChanged
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

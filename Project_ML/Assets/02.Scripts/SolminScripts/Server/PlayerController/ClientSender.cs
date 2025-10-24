@@ -4,7 +4,7 @@ using Photon.Pun;
 [DisallowMultipleComponent]
 public class ClientSender : MonoBehaviourPun
 {
-    public float sendInterval = 1f / 30f;
+    public float sendInterval = 1f / 60f;
     private float timer;
 
     private void Update()
