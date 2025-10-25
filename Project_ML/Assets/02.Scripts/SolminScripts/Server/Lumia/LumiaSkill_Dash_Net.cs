@@ -11,18 +11,24 @@ public class LumiaSkill_Dash_Net : PlayerSkill_Net
     private CharacterController controller;
     private PlayerHealth_Server health;
 
+    private AnimationHandler animationHandler;
+
     private void Awake()
     {
         skillName = "루미아 대시";
         cooldown = 6f;
         controller = GetComponent<CharacterController>();
         health = GetComponent<PlayerHealth_Server>();
+
+        animationHandler = GetComponentInChildren<AnimationHandler>();
     }
 
     public override void Activate()
     {
         if (PhotonNetwork.IsMasterClient && !health.isDead)
             StartCoroutine(DashRoutine());
+
+        photonView.RPC("Client_Anim_Skill2", RpcTarget.All);
     }
 
     private IEnumerator DashRoutine()
@@ -42,5 +48,11 @@ public class LumiaSkill_Dash_Net : PlayerSkill_Net
             elapsed += Time.deltaTime;
             yield return null;
         }
+    }
+
+    [PunRPC] 
+    void Client_Anim_Skill2() 
+    { 
+        animationHandler?.Skill2Trigger(); 
     }
 }

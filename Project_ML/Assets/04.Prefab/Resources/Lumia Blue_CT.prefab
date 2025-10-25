@@ -571,7 +571,7 @@ Transform:
   m_GameObject: {fileID: 1836488518108666450}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.4299996, z: 0.496}
+  m_LocalPosition: {x: 0, y: 1.18, z: 0.496}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1587,7 +1587,7 @@ Transform:
   m_GameObject: {fileID: 4892110024773268679}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.53, z: -0.015}
+  m_LocalPosition: {x: 0, y: 1.28, z: -0.015}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1628,7 +1628,7 @@ Transform:
   m_GameObject: {fileID: 4930222119191757182}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.0849997, z: 0}
+  m_LocalPosition: {x: 0, y: 1.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2160,6 +2160,7 @@ GameObject:
   - component: {fileID: 164499934401712641}
   - component: {fileID: 4407586078869913233}
   - component: {fileID: 1829276847453002016}
+  - component: {fileID: -7237775172243841420}
   m_Layer: 0
   m_Name: Lumia Blue_CT
   m_TagString: Player
@@ -2214,7 +2215,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: -0.18, z: 0}
+  m_Center: {x: 0, y: 0.93, z: 0}
 --- !u!136 &7922864855316589072
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2237,7 +2238,7 @@ CapsuleCollider:
   m_Radius: 0.4
   m_Height: 1.7
   m_Direction: 1
-  m_Center: {x: 0, y: -0.18, z: 0}
+  m_Center: {x: 0, y: 0.93, z: 0}
 --- !u!95 &2582658466369958352
 Animator:
   serializedVersion: 5
@@ -2247,8 +2248,8 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7019567109801188797}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 4866a31955a301343a41786a89ea3e92, type: 3}
+  m_Controller: {fileID: 9100000, guid: 7e06fc3dd4d819e42885d478441539d3, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2488,6 +2489,18 @@ MonoBehaviour:
   damagePerSecond: 30
   playerCamera: {fileID: 1725391514129727518}
   player: {fileID: 1234830103252394173}
+--- !u!114 &-7237775172243841420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7019567109801188797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78fd2be8f4d0f0146bbf2723f34445c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7386752850970557694
 GameObject:
   m_ObjectHideFlags: 0

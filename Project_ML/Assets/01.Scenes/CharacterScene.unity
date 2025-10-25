@@ -300,7 +300,7 @@ PrefabInstance:
     - target: {fileID: 358654297582020666, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 4223
+      value: 4226
       objectReference: {fileID: 0}
     - target: {fileID: 1501305322398937430, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
@@ -312,6 +312,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1369208924}
+    - target: {fileID: 6041104442408205334, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
+        type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6621696653926630918, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
         type: 3}
       propertyPath: m_LocalPosition.x

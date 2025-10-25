@@ -11,16 +11,22 @@ public class LumiaSkill_StormArrow_Net : PlayerSkill_Net
     public float fireInterval = 0.3f;
     public int arrowCount = 3;
 
+    private AnimationHandler animationHandler;
+
     private void Awake()
     {
         skillName = "ÆøÇ³ È­»ì";
         cooldown = 6f;
+
+        animationHandler = GetComponentInChildren<AnimationHandler>();
     }
 
     public override void Activate()
     {
         if (PhotonNetwork.IsMasterClient)
             StartCoroutine(FireRoutine());
+
+        photonView.RPC("Client_Anim_Skill1", RpcTarget.All);
     }
 
     private IEnumerator FireRoutine()
@@ -34,5 +40,11 @@ public class LumiaSkill_StormArrow_Net : PlayerSkill_Net
 
             yield return new WaitForSeconds(fireInterval);
         }
+    }
+
+    [PunRPC] 
+    void Client_Anim_Skill1() 
+    { 
+        animationHandler?.Skill1Trigger();
     }
 }

@@ -29,6 +29,8 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
 
     float invincibleUntil;
 
+    private AnimationHandler animationHandler;
+
     void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -37,6 +39,8 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
         if (deathToggleColliders == null || deathToggleColliders.Length == 0)
             deathToggleColliders = GetComponentsInChildren<Collider>(true);
         currentHealth = maxHealth;
+
+        animationHandler = GetComponentInChildren<AnimationHandler>();
     }
     public override void OnEnable()
     {
@@ -99,6 +103,8 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
         if (isDead) return;
         isDead = true;
 
+        photonView.RPC("Client_Anim_Dead", RpcTarget.All);
+
         SetPassThrough(true);
         if (characterController) characterController.enabled = false;
 
@@ -118,6 +124,8 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
         if (characterController) characterController.enabled = true;
 
         StartCoroutine(Invincible(Mathf.Max(invuln, respawnInvincibleTime)));
+
+        photonView.RPC("Client_Anim_Respawn", RpcTarget.All);
     }
 
     IEnumerator Invincible(float dur)
@@ -161,4 +169,16 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
     public float GetHealthPercent() => (float)currentHealth / Mathf.Max(1, maxHealth);
     public int GetAttackDamage() => attackDamage;
     public bool IsDead() => isDead;
+
+    [PunRPC] 
+    void Client_Anim_Dead() 
+    { 
+        animationHandler?.OnDead();
+    }
+
+    [PunRPC]
+    void Client_Anim_Respawn()
+    { 
+        animationHandler?.Respawn();
+    }
 }
