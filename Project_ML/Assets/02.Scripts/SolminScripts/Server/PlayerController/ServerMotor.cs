@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime; // [SERVER-ONLY FIX] 마스터 변경 콜백용
 
 [RequireComponent(typeof(CharacterController))]
 [DisallowMultipleComponent]
-public class ServerMotor : MonoBehaviourPun
+public class ServerMotor : MonoBehaviourPunCallbacks // [SERVER-ONLY FIX] 콜백 받기 위해 변경
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
@@ -21,7 +22,7 @@ public class ServerMotor : MonoBehaviourPun
 
     [Header("Snapshot Settings")]
     [Tooltip("서버가 상태를 방송하는 주기")]
-    public float snapshotInterval = 1f / 15f;
+    public float snapshotInterval = 1f / 30f; // [TUNE] 15Hz -> 30Hz 로 상향
 
     private CharacterController controller;
     private PlayerHealth_Server health;
@@ -40,6 +41,9 @@ public class ServerMotor : MonoBehaviourPun
     private AnimationHandler animationHandler;
     private bool prevGrounded;
 
+    // [SERVER-ONLY FIX] 마스터가 아니면 스크립트 전체 비활성화
+    private bool ServerActive => PhotonNetwork.IsMasterClient;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -47,9 +51,36 @@ public class ServerMotor : MonoBehaviourPun
         animationHandler = GetComponentInChildren<AnimationHandler>();
     }
 
+    private void OnEnable()
+    {
+        // [SERVER-ONLY FIX] 마스터가 아니면 즉시 끔
+        if (!ServerActive)
+        {
+            enabled = false;
+            return;
+        }
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        // [MASTER SWITCH SAFE]
+        // 마스터가 바뀌면: 새 마스터인 클라에서는 활성화, 아닌 클라에서는 비활성화
+        if (PhotonNetwork.IsMasterClient)
+        {
+            enabled = true;
+            // 스냅샷 타이머 초기화(안전)
+            snapshotTimer = 0f;
+        }
+        else
+        {
+            enabled = false;
+        }
+    }
+
     private void Update()
     {
-        if (!PhotonNetwork.IsMasterClient) return;
+        // [SERVER-ONLY GUARD]
+        if (!ServerActive) return;
         if (health != null && health.isDead) return;
 
         // 점프 입력 버퍼
@@ -66,7 +97,8 @@ public class ServerMotor : MonoBehaviourPun
 
     private void FixedUpdate()
     {
-        if (!PhotonNetwork.IsMasterClient) return;
+        // [SERVER-ONLY GUARD]
+        if (!ServerActive) return;
         if (health != null && health.isDead) return;
 
         GroundCheck();
@@ -96,7 +128,7 @@ public class ServerMotor : MonoBehaviourPun
 
         controller.Move(Vector3.up * velocityY * Time.fixedDeltaTime);
 
-        // 스냅샷 주기 전송 (15Hz)
+        // 스냅샷 주기 전송 (기본 30Hz)
         snapshotTimer += Time.fixedDeltaTime;
         if (snapshotTimer >= snapshotInterval)
         {
@@ -124,7 +156,10 @@ public class ServerMotor : MonoBehaviourPun
     [PunRPC]
     public void Server_ReceiveInput(int viewID, float h, float v, bool jump, bool dash, float clientTime, PhotonMessageInfo info)
     {
-        if (!PhotonNetwork.IsMasterClient) return;
+        // [SERVER-ONLY GUARD]
+        if (!ServerActive) return;
+
+        // [SAFETY] 다른 플레이어의 View로 온 입력은 무시
         if (photonView.ViewID != viewID) return;
 
         h = Mathf.Clamp(h, -1f, 1f);
@@ -140,28 +175,12 @@ public class ServerMotor : MonoBehaviourPun
     [PunRPC]
     public void Server_ReceiveYaw(float yaw)
     {
-        if (!PhotonNetwork.IsMasterClient) return;
+        if (!ServerActive) return;
         serverYaw = yaw;
     }
 
-    [PunRPC] 
-    void Client_Anim_Move(float h, float v) 
-    { 
-        animationHandler?.OnMovement(h, v);
-    }
-    [PunRPC]
-    void Client_Anim_Jump() 
-    { 
-        animationHandler?.JumpTrigger();
-    }
-    [PunRPC] 
-    void Client_Anim_Land() 
-    { 
-        animationHandler?.LandTrigger();
-    }
-    [PunRPC]
-    void Client_Anim_Fall()
-    {
-        animationHandler?.OnFall();
-    }
+    [PunRPC] void Client_Anim_Move(float h, float v) { animationHandler?.OnMovement(h, v); }
+    [PunRPC] void Client_Anim_Jump() { animationHandler?.JumpTrigger(); }
+    [PunRPC] void Client_Anim_Land() { animationHandler?.LandTrigger(); }
+    [PunRPC] void Client_Anim_Fall() { animationHandler?.OnFall(); }
 }

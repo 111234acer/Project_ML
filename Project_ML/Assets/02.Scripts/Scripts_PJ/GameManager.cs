@@ -26,45 +26,56 @@ public class GameManager : MonoBehaviour
     {
         SpawnHUD();
 
-        SpawnPlayer();
+        // [SPAWN SAFETY] 스폰 후 내 플레이어 참조를 반환받아 HUD 바인딩까지 한 번에
+        var myPlayer = SpawnPlayer();
 
-        BindHUD();
+        BindHUD(myPlayer);
     }
+
     void SpawnHUD()
     {
         if (hudInstance == null && hudCanvasPrefab != null)
             hudInstance = Instantiate(hudCanvasPrefab);
     }
 
-    void SpawnPlayer()
+    GameObject SpawnPlayer()
     {
-        if (PhotonNetwork.LocalPlayer.TagObject != null) return;
+        if (PhotonNetwork.LocalPlayer.TagObject != null)
+            return PhotonNetwork.LocalPlayer.TagObject as GameObject;
 
-        // 1) 내 팀 구하기(커스텀 프로퍼티 우선, 없으면 안전한 폴백)
         int myTeam = GetMyTeam(); // 0=RED, 1=BLUE
 
-        // 2) 팀별 스폰 영역 선택
+        // 팀별 스폰 영역 선택
         BoxCollider area = (myTeam == 0) ? redSpawnPoint : blueSpawnPoint;
         if (area == null) area = redSpawnPoint ?? blueSpawnPoint;
 
-        // 3) 영역 안 좌표를 먼저 뽑아서 그 위치로 네트워크 생성
         Vector3 spawnPos = (area != null) ? RandomPointInBox(area) : transform.position;
         Quaternion spawnRot = (myTeam == 0)
-            ? Quaternion.LookRotation(-Vector3.forward, Vector3.up)   // RED 기본 방향
-            : Quaternion.LookRotation(Vector3.forward, Vector3.up);  // BLUE 기본 방향
+            ? Quaternion.LookRotation(-Vector3.forward, Vector3.up)
+            : Quaternion.LookRotation(Vector3.forward, Vector3.up);
 
         var playerObj = PhotonNetwork.Instantiate(playerPrefab.name, spawnPos, spawnRot);
 
-        // 4) 플레이어 컴포넌트에 팀 주입(AssignTeam()이 로컬 계산이면 건너뛰고 직접 세팅)
-        var player = playerObj.GetComponent<PlayerTeam>();
-        if (player != null)
-        {
-            player.SetTeamNetworked(myTeam); //핵심: RpcTarget.AllBuffered로 모든 클라에 동일 반영
-        }
+        // [SPAWN SAFETY] 로컬 클라에서는 ServerMotor 강제 비활성화 (이중 보호)
+        var sm = playerObj.GetComponent<ServerMotor>();
+        if (sm != null && !PhotonNetwork.IsMasterClient)
+            sm.enabled = false;
+
+        // 팀 주입
+        var playerTeam = playerObj.GetComponent<PlayerTeam>();
+        if (playerTeam != null)
+            playerTeam.SetTeamNetworked(myTeam);
+
+        // 내 플레이어 캐시
+        PhotonNetwork.LocalPlayer.TagObject = playerObj;
 
         var cap = FindObjectOfType<CapturePointManager>();
-        if (cap != null) cap.myPlayer = player;
+        if (cap != null) cap.myPlayer = playerTeam;
+
+        // 다른 플레이어 HP바 바인딩은 나중에 Join/Instantiate 이벤트에서 개별 처리 가능
+        return playerObj;
     }
+
     public void BindOtherHPBar(GameObject player)
     {
         if (HealthBar == null || mainCanvas == null || player == null) return;
@@ -84,12 +95,11 @@ public class GameManager : MonoBehaviour
         var hpUI = go.GetComponent<OtherPlayerHealthBar>();
         if (hpUI == null) return;
 
-        hpUI.playerHealth = ph; // 타입: PlayerHealth_Copy
+        hpUI.playerHealth = ph;
         Transform head = player.transform.Find("Headup");
         hpUI.target = (head != null) ? head : player.transform;
         hpUI.cam = Camera.main; // (없어도 스크립트가 지연 할당)
     }
-
 
     int GetMyTeam()
     {
@@ -106,7 +116,6 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // 폴백: 배우번호 기반 균등 분배(중복 최소화)
         int actor = (lp != null) ? lp.ActorNumber : Random.Range(1, 9999);
         return (actor % 2 == 0) ? 0 : 1; // 짝수=RED(0), 홀수=BLUE(1)
     }
@@ -115,25 +124,21 @@ public class GameManager : MonoBehaviour
     {
         Vector3 c = box.center;
         Vector3 e = box.size * 0.5f;
-        Vector3 local = new Vector3(Random.Range(-e.x, e.x),0f, Random.Range(-e.z, e.z));
+        Vector3 local = new Vector3(Random.Range(-e.x, e.x), 0f, Random.Range(-e.z, e.z));
         return box.transform.TransformPoint(c + local);
     }
 
-    void BindHUD()
+    // [BIND FIX] 내 플레이어 기준으로 HUD 연결 (기존 FindObjectOfType 의 모호성 제거)
+    void BindHUD(GameObject myPlayerObj)
     {
-        if (hudInstance == null) return;
+        if (hudInstance == null || myPlayerObj == null) return;
 
-        var player = FindObjectOfType<PlayerTeam>();
-        if (player == null) return;
+        var hp = myPlayerObj.GetComponent<PlayerHealth_Server>();
+        var mgr = myPlayerObj.GetComponent<PlayerSkillManager_Net>();
 
-        var hp = player.GetComponent<PlayerHealth_Server>();
-        var mgr = player.GetComponent<PlayerSkillManager_Net>();
-
-        // PlayerHUD 연결
         var pHud = hudInstance.GetComponentInChildren<PlayerHUD>(true);
         if (pHud != null) pHud.Init(hp, mgr);
 
-        // Capture UI 연결
         var cap = FindObjectOfType<CapturePointManager>();
         var capUI = hudInstance.GetComponentInChildren<CaptureUIManager>(true);
         if (capUI != null) capUI.Init(cap);
