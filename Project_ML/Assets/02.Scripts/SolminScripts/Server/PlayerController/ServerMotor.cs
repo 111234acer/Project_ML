@@ -37,10 +37,14 @@ public class ServerMotor : MonoBehaviourPun
     // 서버가 유지하는 회전값
     private float serverYaw = 0f;
 
+    private AnimationHandler animationHandler;
+    private bool prevGrounded;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
         health = GetComponent<PlayerHealth_Server>();
+        animationHandler = GetComponentInChildren<AnimationHandler>();
     }
 
     private void Update()
@@ -80,6 +84,7 @@ public class ServerMotor : MonoBehaviourPun
         if (isGrounded && jumpBufferCounter > 0f)
         {
             velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            photonView.RPC("Client_Anim_Jump", RpcTarget.All);
             jumpBufferCounter = 0f;
         }
 
@@ -109,6 +114,10 @@ public class ServerMotor : MonoBehaviourPun
         isGrounded = Physics.CheckSphere(spherePos, checkRadius, groundMask);
         if (isGrounded && velocityY < 0f)
             velocityY = -2f;
+
+        if (!prevGrounded && isGrounded) photonView.RPC("Client_Anim_Land", RpcTarget.All);
+        if (prevGrounded && !isGrounded) photonView.RPC("Client_Anim_Fall", RpcTarget.All);
+        prevGrounded = isGrounded;
     }
 
     // ===== 클라이언트 입력 수신 =====
@@ -123,6 +132,8 @@ public class ServerMotor : MonoBehaviourPun
         lastH = h;
         lastV = v;
         if (jump) requestJump = true;
+
+        photonView.RPC("Client_Anim_Move", RpcTarget.All, lastH, lastV);
     }
 
     // ===== 클라이언트에서 회전값 수신 (절대 yaw) =====
@@ -131,5 +142,26 @@ public class ServerMotor : MonoBehaviourPun
     {
         if (!PhotonNetwork.IsMasterClient) return;
         serverYaw = yaw;
+    }
+
+    [PunRPC] 
+    void Client_Anim_Move(float h, float v) 
+    { 
+        animationHandler?.OnMovement(h, v);
+    }
+    [PunRPC]
+    void Client_Anim_Jump() 
+    { 
+        animationHandler?.JumpTrigger();
+    }
+    [PunRPC] 
+    void Client_Anim_Land() 
+    { 
+        animationHandler?.LandTrigger();
+    }
+    [PunRPC]
+    void Client_Anim_Fall()
+    {
+        animationHandler?.OnFall();
     }
 }

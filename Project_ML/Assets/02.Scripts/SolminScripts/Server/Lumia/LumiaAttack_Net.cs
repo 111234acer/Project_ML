@@ -18,6 +18,14 @@ public class LumiaAttack_Net : PlayerAttack_Net
 
     public static Action<float, bool> OnChargeUpdate;   // UI 갱신용 이벤트
 
+    private AnimationHandler animationHandler;
+
+
+    void Awake()
+    {
+        animationHandler = GetComponentInChildren<AnimationHandler>();
+    }
+
     void Update()
     {
         if (!photonView.IsMine) return;
@@ -32,6 +40,7 @@ public class LumiaAttack_Net : PlayerAttack_Net
             isCharging = true;
             currentCharge = 0f;
             OnChargeUpdate?.Invoke(0f, true);
+            animationHandler?.OnAim();
         }
 
         // 유지 중 : 차징 진행
@@ -69,6 +78,6 @@ public class LumiaAttack_Net : PlayerAttack_Net
     [PunRPC]
     protected override void Client_OnAttack(float charge)
     {
-        // 화살 발사 효과, 소리 등 표시
+        animationHandler?.ShootTrigger();
     }
 }

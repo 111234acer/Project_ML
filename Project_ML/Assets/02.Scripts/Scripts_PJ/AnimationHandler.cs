@@ -28,6 +28,11 @@ public class AnimationHandler : MonoBehaviour
         animator.SetFloat(hashV, vertical);
     }
 
+    public void SetGrounded(bool grounded) 
+    {
+        animator.SetBool(hashIsGrounded, grounded);
+    }
+
     public void JumpTrigger()
     {
         animator.ResetTrigger(hashLandT);
