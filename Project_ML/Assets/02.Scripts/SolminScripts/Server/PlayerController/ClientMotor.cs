@@ -15,7 +15,6 @@ public class ClientMotor : MonoBehaviourPun
     [Tooltip("회전 보간 속도")]
     public float rotationLerpSpeed = 7f;
 
-    // [PREDICTION] 추가: 이동 관련 변수
     [Header("Prediction Settings")]
     [Tooltip("이동 속도 (서버와 동일해야 함)")]
     public float moveSpeed = 5f;
@@ -28,13 +27,11 @@ public class ClientMotor : MonoBehaviourPun
     [Tooltip("서버 위치와 차이날 때 보정 임계값")]
     public float reconciliationThreshold = 0.25f;
 
-    CharacterController controller;
-
-    // 예측용 변수
+    private CharacterController controller;
     private float velocityY;
     private bool isGrounded;
 
-    // 서버에서 받은 스냅샷 버퍼
+    // 서버 스냅샷 버퍼
     private readonly Queue<(float time, Vector3 pos, Quaternion rot)> snapshotBuffer = new();
     private Vector3 displayPos;
     private Quaternion displayRot;
@@ -50,25 +47,30 @@ public class ClientMotor : MonoBehaviourPun
         displayPos = transform.position;
         displayRot = transform.rotation;
     }
-
+    /*
     private void Update()
     {
         if (photonView.IsMine)
         {
-            // [PREDICTION] 로컬 이동 예측 실행
+            // 로컬 캐릭터 예측 이동
             PredictLocalMovement();
+            // 서버 위치 보정 (스냅샷 기반)
+            ReconcileToServer();
         }
     }
+    */
 
     private void LateUpdate()
     {
-        // [INTERPOLATION] 다른 플레이어만 보간
+        // 다른 플레이어는 보간 표시
         if (!photonView.IsMine)
             InterpolateSnapshots();
     }
 
-    // [PREDICTION] 로컬 이동 계산 (서버 이동 수식 복제)
-
+    // -----------------------
+    // [1] 로컬 예측 이동
+    // -----------------------
+    /*
     void PredictLocalMovement()
     {
         float h = Input.GetAxisRaw("Horizontal");
@@ -97,33 +99,55 @@ public class ClientMotor : MonoBehaviourPun
         controller.Move(Vector3.up * velocityY * Time.deltaTime);
     }
 
-    // [RECONCILIATION] 서버 위치 수신 시 오차 보정
+    // -----------------------
+    // 서버 보정 (로컬 전용)
+    // -----------------------
+    void ReconcileToServer()
+    {
+        if (snapshotBuffer.Count == 0) return;
+
+        var latest = snapshotBuffer.Peek();
+        float dist = Vector3.Distance(transform.position, latest.pos);
+
+        // 오차가 클 때만 보정
+        if (dist > reconciliationThreshold)
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                latest.pos,
+                positionLerpSpeed * Time.deltaTime
+            );
+        }
+
+        // 회전 보정 (항상 부드럽게)
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            latest.rot,
+            rotationLerpSpeed * Time.deltaTime
+        );
+    }
+    */
+
+    // -----------------------
+    // 서버 스냅샷 수신
+    // -----------------------
     [PunRPC]
     public void Client_ApplySnapshot(Vector3 pos, Quaternion rot, float velY, bool grounded)
     {
         snapshotBuffer.Enqueue(((float)PhotonNetwork.Time, pos, rot));
 
-        // [RECONCILIATION] 내 캐릭터의 서버 보정 처리
-        if (photonView.IsMine)
-        {
-            float dist = Vector3.Distance(transform.position, pos);
-            if (dist > reconciliationThreshold)
-            {
-                // 서버 위치와 클라 위치가 다르면 보정
-                transform.position = Vector3.Lerp(transform.position, pos, 0.5f);
-            }
-        }
-
-        // 메모리 누적 방지
+        // 즉시 transform.position 덮어쓰기 제거
+        //      → 보정은 ReconcileToServer()에서 수행
         while (snapshotBuffer.Count > 10)
             snapshotBuffer.Dequeue();
     }
 
-    // [INTERPOLATION] 다른 플레이어 부드럽게 표시
+    // -----------------------
+    // 다른 플레이어 보간 표시
+    // -----------------------
     private void InterpolateSnapshots()
     {
-        if (snapshotBuffer.Count < 2)
-            return;
+        if (snapshotBuffer.Count < 2) return;
 
         float renderTime = (float)PhotonNetwork.Time - interpolationDelay;
 

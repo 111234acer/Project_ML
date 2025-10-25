@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime; // [SERVER-ONLY FIX] ¸¶½ºÅÍ º¯°æ ÄÝ¹é¿ë
+using Photon.Realtime;
 
 [RequireComponent(typeof(CharacterController))]
 [DisallowMultipleComponent]
-public class ServerMotor : MonoBehaviourPunCallbacks // [SERVER-ONLY FIX] ÄÝ¹é ¹Þ±â À§ÇØ º¯°æ
+public class ServerMotor : MonoBehaviourPunCallbacks
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
@@ -21,13 +21,16 @@ public class ServerMotor : MonoBehaviourPunCallbacks // [SERVER-ONLY FIX] ÄÝ¹é ¹
     public LayerMask groundMask;
 
     [Header("Snapshot Settings")]
-    [Tooltip("¼­¹ö°¡ »óÅÂ¸¦ ¹æ¼ÛÇÏ´Â ÁÖ±â")]
-    public float snapshotInterval = 1f / 30f; // [TUNE] 15Hz -> 30Hz ·Î »óÇâ
+    [Tooltip("¼­¹ö°¡ »óÅÂ¸¦ ¹æ¼ÛÇÏ´Â ÁÖ±â (Hz)")]
+    public float snapshotInterval = 1f / 30f;
+
+    [Header("Performance Settings")]
+    [Tooltip("ÀÌµ¿ ¹°¸® °è»ê¸¸ ²ô°í ½ÍÀ» ¶§ true")]
+    public bool disableMovement = false; // ÀÌµ¿ ¿¬»ê¸¸ ²¨ÁÖ´Â Åä±Û
 
     private CharacterController controller;
     private PlayerHealth_Server health;
 
-    // ³»ºÎ »óÅÂ
     private float lastH, lastV;
     private bool requestJump;
     private float jumpBufferCounter;
@@ -35,13 +38,11 @@ public class ServerMotor : MonoBehaviourPunCallbacks // [SERVER-ONLY FIX] ÄÝ¹é ¹
     private bool isGrounded;
     private float snapshotTimer;
 
-    // ¼­¹ö°¡ À¯ÁöÇÏ´Â È¸Àü°ª
     private float serverYaw = 0f;
 
     private AnimationHandler animationHandler;
     private bool prevGrounded;
 
-    // [SERVER-ONLY FIX] ¸¶½ºÅÍ°¡ ¾Æ´Ï¸é ½ºÅ©¸³Æ® ÀüÃ¼ ºñÈ°¼ºÈ­
     private bool ServerActive => PhotonNetwork.IsMasterClient;
 
     private void Awake()
@@ -53,7 +54,6 @@ public class ServerMotor : MonoBehaviourPunCallbacks // [SERVER-ONLY FIX] ÄÝ¹é ¹
 
     private void OnEnable()
     {
-        // [SERVER-ONLY FIX] ¸¶½ºÅÍ°¡ ¾Æ´Ï¸é Áï½Ã ²û
         if (!ServerActive)
         {
             enabled = false;
@@ -63,12 +63,9 @@ public class ServerMotor : MonoBehaviourPunCallbacks // [SERVER-ONLY FIX] ÄÝ¹é ¹
 
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
-        // [MASTER SWITCH SAFE]
-        // ¸¶½ºÅÍ°¡ ¹Ù²î¸é: »õ ¸¶½ºÅÍÀÎ Å¬¶ó¿¡¼­´Â È°¼ºÈ­, ¾Æ´Ñ Å¬¶ó¿¡¼­´Â ºñÈ°¼ºÈ­
         if (PhotonNetwork.IsMasterClient)
         {
             enabled = true;
-            // ½º³À¼¦ Å¸ÀÌ¸Ó ÃÊ±âÈ­(¾ÈÀü)
             snapshotTimer = 0f;
         }
         else
@@ -79,11 +76,10 @@ public class ServerMotor : MonoBehaviourPunCallbacks // [SERVER-ONLY FIX] ÄÝ¹é ¹
 
     private void Update()
     {
-        // [SERVER-ONLY GUARD]
         if (!ServerActive) return;
         if (health != null && health.isDead) return;
 
-        // Á¡ÇÁ ÀÔ·Â ¹öÆÛ
+        // Á¡ÇÁ ÀÔ·Â ¹öÆÛ Ã³¸®
         if (requestJump)
         {
             jumpBufferCounter = jumpBufferTime;
@@ -97,38 +93,42 @@ public class ServerMotor : MonoBehaviourPunCallbacks // [SERVER-ONLY FIX] ÄÝ¹é ¹
 
     private void FixedUpdate()
     {
-        // [SERVER-ONLY GUARD]
         if (!ServerActive) return;
         if (health != null && health.isDead) return;
 
-        GroundCheck();
+        // ºÎÇÏ ÁÙÀÌ±â: GroundCheck´Â ÀÌµ¿ ½Ã¿¡¸¸ ÀÚÁÖ µ¹¸²
+        if (!disableMovement)
+            GroundCheck();
 
-        // ¼­¹ö È¸Àü°ª Àû¿ë (yaw ±âÁØ)
+        // È¸Àü°ª Àû¿ë
         transform.rotation = Quaternion.Euler(0f, serverYaw, 0f);
 
-        // ÀÌµ¿ ¹æÇâ °è»ê
-        Vector3 move = transform.right * lastH + transform.forward * lastV;
-        if (move.sqrMagnitude > 1f) move.Normalize();
-
-        controller.Move(move * moveSpeed * Time.fixedDeltaTime);
-
-        // Á¡ÇÁ
-        if (isGrounded && jumpBufferCounter > 0f)
+        // ÀÌµ¿ ¿¬»ê Åä±Û
+        if (!disableMovement)
         {
-            velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            photonView.RPC("Client_Anim_Jump", RpcTarget.All);
-            jumpBufferCounter = 0f;
+            Vector3 move = transform.right * lastH + transform.forward * lastV;
+            if (move.sqrMagnitude > 1f) move.Normalize();
+
+            controller.Move(move * moveSpeed * Time.fixedDeltaTime);
+
+            // Á¡ÇÁ
+            if (isGrounded && jumpBufferCounter > 0f)
+            {
+                velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
+                photonView.RPC("Client_Anim_Jump", RpcTarget.All);
+                jumpBufferCounter = 0f;
+            }
+
+            // Áß·Â
+            if (velocityY < 0f)
+                velocityY += gravity * fallMultiplier * Time.fixedDeltaTime;
+            else
+                velocityY += gravity * Time.fixedDeltaTime;
+
+            controller.Move(Vector3.up * velocityY * Time.fixedDeltaTime);
         }
 
-        // Áß·Â Ã³¸®
-        if (velocityY < 0f)
-            velocityY += gravity * fallMultiplier * Time.fixedDeltaTime;
-        else
-            velocityY += gravity * Time.fixedDeltaTime;
-
-        controller.Move(Vector3.up * velocityY * Time.fixedDeltaTime);
-
-        // ½º³À¼¦ ÁÖ±â Àü¼Û (±âº» 30Hz)
+        // ÀÌµ¿ ²¨Á® ÀÖ¾îµµ ½º³À¼¦, È¸Àü, ¾Ö´Ï¸ÞÀÌ¼ÇÀº °è¼Ó º¸³¿
         snapshotTimer += Time.fixedDeltaTime;
         if (snapshotTimer >= snapshotInterval)
         {
@@ -143,6 +143,7 @@ public class ServerMotor : MonoBehaviourPunCallbacks // [SERVER-ONLY FIX] ÄÝ¹é ¹
         Vector3 center = controller.bounds.center;
         Vector3 spherePos = new Vector3(center.x, controller.bounds.min.y + 0.05f, center.z);
         float checkRadius = Mathf.Max(controller.radius * 0.9f, 0.2f);
+
         isGrounded = Physics.CheckSphere(spherePos, checkRadius, groundMask);
         if (isGrounded && velocityY < 0f)
             velocityY = -2f;
@@ -156,10 +157,7 @@ public class ServerMotor : MonoBehaviourPunCallbacks // [SERVER-ONLY FIX] ÄÝ¹é ¹
     [PunRPC]
     public void Server_ReceiveInput(int viewID, float h, float v, bool jump, bool dash, float clientTime, PhotonMessageInfo info)
     {
-        // [SERVER-ONLY GUARD]
         if (!ServerActive) return;
-
-        // [SAFETY] ´Ù¸¥ ÇÃ·¹ÀÌ¾îÀÇ View·Î ¿Â ÀÔ·ÂÀº ¹«½Ã
         if (photonView.ViewID != viewID) return;
 
         h = Mathf.Clamp(h, -1f, 1f);
@@ -171,7 +169,7 @@ public class ServerMotor : MonoBehaviourPunCallbacks // [SERVER-ONLY FIX] ÄÝ¹é ¹
         photonView.RPC("Client_Anim_Move", RpcTarget.All, lastH, lastV);
     }
 
-    // ===== Å¬¶óÀÌ¾ðÆ®¿¡¼­ È¸Àü°ª ¼ö½Å (Àý´ë yaw) =====
+    // ===== È¸Àü ¼ö½Å =====
     [PunRPC]
     public void Server_ReceiveYaw(float yaw)
     {
@@ -179,8 +177,9 @@ public class ServerMotor : MonoBehaviourPunCallbacks // [SERVER-ONLY FIX] ÄÝ¹é ¹
         serverYaw = yaw;
     }
 
-    [PunRPC] void Client_Anim_Move(float h, float v) { animationHandler?.OnMovement(h, v); }
-    [PunRPC] void Client_Anim_Jump() { animationHandler?.JumpTrigger(); }
-    [PunRPC] void Client_Anim_Land() { animationHandler?.LandTrigger(); }
-    [PunRPC] void Client_Anim_Fall() { animationHandler?.OnFall(); }
+    // ===== ¾Ö´Ï¸ÞÀÌ¼Ç ºê·ÎµåÄ³½ºÆ® =====
+    [PunRPC] void Client_Anim_Move(float h, float v) => animationHandler?.OnMovement(h, v);
+    [PunRPC] void Client_Anim_Jump() => animationHandler?.JumpTrigger();
+    [PunRPC] void Client_Anim_Land() => animationHandler?.LandTrigger();
+    [PunRPC] void Client_Anim_Fall() => animationHandler?.OnFall();
 }
