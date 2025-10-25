@@ -7,7 +7,7 @@ public class ClientMotor : MonoBehaviourPun
 {
     [Header("Interpolation Settings")]
     [Tooltip("서버 스냅샷을 약간 지연시켜 표시 (초)")]
-    public float interpolationDelay = 0.08f;
+    public float interpolationDelay = 0.12f;
     [Tooltip("기본 보간 속도 (다른 플레이어용)")]
     public float positionLerpSpeed = 10f;
     [Tooltip("내 캐릭터 보간 가속 비율 (체감 반응 개선용)")]
@@ -25,52 +25,47 @@ public class ClientMotor : MonoBehaviourPun
     [Tooltip("낙하 가속 비율")]
     public float fallMultiplier = 2.5f;
     [Tooltip("서버 위치와 차이날 때 보정 임계값")]
-    public float reconciliationThreshold = 0.25f;
+    public float reconciliationThreshold = 0.3f;
 
-    private CharacterController controller;
-    private float velocityY;
-    private bool isGrounded;
+    CharacterController controller;
+    float velocityY;
+    bool isGrounded;
 
     // 서버 스냅샷 버퍼
-    private readonly Queue<(float time, Vector3 pos, Quaternion rot)> snapshotBuffer = new();
-    private Vector3 displayPos;
-    private Quaternion displayRot;
-    private float lastT = 0f;
+    readonly Queue<(float time, Vector3 pos, Quaternion rot)> snapshotBuffer = new();
+    Vector3 displayPos;
+    Quaternion displayRot;
+    float lastT = 0f;
 
-    private void Awake()
+    void Awake()
     {
         controller = GetComponent<CharacterController>();
     }
 
-    private void Start()
+    void Start()
     {
         displayPos = transform.position;
         displayRot = transform.rotation;
     }
-    /*
-    private void Update()
+
+    void Update()
     {
         if (photonView.IsMine)
         {
-            // 로컬 캐릭터 예측 이동
-            PredictLocalMovement();
-            // 서버 위치 보정 (스냅샷 기반)
-            ReconcileToServer();
+            PredictLocalMovement();   // 로컬 예측 이동
+            ReconcileToServer();      // 서버 스냅샷과 부드러운 보정
         }
     }
-    */
 
-    private void LateUpdate()
+    void LateUpdate()
     {
-        // 다른 플레이어는 보간 표시
         if (!photonView.IsMine)
-            InterpolateSnapshots();
+            InterpolateSnapshots();   // 다른 플레이어는 보간 처리
     }
 
-    // -----------------------
+    // -----------------------------
     // [1] 로컬 예측 이동
-    // -----------------------
-    /*
+    // -----------------------------
     void PredictLocalMovement()
     {
         float h = Input.GetAxisRaw("Horizontal");
@@ -79,18 +74,22 @@ public class ClientMotor : MonoBehaviourPun
 
         isGrounded = controller.isGrounded;
 
+        // 이동 방향 계산
         Vector3 move = transform.right * h + transform.forward * v;
         if (move.sqrMagnitude > 1f)
             move.Normalize();
 
-        // 이동
+        // 입력이 없을 때 이동 완전 정지
+        if (Mathf.Abs(h) < 0.01f && Mathf.Abs(v) < 0.01f)
+            move = Vector3.zero;
+
         controller.Move(move * moveSpeed * Time.deltaTime);
 
         // 점프
         if (isGrounded && jump)
             velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
-        // 중력
+        // 중력 처리
         if (velocityY < 0f)
             velocityY += gravity * fallMultiplier * Time.deltaTime;
         else
@@ -99,23 +98,24 @@ public class ClientMotor : MonoBehaviourPun
         controller.Move(Vector3.up * velocityY * Time.deltaTime);
     }
 
-    // -----------------------
-    // 서버 보정 (로컬 전용)
-    // -----------------------
+    // -----------------------------
+    // [2] 서버 스냅샷 기반 보정
+    // -----------------------------
     void ReconcileToServer()
     {
-        if (snapshotBuffer.Count == 0) return;
+        if (snapshotBuffer.Count == 0)
+            return;
 
         var latest = snapshotBuffer.Peek();
         float dist = Vector3.Distance(transform.position, latest.pos);
 
-        // 오차가 클 때만 보정
+        // 오차가 클 때만 부드럽게 따라감
         if (dist > reconciliationThreshold)
         {
-            transform.position = Vector3.MoveTowards(
+            transform.position = Vector3.Lerp(
                 transform.position,
                 latest.pos,
-                positionLerpSpeed * Time.deltaTime
+                0.05f // 너무 세게 당기면 느려짐 현상 발생, 낮게 유지
             );
         }
 
@@ -126,28 +126,29 @@ public class ClientMotor : MonoBehaviourPun
             rotationLerpSpeed * Time.deltaTime
         );
     }
-    */
 
-    // -----------------------
-    // 서버 스냅샷 수신
-    // -----------------------
+    // -----------------------------
+    // [3] 서버 스냅샷 수신
+    // -----------------------------
     [PunRPC]
     public void Client_ApplySnapshot(Vector3 pos, Quaternion rot, float velY, bool grounded)
     {
         snapshotBuffer.Enqueue(((float)PhotonNetwork.Time, pos, rot));
 
-        // 즉시 transform.position 덮어쓰기 제거
-        //      → 보정은 ReconcileToServer()에서 수행
+        // transform.position 직접 덮어쓰기 금지!
+        // 보정은 ReconcileToServer()에서 부드럽게 수행
+
         while (snapshotBuffer.Count > 10)
             snapshotBuffer.Dequeue();
     }
 
-    // -----------------------
-    // 다른 플레이어 보간 표시
-    // -----------------------
-    private void InterpolateSnapshots()
+    // -----------------------------
+    // [4] 다른 플레이어 보간 처리
+    // -----------------------------
+    void InterpolateSnapshots()
     {
-        if (snapshotBuffer.Count < 2) return;
+        if (snapshotBuffer.Count < 2)
+            return;
 
         float renderTime = (float)PhotonNetwork.Time - interpolationDelay;
 
@@ -155,7 +156,8 @@ public class ClientMotor : MonoBehaviourPun
             snapshotBuffer.Dequeue();
 
         var array = snapshotBuffer.ToArray();
-        if (array.Length < 2) return;
+        if (array.Length < 2)
+            return;
 
         var older = array[0];
         var newer = array[1];
@@ -171,7 +173,15 @@ public class ClientMotor : MonoBehaviourPun
         displayPos = Vector3.Lerp(older.pos, newer.pos, t);
         displayRot = Quaternion.Slerp(older.rot, newer.rot, t);
 
-        transform.position = Vector3.Lerp(transform.position, displayPos, positionLerpSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.Slerp(transform.rotation, displayRot, rotationLerpSpeed * Time.deltaTime);
+        transform.position = Vector3.Lerp(
+            transform.position,
+            displayPos,
+            positionLerpSpeed * Time.deltaTime
+        );
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            displayRot,
+            rotationLerpSpeed * Time.deltaTime
+        );
     }
 }
