@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 75bf744bcdf362b4ca2d1f4d2f57b27d
+guid: 64ec5703e4dc52b48b20bd46e493c918
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,8 +7,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Concrete
-    second: {fileID: 2100000, guid: e402007fdbf74064a97cd1333b99cb23, type: 2}
+      name: Metal
+    second: {fileID: 2100000, guid: 480db28d023c42d4f801250f72f65824, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wood_Build
+    second: {fileID: 2100000, guid: 673d42b95cab33243bd8068c4310a7bc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wood_Build.002
+    second: {fileID: 2100000, guid: 32bd18c7263e5ac41aa3275d296ae4ab, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
