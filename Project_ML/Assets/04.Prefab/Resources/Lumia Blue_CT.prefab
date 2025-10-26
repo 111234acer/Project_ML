@@ -2153,9 +2153,9 @@ GameObject:
   - component: {fileID: -8274505970883506340}
   - component: {fileID: 6395733756090975751}
   - component: {fileID: 750737567799578580}
+  - component: {fileID: -4124405211144552016}
   - component: {fileID: 8788910501507704520}
   - component: {fileID: 5165375764432238270}
-  - component: {fileID: 3079840481874569621}
   - component: {fileID: 9185803181825197259}
   - component: {fileID: 3722403317478618768}
   - component: {fileID: 164499934401712641}
@@ -2331,7 +2331,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   snapshotInterval: 0.033
-  disableMovement: 0
 --- !u!114 &750737567799578580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2348,11 +2347,22 @@ MonoBehaviour:
   positionLerpSpeed: 10
   selfLerpMultiplier: 1.1
   rotationLerpSpeed: 7
-  moveSpeed: 6
-  gravity: -20
-  jumpHeight: 2
-  fallMultiplier: 2.5
-  reconciliationThreshold: 0.25
+--- !u!114 &-4124405211144552016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7019567109801188797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddfda4617398b674687434d877ce013c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCamera: {fileID: 8619258595248538013}
+  mouseSensitivity: 200
+  xRotationLimit: 80
+  smoothSpeed: 10
 --- !u!114 &8788910501507704520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2387,24 +2397,6 @@ MonoBehaviour:
   respawnDelay: 8
   invincibleTime: 0.2
   respawnInvincibleTime: 2
---- !u!114 &3079840481874569621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7019567109801188797}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddfda4617398b674687434d877ce013c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerCamera: {fileID: 8619258595248538013}
-  mouseSensitivity: 200
-  xRotationLimit: 80
-  rotationSmooth: 10
-  followSmoothTime: 0.1
-  headHeightOffset: 0.58
 --- !u!114 &9185803181825197259
 MonoBehaviour:
   m_ObjectHideFlags: 0
