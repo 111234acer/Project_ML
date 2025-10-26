@@ -1060,7 +1060,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3337248283938264585}
   - component: {fileID: 358654297582020666}
-  - component: {fileID: 6393539492501648139}
   - component: {fileID: 1640385692962185730}
   - component: {fileID: 3478800979117143975}
   - component: {fileID: 1501305322398937430}
@@ -2619,37 +2618,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!114 &6393539492501648139
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1692529481561738112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ca002da428252441b92f28d83c8a65f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Shape:
-    rid: 4421483136313458691
-  m_Size: {x: 8, y: 1, z: 8}
-  m_Rotation: {x: 0, y: 0, z: 0, w: 1}
-  m_PivotLocation: 0
-  m_PivotPosition: {x: 0, y: 0, z: 0}
-  m_UnmodifiedMeshVersion: 4169
-  m_ShapeBox:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 4, y: 0.5, z: 4}
-  references:
-    version: 2
-    RefIds:
-    - rid: 4421483136313458691
-      type: {class: Cylinder, ns: UnityEngine.ProBuilder.Shapes, asm: Unity.ProBuilder}
-      data:
-        m_AxisDivisions: 18
-        m_HeightCuts: 0
-        m_Smooth: 1
 --- !u!23 &1640385692962185730
 MeshRenderer:
   m_ObjectHideFlags: 0
