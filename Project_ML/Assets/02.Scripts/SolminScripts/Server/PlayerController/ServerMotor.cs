@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
@@ -11,8 +10,6 @@ public class ServerMotor : MonoBehaviourPunCallbacks
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float gravity = -20f;
-
-    [Header("Jump Settings")]
     public float jumpHeight = 2f;
     public float fallMultiplier = 2.5f;
     public float jumpBufferTime = 0.1f;
@@ -21,27 +18,25 @@ public class ServerMotor : MonoBehaviourPunCallbacks
     public LayerMask groundMask;
 
     [Header("Snapshot Settings")]
-    [Tooltip("서버가 상태를 방송하는 주기 (Hz)")]
+    [Tooltip("Server broadcast interval")]
     public float snapshotInterval = 1f / 30f;
-
-    [Header("Performance Settings")]
-    [Tooltip("이동 물리 계산만 끄고 싶을 때 true")]
-    public bool disableMovement = false; // 이동 연산만 꺼주는 토글
 
     private CharacterController controller;
     private PlayerHealth_Server health;
+    private AnimationHandler animationHandler;
 
+    // internal state
     private float lastH, lastV;
     private bool requestJump;
     private float jumpBufferCounter;
     private float velocityY;
     private bool isGrounded;
+    private bool prevGrounded;
     private float snapshotTimer;
 
-    private float serverYaw = 0f;
 
-    private AnimationHandler animationHandler;
-    private bool prevGrounded;
+    // world-space move vector (camera-based direction)
+    private Vector3 lastMoveWorld = Vector3.zero;
 
     private bool ServerActive => PhotonNetwork.IsMasterClient;
 
@@ -79,7 +74,6 @@ public class ServerMotor : MonoBehaviourPunCallbacks
         if (!ServerActive) return;
         if (health != null && health.isDead) return;
 
-        // 점프 입력 버퍼 처리
         if (requestJump)
         {
             jumpBufferCounter = jumpBufferTime;
@@ -96,39 +90,36 @@ public class ServerMotor : MonoBehaviourPunCallbacks
         if (!ServerActive) return;
         if (health != null && health.isDead) return;
 
-        // 부하 줄이기: GroundCheck는 이동 시에만 자주 돌림
-        if (!disableMovement)
-            GroundCheck();
+        GroundCheck();
 
-        // 회전값 적용
-        transform.rotation = Quaternion.Euler(0f, serverYaw, 0f);
+        // move
+        if (lastMoveWorld.sqrMagnitude > 1f) lastMoveWorld.Normalize();
+        controller.Move(lastMoveWorld * moveSpeed * Time.fixedDeltaTime);
 
-        // 이동 연산 토글
-        if (!disableMovement)
+        // rotate smoothly toward move direction
+        if (lastMoveWorld.sqrMagnitude > 0.001f)
         {
-            Vector3 move = transform.right * lastH + transform.forward * lastV;
-            if (move.sqrMagnitude > 1f) move.Normalize();
-
-            controller.Move(move * moveSpeed * Time.fixedDeltaTime);
-
-            // 점프
-            if (isGrounded && jumpBufferCounter > 0f)
-            {
-                velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
-                photonView.RPC("Client_Anim_Jump", RpcTarget.All);
-                jumpBufferCounter = 0f;
-            }
-
-            // 중력
-            if (velocityY < 0f)
-                velocityY += gravity * fallMultiplier * Time.fixedDeltaTime;
-            else
-                velocityY += gravity * Time.fixedDeltaTime;
-
-            controller.Move(Vector3.up * velocityY * Time.fixedDeltaTime);
+            Quaternion targetRot = Quaternion.LookRotation(new Vector3(lastMoveWorld.x, 0f, lastMoveWorld.z));
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 10f * Time.fixedDeltaTime);
         }
 
-        // 이동 꺼져 있어도 스냅샷, 회전, 애니메이션은 계속 보냄
+        // jump
+        if (isGrounded && jumpBufferCounter > 0f)
+        {
+            velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            photonView.RPC("Client_Anim_Jump", RpcTarget.All);
+            jumpBufferCounter = 0f;
+        }
+
+        // gravity
+        if (velocityY < 0f)
+            velocityY += gravity * fallMultiplier * Time.fixedDeltaTime;
+        else
+            velocityY += gravity * Time.fixedDeltaTime;
+
+        controller.Move(Vector3.up * velocityY * Time.fixedDeltaTime);
+
+        // snapshot broadcast
         snapshotTimer += Time.fixedDeltaTime;
         if (snapshotTimer >= snapshotInterval)
         {
@@ -138,7 +129,7 @@ public class ServerMotor : MonoBehaviourPunCallbacks
         }
     }
 
-    void GroundCheck()
+    private void GroundCheck()
     {
         Vector3 center = controller.bounds.center;
         Vector3 spherePos = new Vector3(center.x, controller.bounds.min.y + 0.05f, center.z);
@@ -148,14 +139,17 @@ public class ServerMotor : MonoBehaviourPunCallbacks
         if (isGrounded && velocityY < 0f)
             velocityY = -2f;
 
-        if (!prevGrounded && isGrounded) photonView.RPC("Client_Anim_Land", RpcTarget.All);
-        if (prevGrounded && !isGrounded) photonView.RPC("Client_Anim_Fall", RpcTarget.All);
+        if (!prevGrounded && isGrounded)
+            photonView.RPC("Client_Anim_Land", RpcTarget.All);
+        if (prevGrounded && !isGrounded)
+            photonView.RPC("Client_Anim_Fall", RpcTarget.All);
+
         prevGrounded = isGrounded;
     }
 
-    // ===== 클라이언트 입력 수신 =====
+    // ===== INPUT FROM CLIENT =====
     [PunRPC]
-    public void Server_ReceiveInput(int viewID, float h, float v, bool jump, bool dash, float clientTime, PhotonMessageInfo info)
+    public void Server_ReceiveInput(int viewID, float h, float v, bool jump, Vector3 forwardDir, PhotonMessageInfo info)
     {
         if (!ServerActive) return;
         if (photonView.ViewID != viewID) return;
@@ -166,18 +160,18 @@ public class ServerMotor : MonoBehaviourPunCallbacks
         lastV = v;
         if (jump) requestJump = true;
 
+        // world-space move direction from client camera
+        Vector3 camFwd = forwardDir;
+        camFwd.y = 0f;
+        if (camFwd.sqrMagnitude < 0.001f) camFwd = transform.forward;
+        camFwd.Normalize();
+        Vector3 camRight = new Vector3(camFwd.z, 0f, -camFwd.x);
+
+        lastMoveWorld = camRight * h + camFwd * v;
+
         photonView.RPC("Client_Anim_Move", RpcTarget.All, lastH, lastV);
     }
 
-    // ===== 회전 수신 =====
-    [PunRPC]
-    public void Server_ReceiveYaw(float yaw)
-    {
-        if (!ServerActive) return;
-        serverYaw = yaw;
-    }
-
-    // ===== 애니메이션 브로드캐스트 =====
     [PunRPC] void Client_Anim_Move(float h, float v) => animationHandler?.OnMovement(h, v);
     [PunRPC] void Client_Anim_Jump() => animationHandler?.JumpTrigger();
     [PunRPC] void Client_Anim_Land() => animationHandler?.LandTrigger();

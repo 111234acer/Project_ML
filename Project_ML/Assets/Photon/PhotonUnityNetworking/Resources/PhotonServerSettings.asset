@@ -67,6 +67,7 @@ MonoBehaviour:
   - Client_Anim_Respawn
   - Client_Anim_Skill1
   - Client_Anim_Skill2
+  - Server_ReceiveInputV2
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
