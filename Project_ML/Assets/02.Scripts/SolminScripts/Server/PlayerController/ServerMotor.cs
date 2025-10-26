@@ -51,7 +51,7 @@ public class ServerMotor : MonoBehaviourPunCallbacks
     {
         if (!ServerActive)
         {
-            enabled = false;
+            //enabled = false;
             return;
         }
     }
@@ -60,12 +60,12 @@ public class ServerMotor : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            enabled = true;
+            //enabled = true;
             snapshotTimer = 0f;
         }
         else
         {
-            enabled = false;
+            //enabled = false;
         }
     }
 
@@ -123,6 +123,7 @@ public class ServerMotor : MonoBehaviourPunCallbacks
         snapshotTimer += Time.fixedDeltaTime;
         if (snapshotTimer >= snapshotInterval)
         {
+            Debug.Log($"[ServerMotor] Sending snapshot for ViewID {photonView.ViewID}");
             snapshotTimer = 0f;
             photonView.RPC("Client_ApplySnapshot", RpcTarget.All,
                 transform.position, transform.rotation, velocityY, isGrounded);
@@ -170,6 +171,7 @@ public class ServerMotor : MonoBehaviourPunCallbacks
         lastMoveWorld = camRight * h + camFwd * v;
 
         photonView.RPC("Client_Anim_Move", RpcTarget.All, lastH, lastV);
+
     }
 
     [PunRPC] void Client_Anim_Move(float h, float v) => animationHandler?.OnMovement(h, v);
