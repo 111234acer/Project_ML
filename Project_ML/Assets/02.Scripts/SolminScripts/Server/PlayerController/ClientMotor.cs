@@ -78,10 +78,9 @@ public class ClientMotor : MonoBehaviourPun
     {
         snapshotBuffer.Enqueue(((float)PhotonNetwork.Time, pos, rot));
 
-        // transform.position 직접 덮어쓰기 금지!
-        // 보정은 ReconcileToServer()에서 부드럽게 수행
-
         while (snapshotBuffer.Count > 10)
             snapshotBuffer.Dequeue();
+
+        Debug.Log($"[ClientMotor] Received snapshot for ViewID {photonView.ViewID}");
     }
 }
