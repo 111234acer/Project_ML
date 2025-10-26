@@ -2331,6 +2331,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   snapshotInterval: 0.033
+  disableMovement: 0
 --- !u!114 &750737567799578580
 MonoBehaviour:
   m_ObjectHideFlags: 0
