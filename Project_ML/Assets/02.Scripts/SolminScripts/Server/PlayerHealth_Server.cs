@@ -50,6 +50,12 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
+    public void Client_RegisterDamageDealtTo(int targetViewId, float showSeconds)
+    {
+        OtherPlayerHealthBar.RegisterDamagedByLocal(targetViewId, showSeconds);
+    }
+
+    [PunRPC]
     public void Server_ApplyDamage(int dmg, PhotonMessageInfo info)
     {
         if (!PhotonNetwork.IsMasterClient || isDead || isInvincible) return;
@@ -125,7 +131,8 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
 
         StartCoroutine(Invincible(Mathf.Max(invuln, respawnInvincibleTime)));
 
-        photonView.RPC("Client_Anim_Respawn", RpcTarget.All);
+        if (currentHealth > 0)
+            photonView.RPC("Client_Anim_Respawn", RpcTarget.All);
     }
 
     IEnumerator Invincible(float dur)
@@ -180,5 +187,11 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
     void Client_Anim_Respawn()
     { 
         animationHandler?.Respawn();
+    }
+
+    [PunRPC]
+    void Client_Anim_Hit()
+    {
+        animationHandler?.HitTrigger();
     }
 }

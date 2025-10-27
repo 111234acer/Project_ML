@@ -30,12 +30,15 @@ public class PlayerSkillManager : MonoBehaviour
             if(skill2.Use())
             {
                 animationHandler.Skill2Trigger();
-            }
+            }            
         }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            ultimate.Use();
+            if (ultimate.Use())
+            {
+                animationHandler.Skill3Trigger();
+            }
         }
     }
 }

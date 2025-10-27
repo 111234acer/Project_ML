@@ -24,7 +24,14 @@ public class Arrow_Net : MonoBehaviourPun
         {
             // 데미지만 실행
             hp.photonView.RPC("Server_ApplyDamage", RpcTarget.MasterClient, damage);
-        } 
+
+            var attacker = photonView.Owner; // 화살 소유자 = 가해자
+            if (attacker != null)
+            {
+                // showSeconds는 0f 넘기면 내부에서 기본값(3초) 사용
+                hp.photonView.RPC("Client_RegisterDamageDealtTo", attacker, hp.photonView.ViewID, 0f);
+            }
+        }
 
         // 충돌 대상이 누구든지 삭제
         PhotonNetwork.Destroy(gameObject);

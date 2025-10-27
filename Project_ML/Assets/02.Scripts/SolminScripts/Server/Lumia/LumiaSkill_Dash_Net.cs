@@ -51,7 +51,7 @@ public class LumiaSkill_Dash_Net : PlayerSkill_Net
     }
 
     [PunRPC] 
-    void Client_Anim_Skill2() 
+    void Client_Anim_Skill2()
     { 
         animationHandler?.Skill2Trigger(); 
     }

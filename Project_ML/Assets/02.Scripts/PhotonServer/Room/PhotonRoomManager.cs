@@ -42,7 +42,7 @@ public class PhotonRoomManager : MonoBehaviourPunCallbacks
 
     internal string localPlayerTeam = "blue";
 
-    const string inGameScene = "Scene_ClientTest";
+    const string inGameScene = "CharacterSelectScene";
 
 
     private void Awake()

@@ -20,10 +20,14 @@ public class LumiaUltimate_Net : PlayerSkill_Net
     private GameObject indicatorInstance;
     private bool isTargeting = false;
 
+    private AnimationHandler animationHandler;
+
     private void Awake()
     {
         skillName = "·ç¹Ì¾Æ ±Ã±Ø±â";
         cooldown = 15f;
+
+        animationHandler = GetComponentInChildren<AnimationHandler>();
     }
 
     public override void Activate()
@@ -59,6 +63,7 @@ public class LumiaUltimate_Net : PlayerSkill_Net
                 photonView.RPC(nameof(Server_SpawnAOE), RpcTarget.MasterClient, spawnPos);
                 Destroy(indicatorInstance);
                 isTargeting = false;
+                photonView.RPC("Client_Anim_Skill3", RpcTarget.All);
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
@@ -86,5 +91,11 @@ public class LumiaUltimate_Net : PlayerSkill_Net
         var zone = aoe.GetComponent<AOEDamageZone_Net>();
         if (zone != null)
             zone.Initialize(damagePerSecond, duration);
+    }
+
+    [PunRPC]
+    void Client_Anim_Skill3()
+    {
+        animationHandler?.Skill3Trigger();
     }
 }

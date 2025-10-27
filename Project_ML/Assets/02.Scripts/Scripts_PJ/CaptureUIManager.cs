@@ -17,6 +17,8 @@ public class CaptureUIManager : MonoBehaviour
     public GameObject victoryPanel;
     public GameObject defeatPanel;
     public Slider overtimeBar;
+    public Slider redFillSlider;
+    public Slider blueFillSlider;
 
     public float barLerpSpeed = 20f;
 
@@ -36,6 +38,15 @@ public class CaptureUIManager : MonoBehaviour
 
         if (redPercentText != null) redPercentText.text = Mathf.RoundToInt(cap.RedScore) + "%";
         if (bluePercentText != null) bluePercentText.text = Mathf.RoundToInt(cap.BlueScore) + "%";
+
+        if (redFillSlider != null)
+        {
+            redFillSlider.value = Mathf.Clamp01(cap.RedScore / 100f);
+        }
+        if (blueFillSlider != null)
+        {
+            blueFillSlider.value = Mathf.Clamp01(cap.BlueScore / 100f);
+        }
 
         if (ownerTeamText != null)
         {

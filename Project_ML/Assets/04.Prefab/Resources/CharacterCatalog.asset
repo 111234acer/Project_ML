@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5df02dd62bf312448bca8e2f0aa4df09, type: 3}
+  m_Name: CharacterCatalog
+  m_EditorClassIdentifier: 
+  list:
+  - displayName: Lumia
+    role: 0
+    portrait: {fileID: 21300000, guid: c50f4bab429559b4e9a1c24e96f9abb9, type: 3}
+    skillIcons:
+    - {fileID: 21300000, guid: 522897480a1587f40bfe1c618ce76254, type: 3}
+    - {fileID: 21300000, guid: a526bde77652fbb43879bb5a58837ef7, type: 3}
+    - {fileID: 21300000, guid: 1ed96ed6a8986ff499034ff8266d5501, type: 3}
+    prefabName: Lumia Blue_CT
+  - displayName: Serina
+    role: 1
+    portrait: {fileID: 21300000, guid: 74fcf99895b86bc448880e4785602bd0, type: 3}
+    skillIcons:
+    - {fileID: 21300000, guid: 90786fecbafb61f42b07d6f4561ff280, type: 3}
+    - {fileID: 21300000, guid: c4bce571aab07c647816db9418164b58, type: 3}
+    - {fileID: 21300000, guid: 87fc0b7a449e23b4aa2995ab01dcbf74, type: 3}
+    prefabName: Serena
+  - displayName: Serina
+    role: 1
+    portrait: {fileID: 21300000, guid: 74fcf99895b86bc448880e4785602bd0, type: 3}
+    skillIcons:
+    - {fileID: 21300000, guid: 90786fecbafb61f42b07d6f4561ff280, type: 3}
+    - {fileID: 21300000, guid: c4bce571aab07c647816db9418164b58, type: 3}
+    - {fileID: 21300000, guid: 87fc0b7a449e23b4aa2995ab01dcbf74, type: 3}
+    prefabName: Serena
