@@ -46,32 +46,32 @@ public class ServerMotor : MonoBehaviourPunCallbacks
         health = GetComponent<PlayerHealth_Server>();
         animationHandler = GetComponentInChildren<AnimationHandler>();
     }
-
     private void OnEnable()
     {
         if (!ServerActive)
         {
-            //enabled = false;
+            enabled = false;
             return;
         }
     }
+    
 
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            //enabled = true;
+            enabled = true;
             snapshotTimer = 0f;
         }
         else
         {
-            //enabled = false;
+            enabled = false;
         }
     }
 
     private void Update()
     {
-        if (!ServerActive) return;
+        //if (!ServerActive) return;
         if (health != null && health.isDead) return;
 
         if (requestJump)
@@ -83,11 +83,13 @@ public class ServerMotor : MonoBehaviourPunCallbacks
         {
             jumpBufferCounter = Mathf.Max(0f, jumpBufferCounter - Time.deltaTime);
         }
+
+        //Debug.Log($"[ServerMotor] h={lastH}, v={lastV}, moveWorld={lastMoveWorld}, isGrounded={isGrounded}");
     }
 
     private void FixedUpdate()
     {
-        if (!ServerActive) return;
+        //if (!ServerActive) return;
         if (health != null && health.isDead) return;
 
         GroundCheck();
@@ -152,7 +154,7 @@ public class ServerMotor : MonoBehaviourPunCallbacks
     [PunRPC]
     public void Server_ReceiveInput(int viewID, float h, float v, bool jump, Vector3 forwardDir, PhotonMessageInfo info)
     {
-        if (!ServerActive) return;
+        //if (!ServerActive) return;
         if (photonView.ViewID != viewID) return;
 
         h = Mathf.Clamp(h, -1f, 1f);
