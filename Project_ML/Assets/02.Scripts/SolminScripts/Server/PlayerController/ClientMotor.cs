@@ -81,6 +81,13 @@ public class ClientMotor : MonoBehaviourPun
         while (snapshotBuffer.Count > 10)
             snapshotBuffer.Dequeue();
 
+        // 자신의 캐릭터도 서버 위치를 즉시 반영
+        if (photonView.IsMine)
+        {
+            transform.position = Vector3.Lerp(transform.position, pos, 0.9f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rot, 0.9f);
+        }
+
         Debug.Log($"[ClientMotor] Received snapshot for ViewID {photonView.ViewID}");
     }
 }

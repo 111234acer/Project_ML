@@ -24,7 +24,7 @@ public class Arrow_Net : MonoBehaviourPun
         {
             // 데미지만 실행
             hp.photonView.RPC("Server_ApplyDamage", RpcTarget.MasterClient, damage);
-        }
+        } 
 
         // 충돌 대상이 누구든지 삭제
         PhotonNetwork.Destroy(gameObject);

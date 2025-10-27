@@ -4,48 +4,58 @@ using System.Collections.Generic;
 using UnityEngine;
 using ExitGames.Client.Photon;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
+    [Header("Spawn Areas")]
     public BoxCollider redSpawnPoint;
     public BoxCollider blueSpawnPoint;
 
+    [Header("Prefabs")]
+    [Tooltip("Resources 폴더 안의 Player 프리팹")]
     public GameObject playerPrefab;
+    [Tooltip("HUD UI Canvas 프리팹")]
     public GameObject hudCanvasPrefab;
+    [Tooltip("다른 플레이어 체력바 프리팹")]
+    public GameObject healthBarPrefab;
 
     private GameObject hudInstance;
-
-    [SerializeField] Canvas mainCanvas;
-    [SerializeField] GameObject HealthBar;
+    private Canvas mainCanvas;
 
     private void Awake()
     {
-        if (mainCanvas == null) mainCanvas = FindObjectOfType<Canvas>();
+        if (mainCanvas == null)
+            mainCanvas = FindObjectOfType<Canvas>();
     }
 
     private void Start()
     {
+        // 모든 클라이언트에서 동일하게 실행됨
         SpawnHUD();
 
-        // [SPAWN SAFETY] 스폰 후 내 플레이어 참조를 반환받아 HUD 바인딩까지 한 번에
+        // 자신 캐릭터 스폰 + 참조 반환
         var myPlayer = SpawnPlayer();
 
+        // HUD 연결
         BindHUD(myPlayer);
     }
 
+    //  HUD 생성
     void SpawnHUD()
     {
         if (hudInstance == null && hudCanvasPrefab != null)
             hudInstance = Instantiate(hudCanvasPrefab);
     }
 
+    //  플레이어 생성
     GameObject SpawnPlayer()
     {
+        // 이미 생성되어 있으면 중복 방지
         if (PhotonNetwork.LocalPlayer.TagObject != null)
             return PhotonNetwork.LocalPlayer.TagObject as GameObject;
 
         int myTeam = GetMyTeam(); // 0=RED, 1=BLUE
 
-        // 팀별 스폰 영역 선택
+        // 팀별 스폰 포인트 지정
         BoxCollider area = (myTeam == 0) ? redSpawnPoint : blueSpawnPoint;
         if (area == null) area = redSpawnPoint ?? blueSpawnPoint;
 
@@ -54,36 +64,40 @@ public class GameManager : MonoBehaviour
             ? Quaternion.LookRotation(-Vector3.forward, Vector3.up)
             : Quaternion.LookRotation(Vector3.forward, Vector3.up);
 
-        var playerObj = PhotonNetwork.Instantiate(playerPrefab.name, spawnPos, spawnRot);
+        //  네트워크 Instantiate (모든 클라 자동 복제)
+        GameObject playerObj = PhotonNetwork.Instantiate(playerPrefab.name, spawnPos, spawnRot);
+        Debug.Log($"[GameManager] Spawned {playerObj.name} for {PhotonNetwork.LocalPlayer.NickName}");
 
-        // [SPAWN SAFETY] 로컬 클라에서는 ServerMotor 강제 비활성화 (이중 보호)
+        //  서버 아닌 클라에서는 ServerMotor 강제 비활성화 (이중 보호)
         var sm = playerObj.GetComponent<ServerMotor>();
         if (sm != null && !PhotonNetwork.IsMasterClient)
             sm.enabled = false;
 
-        // 팀 주입
-        var playerTeam = playerObj.GetComponent<PlayerTeam>();
-        if (playerTeam != null)
-            playerTeam.SetTeamNetworked(myTeam);
+        //  팀 데이터 동기화 (AllBuffered)
+        var team = playerObj.GetComponent<PlayerTeam>();
+        if (team != null)
+            team.SetTeamNetworked(myTeam); // 내부가 AllBuffered RPC여야 함
 
-        // 내 플레이어 캐시
+        //  내 플레이어 캐싱
         PhotonNetwork.LocalPlayer.TagObject = playerObj;
 
+        // CaptureManager 연동
         var cap = FindObjectOfType<CapturePointManager>();
-        if (cap != null) cap.myPlayer = playerTeam;
+        if (cap != null && team != null)
+            cap.myPlayer = team;
 
-        // 다른 플레이어 HP바 바인딩은 나중에 Join/Instantiate 이벤트에서 개별 처리 가능
         return playerObj;
     }
 
+    // 다른 플레이어 HP 바 자동 연결
     public void BindOtherHPBar(GameObject player)
     {
-        if (HealthBar == null || mainCanvas == null || player == null) return;
+        if (healthBarPrefab == null || mainCanvas == null || player == null) return;
 
         var ph = player.GetComponent<PlayerHealth_Server>();
         if (ph == null) return;
 
-        // 이미 바인딩된 UI가 있으면 생성하지 않음 (중복 방지)
+        // 이미 바인딩된 경우 중복 생성 방지
         var exist = mainCanvas.GetComponentsInChildren<OtherPlayerHealthBar>(true);
         for (int i = 0; i < exist.Length; i++)
         {
@@ -91,16 +105,17 @@ public class GameManager : MonoBehaviour
                 return;
         }
 
-        var go = Instantiate(HealthBar, mainCanvas.transform);
+        var go = Instantiate(healthBarPrefab, mainCanvas.transform);
         var hpUI = go.GetComponent<OtherPlayerHealthBar>();
         if (hpUI == null) return;
 
         hpUI.playerHealth = ph;
         Transform head = player.transform.Find("Headup");
         hpUI.target = (head != null) ? head : player.transform;
-        hpUI.cam = Camera.main; // (없어도 스크립트가 지연 할당)
+        hpUI.cam = Camera.main;
     }
 
+    //팀 계산
     int GetMyTeam()
     {
         var lp = PhotonNetwork.LocalPlayer;
@@ -116,10 +131,12 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        // 짝수=RED(0), 홀수=BLUE(1)
         int actor = (lp != null) ? lp.ActorNumber : Random.Range(1, 9999);
-        return (actor % 2 == 0) ? 0 : 1; // 짝수=RED(0), 홀수=BLUE(1)
+        return (actor % 2 == 0) ? 0 : 1;
     }
 
+    // 랜덤 스폰 위치
     Vector3 RandomPointInBox(BoxCollider box)
     {
         Vector3 c = box.center;
@@ -128,7 +145,7 @@ public class GameManager : MonoBehaviour
         return box.transform.TransformPoint(c + local);
     }
 
-    // [BIND FIX] 내 플레이어 기준으로 HUD 연결 (기존 FindObjectOfType 의 모호성 제거)
+    // HUD 바인딩
     void BindHUD(GameObject myPlayerObj)
     {
         if (hudInstance == null || myPlayerObj == null) return;
@@ -144,6 +161,7 @@ public class GameManager : MonoBehaviour
         if (capUI != null) capUI.Init(cap);
     }
 
+    // 리스폰 처리 (서버 전용)
     public void RequestRespawn(PhotonView target, float delaySeconds)
     {
         if (target == null) return;
@@ -158,19 +176,15 @@ public class GameManager : MonoBehaviour
 
         int team = GetTeamOf(target);
 
-        // 팀별 스폰 영역
         BoxCollider area = (team == 0) ? redSpawnPoint : blueSpawnPoint;
         if (area == null) area = redSpawnPoint ?? blueSpawnPoint;
 
-        // 좌표/회전
         Vector3 spawnPos = (area != null) ? RandomPointInBox(area) : target.transform.position;
         Vector3 forward = (team == 0) ? -Vector3.forward : Vector3.forward;
 
-        // 체력 상한
         var ph = target.GetComponent<PlayerHealth_Server>();
         int hp = (ph != null) ? ph.maxHealth : 100;
 
-        // 전체 동기화
         target.RPC("RPC_RespawnAt", RpcTarget.AllViaServer, spawnPos, forward, hp, 1.0f);
     }
 
