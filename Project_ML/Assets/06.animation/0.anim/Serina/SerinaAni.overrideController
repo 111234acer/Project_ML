@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SerinaAni
+  m_Controller: {fileID: 9100000, guid: 7e06fc3dd4d819e42885d478441539d3, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: ffa9af1d1674d8245b258d90cf6787bc, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 3e5451beb7094d0469ca08c03de5032d, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 0343f1e9588fe96419a96aad9b657a5a, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 256fb9f3ed020e04589e7fb3aaf97934, type: 2}

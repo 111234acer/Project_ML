@@ -2503,6 +2503,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78fd2be8f4d0f0146bbf2723f34445c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sfxSource: {fileID: 0}
+  footstepSource: {fileID: 0}
+  sfxFootstepLoop: {fileID: 0}
+  sfxJump: {fileID: 0}
+  sfxLand: {fileID: 0}
+  sfxAim: {fileID: 0}
+  sfxFire: {fileID: 0}
+  footstepMinMove: 0.2
 --- !u!1 &7386752850970557694
 GameObject:
   m_ObjectHideFlags: 0

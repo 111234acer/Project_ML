@@ -125,7 +125,8 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
 
         StartCoroutine(Invincible(Mathf.Max(invuln, respawnInvincibleTime)));
 
-        photonView.RPC("Client_Anim_Respawn", RpcTarget.All);
+        if (currentHealth > 0)
+            photonView.RPC("Client_Anim_Respawn", RpcTarget.All);
     }
 
     IEnumerator Invincible(float dur)
@@ -180,5 +181,11 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
     void Client_Anim_Respawn()
     { 
         animationHandler?.Respawn();
+    }
+
+    [PunRPC]
+    void Client_Anim_Hit()
+    {
+        animationHandler?.HitTrigger();
     }
 }

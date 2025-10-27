@@ -16,7 +16,10 @@ public class AnimationHandler : MonoBehaviour
     private static readonly int hashShootT = Animator.StringToHash("shootTrigger");
     private static readonly int hashSkill1T = Animator.StringToHash("skillTrigger1");
     private static readonly int hashSkill2T = Animator.StringToHash("skillTrigger2");
+    private static readonly int hashSkill3T = Animator.StringToHash("skillTrigger3");
+    private static readonly int hashHitT = Animator.StringToHash("hitTrigger");
 
+    
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -54,7 +57,7 @@ public class AnimationHandler : MonoBehaviour
 
         animator.ResetTrigger(hashJumpT);
         animator.SetBool(hashIsGrounded, true);
-        animator.SetTrigger(hashLandT);
+        animator.SetTrigger(hashLandT);        
     }
 
     public void OnDead()
@@ -81,6 +84,7 @@ public class AnimationHandler : MonoBehaviour
     {
         animator.SetTrigger(hashShootT);
         animator.SetBool(hashIsAim, false);
+
     }
 
     public void Skill1Trigger()
@@ -91,6 +95,15 @@ public class AnimationHandler : MonoBehaviour
     public void Skill2Trigger()
     {
         animator.SetTrigger(hashSkill2T);
-        
+    }
+
+    public void Skill3Trigger()
+    {
+        animator.SetTrigger(hashSkill3T);
+    }
+
+    public void HitTrigger()
+    {
+        animator.SetTrigger(hashHitT);
     }
 }

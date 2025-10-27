@@ -4,42 +4,30 @@ using TMPro;
 
 public class CharacterCard : MonoBehaviour
 {
-    [Header("Meta Info")]
-    public string characterId = "Lumia";      // 선택 ID (프리팹 이름)
-    public string displayName = "루미아";
+    public Button btn;    
 
-    [Header("References")]
-    public Image imagePortrait;
-    public TMP_Text textName;
-    public Image selectedBorder;
-    public Image selectedBadge;
-    public Button clickArea;
+    [Header("Meta")]
+    public int charId;            // 0~8
+    public bool isDummy;          // 더미면 비활성
 
-    CharacterSelectManager manager;
+    CharacterSelectManager owner;
 
-    void Awake()
+    public void Init(CharacterSelectManager o, int id)
     {
-        manager = FindObjectOfType<CharacterSelectManager>();
+        owner = o;
+        if (id >= 0) charId = id;
 
-        if (textName) textName.text = displayName;
+        if (!btn) btn = GetComponent<Button>();
+        btn.onClick.RemoveAllListeners();
+        btn.onClick.AddListener(() => owner.HoverSelect(charId));
 
-        if (clickArea)
-            clickArea.onClick.AddListener(OnClickSelect);
-
-        SetSelected(false);
+        // DisabledColor로 잠금 표현
+        btn.interactable = !isDummy;
     }
 
-    public void OnClickSelect()
-    {
-        if (manager == null) return;
-        manager.SelectCharacter(characterId);
-    }
 
-    public void SetSelected(bool on)
+    public void SetTaken(bool taken)
     {
-        if (selectedBorder)
-            selectedBorder.color = new Color(0.486f, 0.776f, 1f, on ? 1f : 0f); // #7BC6FF
-        if (selectedBadge)
-            selectedBadge.color = new Color(1f, 1f, 1f, on ? 1f : 0f);
+        if (btn) btn.interactable = !(taken || isDummy);
     }
 }

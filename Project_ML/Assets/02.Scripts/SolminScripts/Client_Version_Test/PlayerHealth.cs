@@ -38,7 +38,7 @@ public class PlayerHealth : MonoBehaviour
         currentHealth -= damage;                                        // 체력을 데미지 받는 만큼 깍고
         currentHealth = Mathf.Max(currentHealth, 0);                    // 최소값을 0으로 제한
 
-        Debug.Log($"{characterName} 피해 {damage} -> 남은 체력 : {currentHealth}");
+        animationHandler.HitTrigger();
 
         // 피격 직후 짧은 무적 프레임 적용(중복 피격 방지)
         StartCoroutine(InvincibleCoroutine(invincibleTime));

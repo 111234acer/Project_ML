@@ -68,6 +68,11 @@ MonoBehaviour:
   - Client_Anim_Skill1
   - Client_Anim_Skill2
   - Server_ReceiveInputV2
+  - Client_Anim_Hit
+  - Client_Anim_Skill3
+  - Client_OnPickDenied
+  - Client_OnPickLocked
+  - Server_TryLockPick
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

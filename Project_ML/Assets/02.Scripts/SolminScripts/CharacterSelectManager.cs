@@ -1,234 +1,237 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
-using ExitGames.Client.Photon;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
-using Hashtable = ExitGames.Client.Photon.Hashtable;
-
-/// <summary>
-/// 캐릭터 선택 씬 전체를 관리하는 핵심 매니저.
-/// - 로컬 플레이어의 캐릭터 선택
-/// - Photon CustomProperties를 통한 전체 동기화
-/// - 모든 인원 선택 완료 시 게임 씬 로드
-/// </summary>
 public class CharacterSelectManager : MonoBehaviourPunCallbacks
 {
-    [Header("UI References")]
-    public TMP_Text statusText;                // 하단 상태 텍스트 (“선택 중...”, “루미아 선택됨”)
-    public Button confirmButton;               // “선택 확정” 버튼
-    public Button backButton;                  // “나가기” 버튼 (로비 복귀용)
-    public Transform playerListParent;         // Panel_PlayerList의 VerticalLayoutGroup Transform
-    public GameObject playerListEntryPrefab;   // “플레이어1 : 루미아” 형식 텍스트 프리팹
+    [Header("UI")]
+    public TextMeshProUGUI timerText;
+    public TextMeshProUGUI charNameText;     // 우측상단 이름
+    public TextMeshProUGUI jobText;          // 우측상단 직업
+    public Image[] skillIcons;               // 아래 3개
+    public Image centerPortrait;             // 중앙 큰 이미지
+    public Button confirmBtn;
 
-    [Header("Timeout Settings")]
-    public float selectionTimeout = 20f;       // 최대 선택 대기 시간
+    [Header("Cards")]
+    public CharacterCard[] cards;          // 9칸(딜/힐/탱 각 3개, 더미는 interactable=false)
 
-    private Dictionary<int, TMP_Text> playerListEntries = new(); // actorNumber → UI
-    private string selectedCharacter = "";
-    private bool isConfirmed = false;
-    private bool allSelected = false;
+    [Header("Config")]
+    public float selectDuration = 25f;       // 선택 제한시간(서버 기준)
 
-    private void Start()
+    const string RP_PickMask = "PickMask";
+    const string RP_EndAt = "PickEndAt";
+    const string PK_Char = "Char";
+
+    PhotonView pv;
+    int localSelected = -1;
+
+    bool _portraitActivated = false;
+
+    void Awake()
     {
-        // 플레이어 리스트 UI 생성
-        BuildPlayerList();
+        pv = GetComponent<PhotonView>();
+        PhotonNetwork.AutomaticallySyncScene = true;
 
-        if (statusText != null)
-            statusText.text = "캐릭터를 선택하세요.";
+        if (centerPortrait) centerPortrait.gameObject.SetActive(false);
 
-        if (confirmButton != null)
-            confirmButton.onClick.AddListener(OnClickConfirm);
+        // 카드 초기화 연결
+        for (int i = 0; i < cards.Length; i++)
+            cards[i].Init(this, i);
 
-        if (backButton != null)
-            backButton.onClick.AddListener(OnClickBack);
+        confirmBtn.onClick.AddListener(OnClickConfirm);
 
-        // 선택 제한 타이머
+        // 마스터가 룸 상태 초기화
         if (PhotonNetwork.IsMasterClient)
-            StartCoroutine(TimeoutRoutine());
-    }
-
-    // -----------------------------
-    // UI → 캐릭터 카드 클릭 시 호출
-    // -----------------------------
-    public void SelectCharacter(string charName)
-    {
-        if (isConfirmed) return; // 이미 확정한 상태면 변경 불가
-
-        selectedCharacter = charName;
-
-        if (statusText != null)
-            statusText.text = $"선택됨: {charName}";
-
-        // 카드 선택 시각화 전체에 전파
-        BroadcastCardSelection(charName);
-    }
-
-    // -----------------------------
-    // "선택 확정" 버튼
-    // -----------------------------
-    public void OnClickConfirm()
-    {
-        if (string.IsNullOrEmpty(selectedCharacter))
         {
-            if (statusText != null)
-                statusText.text = "먼저 캐릭터를 선택하세요.";
-            return;
+            var rp = new Hashtable
+            {
+                [RP_PickMask] = 0,
+                [RP_EndAt] = PhotonNetwork.Time + selectDuration
+            };
+            PhotonNetwork.CurrentRoom.SetCustomProperties(rp);
         }
 
-        isConfirmed = true;
+        // 내 Char 기본값 보장(-1)
+        if (!PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey(PK_Char))
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { [PK_Char] = -1 });
 
-        // Photon CustomProperties에 저장
-        Hashtable props = new Hashtable();
-        props["SelectedCharacter"] = selectedCharacter;
-        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
-
-        if (statusText != null)
-            statusText.text = $"{selectedCharacter} 선택 확정됨.";
-
-        // 다른 플레이어에게도 알림
-        photonView.RPC(nameof(RPC_NotifySelectionChanged), RpcTarget.All);
+        UpdateAllUI();
     }
 
-    // -----------------------------
-    // "나가기" 버튼
-    // -----------------------------
-    public void OnClickBack()
+    void Update()
     {
-        if (statusText != null)
-            statusText.text = "로비로 돌아갑니다...";
-        PhotonNetwork.LeaveRoom();
+        if (!PhotonNetwork.InRoom) return;
+
+        double endAt = GetRoomDouble(RP_EndAt, 0);
+        if (endAt <= 0) return;
+
+        double remain = Math.Max(0, endAt - PhotonNetwork.Time);
+        if (timerText) timerText.text = Math.Ceiling(remain).ToString("0");
+
+        // 마스터만, 조건 충족 시 '한 번만' 로드: 호출 후 Update 중단
+        if (PhotonNetwork.IsMasterClient && (remain <= 0 || AllLocked()))
+        {
+            enabled = false;                  // ← 로드 완료 전까지 재호출 차단(가드변수 없음)
+            PhotonNetwork.LoadLevel("Scene_ClientTest"); // 너의 인게임 씬명
+        }
     }
 
-    // -----------------------------
-    // 모든 플레이어가 선택 완료되면 게임 시작
-    // -----------------------------
+    // ---------- 선택 UI ----------
+    public void HoverSelect(int charId)
+    {
+        if (GetTaken(charId)) return;
+        localSelected = charId;
+        PaintPreview(charId);
+        confirmBtn.interactable = true;
+    }
+
+    void OnClickConfirm()
+    {
+        if (localSelected < 0) return;
+        pv.RPC(nameof(Server_TryLockPick), RpcTarget.MasterClient, localSelected);
+    }
+
+    // ---------- 서버권위 ----------
     [PunRPC]
-    void RPC_NotifySelectionChanged()
+    void Server_TryLockPick(int charId, PhotonMessageInfo info)
     {
-        RefreshPlayerListUI();
-        CheckAllSelectedAndStart();
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        // 시간 끝났으면 리젝트
+        double endAt = GetRoomDouble(RP_EndAt, 0);
+        if (PhotonNetwork.Time > endAt) { TargetDeny(info.Sender); return; }
+
+        // 이미 누가 선점?
+        int mask = GetRoomInt(RP_PickMask, 0);
+        bool taken = ((mask >> charId) & 1) == 1;
+
+        // 신청자 이미 다른 캐릭 가졌는지
+        int cur = GetPlayerInt(info.Sender, PK_Char, -1);
+        if (cur >= 0) { TargetDeny(info.Sender); return; }
+
+        if (taken) { TargetDeny(info.Sender); return; }
+
+        // 확정
+        mask |= (1 << charId);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { [RP_PickMask] = mask });
+        info.Sender.SetCustomProperties(new Hashtable { [PK_Char] = charId });
+
+        // 모두에게 UI 반영 지시(버퍼드)
+        pv.RPC(nameof(Client_OnPickLocked), RpcTarget.AllBuffered, info.Sender.ActorNumber, charId);
     }
 
-    // Photon에서 프로퍼티 바뀔 때마다 호출됨
-    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    void TargetDeny(Player p)
     {
-        RefreshPlayerListUI();
-        CheckAllSelectedAndStart();
+        pv.RPC(nameof(Client_OnPickDenied), p);
     }
 
-    // -----------------------------
-    // 전체 선택 완료 감지
-    // -----------------------------
-    void CheckAllSelectedAndStart()
+    [PunRPC]
+    void Client_OnPickDenied()
     {
-        bool everyoneSelected = true;
+        // 실패 알림(사운드/토스트 등)만. 선택 해제
+        confirmBtn.interactable = false;
+    }
 
-        foreach (var p in PhotonNetwork.PlayerList)
+    [PunRPC]
+    void Client_OnPickLocked(int actorNumber, int charId)
+    {
+        // 슬롯 잠금 반영
+        for (int i = 0; i < cards.Length; i++)
+            cards[i].SetTaken(GetTaken(i));
+
+        // 본인이라면 미리보기 잠금
+        if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
-            if (!p.CustomProperties.ContainsKey("SelectedCharacter"))
-            {
-                everyoneSelected = false;
-                break;
-            }
-        }
-
-        if (everyoneSelected && PhotonNetwork.IsMasterClient && !allSelected)
-        {
-            allSelected = true;
-
-            if (statusText != null)
-                statusText.text = "모든 플레이어 선택 완료! 게임 시작 중...";
-
-            StartCoroutine(LoadGameSceneAfterDelay(2f));
-        }
-    }
-
-    IEnumerator LoadGameSceneAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        PhotonNetwork.LoadLevel("GameScene");
-    }
-
-    // -----------------------------
-    // 선택 제한 타이머 (마스터 전용)
-    // -----------------------------
-    IEnumerator TimeoutRoutine()
-    {
-        yield return new WaitForSeconds(selectionTimeout);
-
-        if (allSelected) yield break;
-
-        foreach (var p in PhotonNetwork.PlayerList)
-        {
-            if (!p.CustomProperties.ContainsKey("SelectedCharacter"))
-            {
-                Hashtable props = new Hashtable();
-                props["SelectedCharacter"] = "Lumia"; // 기본값
-                p.SetCustomProperties(props);
-            }
-        }
-
-        Debug.Log("[CharacterSelectManager] 선택 제한 시간 초과. 기본 캐릭터로 설정.");
-        CheckAllSelectedAndStart();
-    }
-
-    // -----------------------------
-    // 플레이어 리스트 UI 생성
-    // -----------------------------
-    void BuildPlayerList()
-    {
-        if (playerListParent == null || playerListEntryPrefab == null)
-            return;
-
-        foreach (var p in PhotonNetwork.PlayerList)
-        {
-            var entry = Instantiate(playerListEntryPrefab, playerListParent);
-            var text = entry.GetComponentInChildren<TMP_Text>();
-            if (text != null)
-            {
-                text.text = $"{p.NickName} : 미선택";
-                playerListEntries[p.ActorNumber] = text;
-            }
+            confirmBtn.interactable = false;
         }
     }
 
-    void RefreshPlayerListUI()
+    // ---------- Photon 콜백 ----------
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
-        foreach (var p in PhotonNetwork.PlayerList)
-        {
-            string selected = p.CustomProperties.ContainsKey("SelectedCharacter")
-                ? p.CustomProperties["SelectedCharacter"].ToString()
-                : "미선택";
-
-            if (playerListEntries.TryGetValue(p.ActorNumber, out TMP_Text txt) && txt != null)
-                txt.text = $"{p.NickName} : {selected}";
-        }
+        if (propertiesThatChanged.ContainsKey(RP_PickMask))
+            for (int i = 0; i < cards.Length; i++)
+                cards[i].SetTaken(GetTaken(i));
     }
 
-    // -----------------------------
-    // 카드 하이라이트 반영 (UI용)
-    // -----------------------------
-    public void BroadcastCardSelection(string selectedId)
+    public override void OnPlayerPropertiesUpdate(Player target, Hashtable changedProps)
     {
-        var cards = FindObjectsOfType<CharacterCard>(true);
-        foreach (var c in cards)
-            c.SetSelected(c.characterId == selectedId);
-    }
-
-    // -----------------------------
-    // Photon 콜백
-    // -----------------------------
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        RefreshPlayerListUI();
+        if (changedProps.ContainsKey(PK_Char))
+            for (int i = 0; i < cards.Length; i++)
+                cards[i].SetTaken(GetTaken(i));
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        RefreshPlayerListUI();
+        // 마스터가 떠난 사람의 픽을 해제해 줌(자원 회수)
+        if (!PhotonNetwork.IsMasterClient) return;
+        int c = GetPlayerInt(otherPlayer, PK_Char, -1);
+        if (c < 0) return;
+        int mask = GetRoomInt(RP_PickMask, 0);
+        mask &= ~(1 << c);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { [RP_PickMask] = mask });
+    }
+
+    // ---------- 헬퍼 ----------
+    bool AllLocked()
+    {
+        foreach (var p in PhotonNetwork.PlayerList)
+            if (GetPlayerInt(p, PK_Char, -1) < 0) return false;
+        return true;
+    }
+
+    bool GetTaken(int charId)
+    {
+        int mask = GetRoomInt(RP_PickMask, 0);
+        return ((mask >> charId) & 1) == 1;
+    }
+
+    int GetRoomInt(string k, int defV) =>
+        (PhotonNetwork.CurrentRoom != null && PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(k, out var v) && v is int i) ? i : defV;
+    double GetRoomDouble(string k, double defV) =>
+        (PhotonNetwork.CurrentRoom != null && PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(k, out var v) && v is double d) ? d : defV;
+    int GetPlayerInt(Player p, string k, int defV) =>
+        (p != null && p.CustomProperties != null && p.CustomProperties.TryGetValue(k, out var v) && v is int i) ? i : defV;
+
+    void UpdateAllUI()
+    {
+        for (int i = 0; i < cards.Length; i++)
+            cards[i].SetTaken(GetTaken(i));
+        PaintPreview(-1);
+        confirmBtn.interactable = false;
+    }
+
+    public void PaintPreview(int charId)
+    {
+        var data = CharacterCatalog.Instance.Get(charId);
+        if (data == null)
+        {
+            if (!_portraitActivated)
+            {
+                if (charNameText) charNameText.text = "";
+                if (jobText) jobText.text = "";
+                if (centerPortrait) centerPortrait.sprite = null;
+                for (int i = 0; i < skillIcons.Length; i++)
+                    if (skillIcons[i]) skillIcons[i].sprite = null;
+            }
+            return;
+        }
+
+        if (charNameText) charNameText.text = data.displayName;
+        if (jobText) jobText.text = data.role.ToString(); // Dealer/Healer/Tanker
+        if (centerPortrait) centerPortrait.sprite = data.portrait;
+        for (int i = 0; i < skillIcons.Length; i++)
+            if (i < data.skillIcons.Count && skillIcons[i]) skillIcons[i].sprite = data.skillIcons[i];
+
+        if (!_portraitActivated && centerPortrait)
+        {
+            centerPortrait.gameObject.SetActive(true);
+            _portraitActivated = true;
+        }
     }
 }

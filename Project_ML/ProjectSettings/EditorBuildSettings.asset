@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/01.Scenes/PhotonServerScene/PhotonRoom.unity
     guid: c38d745746529114b8b1145744708f5e
+  - enabled: 1
+    path: Assets/01.Scenes/CharacterSelectScene.unity
+    guid: e4ece295ad43a724bacd8f9344e8606e
   - enabled: 0
     path: Assets/01.Scenes/PhotonServerScene/PhotonTest.unity
     guid: ff6bb082b96eb81469dee3227b0f835c
