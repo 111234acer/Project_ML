@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ExitGames.Client.Photon;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
     public BoxCollider redSpawnPoint;
     public BoxCollider blueSpawnPoint;
@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
         if (lp != null && lp.CustomProperties != null &&
             lp.CustomProperties.TryGetValue("Char", out var v) && v is int ci)
             charId = ci;
-                
+
         var data = CharacterCatalog.Instance.Get(charId);
 
         if (string.IsNullOrEmpty(data.prefabName))
@@ -67,14 +67,16 @@ public class GameManager : MonoBehaviour
             return null;
         }
 
+        // 네트워크 Instantiate 모든 클라 자동 복제     
         var playerObj = PhotonNetwork.Instantiate(data.prefabName, spawnPos, spawnRot);
 
+        // 서버아닌 클라에서는 ServerMotor 강제 비활성화
         var sm = playerObj.GetComponent<ServerMotor>();
         if (sm != null && !PhotonNetwork.IsMasterClient)
             sm.enabled = false;
 
 
-        // 팀 주입
+        // 팀 데이터 동기화
         var playerTeam = playerObj.GetComponent<PlayerTeam>();
         if (playerTeam != null)
             playerTeam.SetTeamNetworked(myTeam);
