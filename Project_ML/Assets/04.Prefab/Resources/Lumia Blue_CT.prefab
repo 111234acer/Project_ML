@@ -2503,14 +2503,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78fd2be8f4d0f0146bbf2723f34445c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sfxSource: {fileID: 0}
-  footstepSource: {fileID: 0}
-  sfxFootstepLoop: {fileID: 0}
-  sfxJump: {fileID: 0}
-  sfxLand: {fileID: 0}
-  sfxAim: {fileID: 0}
-  sfxFire: {fileID: 0}
-  footstepMinMove: 0.2
 --- !u!1 &7386752850970557694
 GameObject:
   m_ObjectHideFlags: 0
@@ -2847,7 +2839,7 @@ Transform:
   m_GameObject: {fileID: 8100329294792481089}
   serializedVersion: 2
   m_LocalRotation: {x: 0.17364816, y: 0, z: 0, w: 0.9848078}
-  m_LocalPosition: {x: 0.4, y: 1.7, z: -2}
+  m_LocalPosition: {x: 0.4, y: 2.327, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
