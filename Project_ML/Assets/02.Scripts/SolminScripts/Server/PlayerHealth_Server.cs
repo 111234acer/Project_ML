@@ -50,6 +50,12 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
+    public void Client_RegisterDamageDealtTo(int targetViewId, float showSeconds)
+    {
+        OtherPlayerHealthBar.RegisterDamagedByLocal(targetViewId, showSeconds);
+    }
+
+    [PunRPC]
     public void Server_ApplyDamage(int dmg, PhotonMessageInfo info)
     {
         if (!PhotonNetwork.IsMasterClient || isDead || isInvincible) return;

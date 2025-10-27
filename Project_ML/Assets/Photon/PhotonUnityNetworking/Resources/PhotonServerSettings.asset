@@ -73,6 +73,8 @@ MonoBehaviour:
   - Client_OnPickDenied
   - Client_OnPickLocked
   - Server_TryLockPick
+  - Client_NotifyDamagedByYou
+  - Client_RegisterDamageDealtTo
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

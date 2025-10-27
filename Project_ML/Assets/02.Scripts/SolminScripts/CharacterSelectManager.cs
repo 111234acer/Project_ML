@@ -23,7 +23,9 @@ public class CharacterSelectManager : MonoBehaviourPunCallbacks
     [Header("Config")]
     public float selectDuration = 25f;       // 선택 제한시간(서버 기준)
 
-    const string RP_PickMask = "PickMask";
+    const string RP_PickMask_Red = "PickMask_Red";
+    const string RP_PickMask_Blue = "PickMask_Blue";
+
     const string RP_EndAt = "PickEndAt";
     const string PK_Char = "Char";
 
@@ -31,6 +33,8 @@ public class CharacterSelectManager : MonoBehaviourPunCallbacks
     int localSelected = -1;
 
     bool _portraitActivated = false;
+
+    bool _localLocked = false;
 
     void Awake()
     {
@@ -50,7 +54,8 @@ public class CharacterSelectManager : MonoBehaviourPunCallbacks
         {
             var rp = new Hashtable
             {
-                [RP_PickMask] = 0,
+                [RP_PickMask_Red] = 0,
+                [RP_PickMask_Blue] = 0,
                 [RP_EndAt] = PhotonNetwork.Time + selectDuration
             };
             PhotonNetwork.CurrentRoom.SetCustomProperties(rp);
@@ -84,6 +89,8 @@ public class CharacterSelectManager : MonoBehaviourPunCallbacks
     // ---------- 선택 UI ----------
     public void HoverSelect(int charId)
     {
+        if (_localLocked) return;
+
         if (GetTaken(charId)) return;
         localSelected = charId;
         PaintPreview(charId);
@@ -107,18 +114,20 @@ public class CharacterSelectManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.Time > endAt) { TargetDeny(info.Sender); return; }
 
         // 이미 누가 선점?
-        int mask = GetRoomInt(RP_PickMask, 0);
-        bool taken = ((mask >> charId) & 1) == 1;
+        int team = GetTeamOf(info.Sender);
+        string maskKey = GetPickMaskKey(team);
+        int mask = GetRoomInt(maskKey, 0);
 
         // 신청자 이미 다른 캐릭 가졌는지
         int cur = GetPlayerInt(info.Sender, PK_Char, -1);
         if (cur >= 0) { TargetDeny(info.Sender); return; }
 
+        bool taken = ((mask >> charId) & 1) == 1;
         if (taken) { TargetDeny(info.Sender); return; }
 
         // 확정
         mask |= (1 << charId);
-        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { [RP_PickMask] = mask });
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { [maskKey] = mask });
         info.Sender.SetCustomProperties(new Hashtable { [PK_Char] = charId });
 
         // 모두에게 UI 반영 지시(버퍼드)
@@ -147,6 +156,7 @@ public class CharacterSelectManager : MonoBehaviourPunCallbacks
         // 본인이라면 미리보기 잠금
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
+            _localLocked = true;
             confirmBtn.interactable = false;
         }
     }
@@ -154,16 +164,22 @@ public class CharacterSelectManager : MonoBehaviourPunCallbacks
     // ---------- Photon 콜백 ----------
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
-        if (propertiesThatChanged.ContainsKey(RP_PickMask))
+        int myTeam = GetLocalTeam();
+        string myKey = GetPickMaskKey(myTeam);
+        if (propertiesThatChanged.ContainsKey(myKey))
+        {
             for (int i = 0; i < cards.Length; i++)
                 cards[i].SetTaken(GetTaken(i));
+        }
     }
 
     public override void OnPlayerPropertiesUpdate(Player target, Hashtable changedProps)
     {
         if (changedProps.ContainsKey(PK_Char))
+        {
             for (int i = 0; i < cards.Length; i++)
                 cards[i].SetTaken(GetTaken(i));
+        }
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -172,9 +188,11 @@ public class CharacterSelectManager : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsMasterClient) return;
         int c = GetPlayerInt(otherPlayer, PK_Char, -1);
         if (c < 0) return;
-        int mask = GetRoomInt(RP_PickMask, 0);
+        int team = GetTeamOf(otherPlayer);
+        string key = GetPickMaskKey(team);
+        int mask = GetRoomInt(key, 0);
         mask &= ~(1 << c);
-        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { [RP_PickMask] = mask });
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { [key] = mask });
     }
 
     // ---------- 헬퍼 ----------
@@ -187,8 +205,29 @@ public class CharacterSelectManager : MonoBehaviourPunCallbacks
 
     bool GetTaken(int charId)
     {
-        int mask = GetRoomInt(RP_PickMask, 0);
+        int team = GetLocalTeam();
+        string key = GetPickMaskKey(team);
+        int mask = GetRoomInt(key, 0);
         return ((mask >> charId) & 1) == 1;
+    }
+
+    string GetPickMaskKey(int team) => (team == 0) ? RP_PickMask_Red : RP_PickMask_Blue;
+    int GetLocalTeam() => GetTeamOf(PhotonNetwork.LocalPlayer);
+
+    int GetTeamOf(Player p)
+    {
+        if (p != null && p.CustomProperties != null)
+        {
+            if (p.CustomProperties.TryGetValue("MyTeam", out var v) ||
+                p.CustomProperties.TryGetValue("Team", out v) ||
+                p.CustomProperties.TryGetValue("team", out v))
+            {
+                if (v is int i) return Mathf.Clamp(i, 0, 1);
+                if (v is byte b) return Mathf.Clamp((int)b, 0, 1);
+            }
+        }
+        int actor = (p != null) ? p.ActorNumber : UnityEngine.Random.Range(1, 9999);
+        return (actor % 2 == 0) ? 0 : 1; // 짝수=RED(0), 홀수=BLUE(1)
     }
 
     int GetRoomInt(string k, int defV) =>

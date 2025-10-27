@@ -7,8 +7,15 @@ public class HealthBarAutoBinder : MonoBehaviour, IPunInstantiateMagicCallback
 {
     bool bound;
 
-    void Start() { StartCoroutine(CoTryBind()); }
-    public void OnPhotonInstantiate(PhotonMessageInfo info) { StartCoroutine(CoTryBind()); }
+    void Start() 
+    { 
+        StartCoroutine(CoTryBind());
+    }
+
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    { 
+        StartCoroutine(CoTryBind());
+    }
 
     IEnumerator CoTryBind()
     {

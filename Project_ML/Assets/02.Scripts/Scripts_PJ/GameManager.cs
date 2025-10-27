@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
     public BoxCollider redSpawnPoint;
     public BoxCollider blueSpawnPoint;
 
-    public GameObject playerPrefab;
     public GameObject hudCanvasPrefab;
 
     private GameObject hudInstance;
@@ -54,12 +53,26 @@ public class GameManager : MonoBehaviour
             ? Quaternion.LookRotation(-Vector3.forward, Vector3.up)
             : Quaternion.LookRotation(Vector3.forward, Vector3.up);
 
-        var playerObj = PhotonNetwork.Instantiate(playerPrefab.name, spawnPos, spawnRot);
+        int charId = -1;
+        var lp = PhotonNetwork.LocalPlayer;
+        if (lp != null && lp.CustomProperties != null &&
+            lp.CustomProperties.TryGetValue("Char", out var v) && v is int ci)
+            charId = ci;
+                
+        var data = CharacterCatalog.Instance.Get(charId);
 
-        // [SPAWN SAFETY] 로컬 클라에서는 ServerMotor 강제 비활성화 (이중 보호)
+        if (string.IsNullOrEmpty(data.prefabName))
+        {
+            Debug.LogError("[GameManager] No prefab to spawn. Check CharacterCatalog.prefabName or playerPrefab.");
+            return null;
+        }
+
+        var playerObj = PhotonNetwork.Instantiate(data.prefabName, spawnPos, spawnRot);
+
         var sm = playerObj.GetComponent<ServerMotor>();
         if (sm != null && !PhotonNetwork.IsMasterClient)
             sm.enabled = false;
+
 
         // 팀 주입
         var playerTeam = playerObj.GetComponent<PlayerTeam>();
