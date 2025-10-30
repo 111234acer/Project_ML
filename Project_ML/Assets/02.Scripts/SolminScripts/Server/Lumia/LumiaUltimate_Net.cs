@@ -2,32 +2,34 @@ using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 
+// [루미아 궁극기].
+// AOE 이펙트는 서버에서 생성.
+// 데미지는 서버만 계산 (AOEDamageZone_Net 내부에서 처리).
+[DisallowMultipleComponent]
 public class LumiaUltimate_Net : PlayerSkill_Net
 {
     [Header("AOE Settings")]
-    public GameObject indicatorPrefab;
-    public GameObject aoeEffectPrefab;
-    public float range = 20f;
+    public GameObject indicatorPrefab;     // 조준 인디케이터
+    public GameObject aoeEffectPrefab;     // AOE 피해 구역 Prefab (AOEDamageZone_Net 포함)
+    public float range = 20f;              // 사거리 제한
 
     [Header("Damage Settings")]
-    public float duration = 5f;
-    public float damagePerSecond = 30f;
+    public float duration = 5f;            // AOE 유지 시간
+    public float damagePerSecond = 30f;    // 초당 데미지
 
     [Header("References")]
-    public Camera playerCamera;
-    public Transform player;
+    public Camera playerCamera;            // 플레이어 카메라
+    public Transform player;               // 플레이어 본체 트랜스폼
 
     private GameObject indicatorInstance;
     private bool isTargeting = false;
+    private AnimationHandler anim;
 
-    private AnimationHandler animationHandler;
-
-    private void Awake()
+    void Awake()
     {
         skillName = "루미아 궁극기";
         cooldown = 15f;
-
-        animationHandler = GetComponentInChildren<AnimationHandler>();
+        anim = GetComponentInChildren<AnimationHandler>();
     }
 
     public override void Activate()
@@ -35,12 +37,13 @@ public class LumiaUltimate_Net : PlayerSkill_Net
         if (!photonView.IsMine) return;
         if (isTargeting) return;
 
-        // 궁극기 시작 시 기본 공격 잠금
+        // 스킬 사용 중 기본공격 잠금
         PlayerSkillManager_Net.SetSkillLock(true);
-
         StartCoroutine(TargetingRoutine());
     }
 
+
+    // 조준 및 클릭 루프
     private IEnumerator TargetingRoutine()
     {
         isTargeting = true;
@@ -52,20 +55,26 @@ public class LumiaUltimate_Net : PlayerSkill_Net
 
             if (Physics.Raycast(ray, out RaycastHit hit, 100f))
             {
-                float distance = Vector3.Distance(player.position, hit.point);
-                if (distance <= range)
+                float dist = Vector3.Distance(player.position, hit.point);
+                if (dist <= range)
                     indicatorInstance.transform.position = hit.point;
             }
 
+            // 마우스 좌클릭 시 발동
             if (Input.GetMouseButtonDown(0))
             {
                 Vector3 spawnPos = indicatorInstance.transform.position;
+
+                // 서버에 AOE 생성 요청 (서버만 피해 계산)
                 photonView.RPC(nameof(Server_SpawnAOE), RpcTarget.MasterClient, spawnPos);
+
+                // 인디케이터 제거 및 애니메이션 실행
                 Destroy(indicatorInstance);
                 isTargeting = false;
-                photonView.RPC("Client_Anim_Skill3", RpcTarget.All);
+                photonView.RPC(nameof(Client_Anim_Skill3), RpcTarget.All);
             }
 
+            // ESC로 취소
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Destroy(indicatorInstance);
@@ -75,12 +84,13 @@ public class LumiaUltimate_Net : PlayerSkill_Net
             yield return null;
         }
 
-        // 루프가 끝났으니 잠금 해제
+        // 조준 종료 → 잠금 해제 & 쿨다운 적용
         PlayerSkillManager_Net.SetSkillLock(false);
-
-        // 스킬 끝 처리
         EndSkill();
     }
+
+
+    // 서버만 AOE 생성 (RoomObject)
 
     [PunRPC]
     void Server_SpawnAOE(Vector3 pos)
@@ -93,9 +103,10 @@ public class LumiaUltimate_Net : PlayerSkill_Net
             zone.Initialize(damagePerSecond, duration);
     }
 
+    // 모든 클라에서 애니메이션 실행
     [PunRPC]
     void Client_Anim_Skill3()
     {
-        animationHandler?.Skill3Trigger();
+        anim?.Skill3Trigger();
     }
 }

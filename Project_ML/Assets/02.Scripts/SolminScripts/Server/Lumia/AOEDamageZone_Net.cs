@@ -1,13 +1,21 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using Photon.Pun;
 
+
+// [AOE 피해 존]
+// 서버(MasterClient)만 주기적으로 피해 계산.
+[DisallowMultipleComponent]
 public class AOEDamageZone_Net : MonoBehaviourPun
 {
-    public float radius = 5f;
+    [Header("AOE Settings")]
     public float damagePerSecond = 30f;
     public float duration = 5f;
-    public LayerMask targetLayer;
+    public float radius = 5f;
+    public LayerMask hitMask;
+
+    float elapsed;
 
     public void Initialize(float dps, float dur)
     {
@@ -15,30 +23,51 @@ public class AOEDamageZone_Net : MonoBehaviourPun
         duration = dur;
 
         if (PhotonNetwork.IsMasterClient)
-            StartCoroutine(DamageRoutine());
+            StartCoroutine(CoServerDamage());
+        else
+            StartCoroutine(CoDestroyAfter(duration)); // 클라에선 단순 시각효과 유지
     }
 
-    IEnumerator DamageRoutine()
+    IEnumerator CoServerDamage()
     {
-        float tick = 1f;
-        float elapsed = 0f;
+        float tick = 1f; // 1초당 데미지 계산
+        elapsed = 0f;
 
         while (elapsed < duration)
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, radius, targetLayer);
-            foreach (var hit in hits)
+            // 서버에서만 피해 계산
+            if (PhotonNetwork.IsMasterClient)
             {
-                var hp = hit.GetComponent<PlayerHealth_Server>();
-                if (hp != null && !hp.isDead)
+                var players = FindObjectsOfType<PlayerHealth_Server>()
+                    .Where(p => !p.isDead && Vector3.Distance(p.transform.position, transform.position) <= radius);
+
+                foreach (var hp in players)
                 {
-                    hp.photonView.RPC("Server_ApplyDamage", RpcTarget.MasterClient, Mathf.RoundToInt(damagePerSecond));
+                    hp.photonView.RPC(
+                        nameof(PlayerHealth_Server.Server_ApplyDamage),
+                        RpcTarget.MasterClient,
+                        Mathf.RoundToInt(damagePerSecond)
+                    );
                 }
             }
 
-            elapsed += tick;
             yield return new WaitForSeconds(tick);
+            elapsed += tick;
         }
 
         PhotonNetwork.Destroy(gameObject);
+    }
+
+    IEnumerator CoDestroyAfter(float t)
+    {
+        yield return new WaitForSeconds(t);
+        if (photonView.IsMine)
+            PhotonNetwork.Destroy(gameObject);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = new Color(0.8f, 0.4f, 1f, 0.35f);
+        Gizmos.DrawSphere(transform.position, radius);
     }
 }

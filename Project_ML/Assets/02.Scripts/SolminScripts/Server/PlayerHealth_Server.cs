@@ -42,6 +42,7 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
 
         animationHandler = GetComponentInChildren<AnimationHandler>();
     }
+
     public override void OnEnable()
     {
         base.OnEnable();
@@ -55,6 +56,7 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
         OtherPlayerHealthBar.RegisterDamagedByLocal(targetViewId, showSeconds);
     }
 
+    // 서버 권위 데미지 처리 (PhotonMessageInfo 포함 호출용)
     [PunRPC]
     public void Server_ApplyDamage(int dmg, PhotonMessageInfo info)
     {
@@ -72,17 +74,42 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
         else
         {
             StartCoroutine(Invincible(invincibleTime));
+            photonView.RPC(nameof(Client_Anim_Hit), RpcTarget.All);
+        }
+    }
+
+    // [추가] AOE / 화살 등에서 PhotonMessageInfo 없이 호출할 때 호환용
+    [PunRPC]
+    public void Server_ApplyDamage(int dmg)
+    {
+        if (!PhotonNetwork.IsMasterClient || isDead || isInvincible)
+            return;
+
+        int newHp = Mathf.Max(0, currentHealth - Mathf.Max(0, dmg));
+        if (newHp == currentHealth) return;  // 변화 없으면 종료
+        currentHealth = newHp;
+        pv.RPC(nameof(Client_SetHealth), RpcTarget.Others, currentHealth);
+
+        photonView.RPC(nameof(Client_Anim_Hit), RpcTarget.All);
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            StartCoroutine(Invincible(invincibleTime));
         }
     }
 
     public void RequestHeal(int amount)
     {
         amount = Mathf.Max(0, amount);
-        if (PhotonNetwork.IsMasterClient) 
-        { 
+        if (PhotonNetwork.IsMasterClient)
+        {
             Server_Heal(amount, default);
         }
-        else 
+        else
             pv.RPC(nameof(Server_Heal), RpcTarget.MasterClient, amount);
     }
 
@@ -90,7 +117,6 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
     void Server_Heal(int amount, PhotonMessageInfo info)
     {
         if (!PhotonNetwork.IsMasterClient || isDead) return;
-
 
         int newHp = Mathf.Min(maxHealth, currentHealth + Mathf.Max(0, amount));
         if (newHp == currentHealth) return;
@@ -177,15 +203,15 @@ public class PlayerHealth_Server : MonoBehaviourPunCallbacks
     public int GetAttackDamage() => attackDamage;
     public bool IsDead() => isDead;
 
-    [PunRPC] 
-    void Client_Anim_Dead() 
-    { 
+    [PunRPC]
+    void Client_Anim_Dead()
+    {
         animationHandler?.OnDead();
     }
 
     [PunRPC]
     void Client_Anim_Respawn()
-    { 
+    {
         animationHandler?.Respawn();
     }
 

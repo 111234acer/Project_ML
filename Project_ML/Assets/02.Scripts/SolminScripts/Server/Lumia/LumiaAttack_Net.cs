@@ -1,83 +1,81 @@
 using UnityEngine;
 using Photon.Pun;
-using System;
 
+// 클라이언트가 화살 생성.
+// 서버만 데미지 계산.
+// PlayerAttack_Net을 상속해 쿨다운 관리.
+[DisallowMultipleComponent]
 public class LumiaAttack_Net : PlayerAttack_Net
 {
-    [Header("Arrow Settings")]
-    public GameObject arrowPrefab;         // 화살 프리팹
-    public float minArrowSpeed = 10f;      // 최소 속도
-    public float maxArrowSpeed = 50f;      // 최대 속도
-    public float chargeTime = 1f;          // 최대 충전 시간
-    private float currentCharge = 0f;
-
     [Header("References")]
-    public Camera playerCamera;
+    public Transform firePoint;      // 화살이 발사되는 위치
+    public GameObject arrowPrefab;   // Photon 등록된 화살 프리팹
 
-    private bool isCharging = false;
+    [Header("Charge Settings")]
+    public float minCharge = 0.1f;
+    public float maxCharge = 1.5f;
+    public AnimationCurve powerCurve = AnimationCurve.EaseInOut(0, 0.4f, 1, 1f);
+    public float muzzleSpeed = 50f;
 
-    public static Action<float, bool> OnChargeUpdate;   // UI 갱신용 이벤트
-
-    private AnimationHandler animationHandler;
-
-
-    void Awake()
-    {
-        animationHandler = GetComponentInChildren<AnimationHandler>();
-    }
+    private bool isCharging;
+    private float chargeTime;
 
     void Update()
     {
         if (!photonView.IsMine) return;
+        if (PlayerSkillManager_Net.IsUsingAnySkill) return; // 스킬 중엔 공격 잠금
 
-        // 스킬 사용 중이면 공격 차단
-        if (PlayerSkillManager_Net.IsUsingAnySkill)
-            return;
+        bool down = Input.GetMouseButtonDown(0);
+        bool hold = Input.GetMouseButton(0);
+        bool up = Input.GetMouseButtonUp(0);
 
-        // 마우스 좌클릭 -> 차징 시작
-        if (Input.GetMouseButtonDown(0))
+        if (down && CanAttack())
         {
             isCharging = true;
-            currentCharge = 0f;
-            OnChargeUpdate?.Invoke(0f, true);
-            animationHandler?.OnAim();
+            chargeTime = 0f;
+            GetComponentInChildren<AnimationHandler>()?.ChargeStartTrigger();
         }
 
-        // 유지 중 : 차징 진행
-        if (isCharging && Input.GetMouseButton(0))
+        if (isCharging && hold)
         {
-            currentCharge = Mathf.Min(currentCharge + Time.deltaTime, chargeTime);
-            float percent = Mathf.Clamp01(currentCharge / chargeTime);
-            OnChargeUpdate?.Invoke(percent, true);
+            chargeTime = Mathf.Min(maxCharge, chargeTime + Time.deltaTime);
+            CrosshairChargeUI.OnChargeUpdate?.Invoke(chargeTime / maxCharge, true);
         }
 
-        // 버튼 때면 공격 요청
-        if (isCharging && Input.GetMouseButtonUp(0))
+        if (isCharging && up)
         {
-            float sendCharge = currentCharge; // chargeTime 기준 원본 값 전달
-            isCharging = false;
-            OnChargeUpdate?.Invoke(0f, false);
-            RequestAttack(sendCharge); // 서버 권위 경로로 발사 요청
+            PerformAttack(); // PlayerAttack_Net의 추상 함수 호출
         }
     }
 
-    protected override void Attack(float charge)
-    {
-        float percent = Mathf.Clamp01(charge / chargeTime);
-        float speed = Mathf.Lerp(minArrowSpeed, maxArrowSpeed, percent);
 
-        Vector3 dir = playerCamera.transform.forward;
+    // 기본 공격 실행
+    public override void PerformAttack()
+    {
+        if (!CanAttack()) return;
+        ResetCooldown();
+        isCharging = false;
+
+        float t = Mathf.InverseLerp(0f, maxCharge, Mathf.Max(minCharge, chargeTime));
+        float power = powerCurve.Evaluate(t);
+
+        Vector3 shootDir = firePoint.forward;
+        Vector3 shootVel = shootDir * (muzzleSpeed * Mathf.Lerp(0.5f, 1f, power));
         Vector3 spawnPos = firePoint.position;
 
-        // 서버가 화살 생성
-        GameObject arrow = PhotonNetwork.Instantiate(arrowPrefab.name, spawnPos, Quaternion.LookRotation(dir));
-        Rigidbody rb = arrow.GetComponent<Rigidbody>();
-        if (rb != null) rb.velocity = dir * speed;
-    }
+        // 클라이언트가 직접 화살 생성 (전 클라 동기화)
+        object[] data = new object[]
+        {
+            photonView.ViewID,
+            shootVel.x, shootVel.y, shootVel.z
+        };
 
-    [PunRPC]
-    protected override void Client_OnAttack(float charge)
-    {
-        animationHandler?.ShootTrigger();
+        PhotonNetwork.Instantiate(arrowPrefab.name, spawnPos, Quaternion.LookRotation(shootDir), 0, data);
+
+        // 발사 애니메이션 트리거
+        GetComponentInChildren<AnimationHandler>()?.ShootTrigger();
+
+        // 차지 UI 리셋
+        CrosshairChargeUI.OnChargeUpdate?.Invoke(0f, false);
     }
 }

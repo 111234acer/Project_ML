@@ -558,7 +558,7 @@ GameObject:
   m_Layer: 3
   m_Name: FirePoint
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -571,7 +571,7 @@ Transform:
   m_GameObject: {fileID: 1836488518108666450}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.18, z: 0.496}
+  m_LocalPosition: {x: 0, y: 1.2, z: 0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2244,7 +2244,7 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 0
+  Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
@@ -2350,15 +2350,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dfd3167824da4849a6476afe791bd5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cooldown: 0.3
   firePoint: {fileID: 3358794554718539268}
-  fireRate: 1
-  coolDown: 1
   arrowPrefab: {fileID: 5428142936862869010, guid: fca93bf4255ebe44aa2f6c4bc2535285,
     type: 3}
-  minArrowSpeed: 10
-  maxArrowSpeed: 100
-  chargeTime: 1
-  playerCamera: {fileID: 1725391514129727518}
+  minCharge: 0.1
+  maxCharge: 1
+  powerCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.4
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  muzzleSpeed: 60
 --- !u!114 &3722403317478618768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2386,10 +2408,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc6084696097d247baa2c94475c2442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillName: Skill
+  skillName: Dash
   cooldown: 5
-  dashDistance: 4
-  dashDuration: 0.2
+  dashSpeed: 16
+  duration: 0.2
 --- !u!114 &4407586078869913233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2402,7 +2424,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 289146dc9b11b4044a7b19d8001db08c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillName: Skill
+  skillName: Storm
   cooldown: 5
   arrowPrefab: {fileID: 5428142936862869010, guid: fca93bf4255ebe44aa2f6c4bc2535285,
     type: 3}
@@ -2410,6 +2432,7 @@ MonoBehaviour:
   arrowSpeed: 80
   fireInterval: 0.25
   arrowCount: 3
+  lockPrimaryDuringSkill: 1
 --- !u!114 &1829276847453002016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2423,7 +2446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillName: Skill
-  cooldown: 5
+  cooldown: 15
   indicatorPrefab: {fileID: 2196906228520095022, guid: 8f27d31d919f9d54bb68eb105a5c8fc5,
     type: 3}
   aoeEffectPrefab: {fileID: 7763575340890952865, guid: 217026c249712f443bfd0dc42cfdd90a,

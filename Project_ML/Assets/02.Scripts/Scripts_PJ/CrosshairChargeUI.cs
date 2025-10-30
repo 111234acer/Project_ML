@@ -10,14 +10,16 @@ public class CrosshairChargeUI : MonoBehaviour
     public float maxSize = 1550f;  // 처음 크기
     public float minSize = 110f;   // 풀차지 시 크기
 
+    public static System.Action<float, bool> OnChargeUpdate;
+
     private void OnEnable()
     {
-        LumiaAttack_Net.OnChargeUpdate += UpdateUI;
+        OnChargeUpdate += UpdateUI;
     }
 
     private void OnDisable()
     {
-        LumiaAttack_Net.OnChargeUpdate -= UpdateUI;
+        OnChargeUpdate += UpdateUI;
     }
 
     private void UpdateUI(float percent, bool active)

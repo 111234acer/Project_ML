@@ -48971,7 +48971,7 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 0
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
@@ -48990,12 +48990,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd30092f3c3699c4e9bf2e9dd5f3ae8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 3
   damagePerSecond: 30
   duration: 5
-  targetLayer:
+  radius: 3
+  hitMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
 --- !u!1 &7921442826027030599
 GameObject:
   m_ObjectHideFlags: 0

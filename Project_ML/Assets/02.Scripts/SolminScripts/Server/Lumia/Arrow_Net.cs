@@ -1,39 +1,91 @@
 using UnityEngine;
 using Photon.Pun;
 
-public class Arrow_Net : MonoBehaviourPun
+// 네트워크 화살 (클라 생성, 서버 데미지 처리)
+[DisallowMultipleComponent]
+public class Arrow_Net : MonoBehaviourPun, IPunInstantiateMagicCallback
 {
-    [Header("Arrow Settings")]
-    public float lifeTime = 5f;                     // 자동 소멸 시간
-    public int damage = 60;                         // 화살 데미지 60
+    [Header("Flight")]
+    public float gravity = 18f;
+    public float drag = 0.01f;
+    public float lifeTime = 6f;
+    public LayerMask hitMask = ~0;
 
-    private void Start()
+    [Header("Damage")]
+    public int baseDamage = 60;
+    public float headshotMultiplier = 2f;
+    public string headTag = "Head";
+
+    private Vector3 velocity;
+    private int ownerViewId;
+    private float spawnTime;
+    private bool hasHit;
+
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
-        if (PhotonNetwork.IsMasterClient)
-            Destroy(gameObject, lifeTime);
+        object[] data = info.photonView.InstantiationData;
+        if (data != null && data.Length >= 4)
+        {
+            ownerViewId = (int)data[0];
+            velocity = new Vector3((float)data[1], (float)data[2], (float)data[3]);
+        }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    void Start()
     {
-        // 클라이언트에서 물리처리 서버에서 로직 실행
-        if (!PhotonNetwork.IsMasterClient) return;
+        spawnTime = Time.time;
+        transform.forward = velocity.normalized;
+    }
 
-        // 피격 대상 확인
-        var hp = collision.collider.GetComponent<PlayerHealth_Server>();
-        if (hp != null && !hp.isDead)
+    void Update()
+    {
+        if (hasHit) return;
+
+        if (Time.time - spawnTime >= lifeTime)
         {
-            // 데미지만 실행
-            hp.photonView.RPC("Server_ApplyDamage", RpcTarget.MasterClient, damage);
-
-            var attacker = photonView.Owner; // 화살 소유자 = 가해자
-            if (attacker != null)
-            {
-                // showSeconds는 0f 넘기면 내부에서 기본값(3초) 사용
-                hp.photonView.RPC("Client_RegisterDamageDealtTo", attacker, hp.photonView.ViewID, 0f);
-            }
+            PhotonNetwork.Destroy(gameObject);
+            return;
         }
 
-        // 충돌 대상이 누구든지 삭제
+        float dt = Time.deltaTime;
+        velocity += Vector3.down * gravity * dt;
+        velocity *= (1f - drag * dt);
+
+        Vector3 step = velocity * dt;
+        if (Physics.Raycast(transform.position, step.normalized, out RaycastHit hit, step.magnitude + 0.05f, hitMask))
+        {
+            OnHit(hit);
+            return;
+        }
+
+        transform.position += step;
+        transform.forward = Vector3.Lerp(transform.forward, velocity.normalized, 0.5f);
+    }
+
+    void OnHit(RaycastHit hit)
+    {
+        if (hasHit) return;
+        hasHit = true;
+
+        // 서버만 데미지 계산
+        if (PhotonNetwork.IsMasterClient)
+        {
+            var hitPv = hit.collider.GetComponentInParent<PhotonView>();
+            if (hitPv && hitPv.ViewID == ownerViewId)
+            {
+                PhotonNetwork.Destroy(gameObject);
+                return;
+            }
+
+            int dmg = baseDamage;
+            if (hit.collider.CompareTag(headTag))
+                dmg = Mathf.RoundToInt(baseDamage * headshotMultiplier);
+
+            var hp = hit.collider.GetComponentInParent<PlayerHealth_Server>();
+            if (hp)
+                hp.photonView.RPC(nameof(PlayerHealth_Server.Server_ApplyDamage), RpcTarget.MasterClient, dmg);
+        }
+
         PhotonNetwork.Destroy(gameObject);
     }
 }

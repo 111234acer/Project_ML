@@ -86,7 +86,7 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
     //PhotonNetwork.LeaveRoom(); 으로 방을 떠날 때도 이 함수가 자동으로 호출된다.
     public override void OnConnectedToMaster()
     {   //여기서 Master는 포톤의 지역 서버를 의미한다.
-        Debug.Log("서버 접속 완료");
+        Debug.Log($"서버 접속 완료 / Region = {PhotonNetwork.CloudRegion}");
         //단순 포톤 서버 접속만 된 상태 (ConnectedToMaster)
 
         //3번
@@ -240,6 +240,7 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
         int roomCount = roomList.Count;
         for (int i = 0; i < roomCount; i++)
         {
+            /*
             if (!roomList[i].RemovedFromList)   // 제거될 방이 아니라면
             {
                 if (!myRoomList.Contains(roomList[i])) myRoomList.Add(roomList[i]); // 기존에 없던 방이면 새로 추가
@@ -248,6 +249,27 @@ public class PhotonLobbyManager : MonoBehaviourPunCallbacks
             // 제거해야 될 방인지...
             else if (myRoomList.IndexOf(roomList[i]) != -1) // 기존에 있는 방이라면
                 myRoomList.RemoveAt(myRoomList.IndexOf(roomList[i]));
+            
+            */
+
+            RoomInfo info = roomList[i];
+            int idx = myRoomList.FindIndex(r => r.Name == info.Name); // 방 이름으로 비교
+
+            
+
+            if (!info.RemovedFromList)   // 제거될 방이 아니라면
+            {
+                if (idx == -1)
+                    myRoomList.Add(info); // 새 방 추가
+                else
+                    myRoomList[idx] = info; // 기존 방 정보 갱신
+            }
+            else
+            {
+                if (idx != -1)
+                    myRoomList.RemoveAt(idx); // 제거된 방 삭제
+            }
+            
         }
 
         // 방 목록을 다시 받았을 때 갱신하기 위해 기존에 생성된 RoomNode를 삭제

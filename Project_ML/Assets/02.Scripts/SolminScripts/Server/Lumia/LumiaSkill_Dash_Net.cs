@@ -2,57 +2,58 @@ using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 
+// [루미아 스킬2: 대시]
+// 짧은 시간 동안 전방으로 돌진.
+// 서버에서 이동 처리 (ServerMotor와 권위 일치)
+// 클라 애니메이션, HUD 쿨다운 자동 반영.
+[DisallowMultipleComponent]
 public class LumiaSkill_Dash_Net : PlayerSkill_Net
 {
     [Header("Dash Settings")]
-    public float dashDistance = 4f;
-    public float dashDuration = 0.2f;
+    public float dashSpeed = 4f;
+    public float duration = 0.2f;
 
-    private CharacterController controller;
-    private PlayerHealth_Server health;
+    private CharacterController cc;
+    private AnimationHandler anim;
 
-    private AnimationHandler animationHandler;
-
-    private void Awake()
+    void Awake()
     {
-        skillName = "루미아 대시";
-        cooldown = 6f;
-        controller = GetComponent<CharacterController>();
-        health = GetComponent<PlayerHealth_Server>();
+        skillName = "대시";
+        cooldown = 7f;
 
-        animationHandler = GetComponentInChildren<AnimationHandler>();
+        cc = GetComponent<CharacterController>();
+        anim = GetComponentInChildren<AnimationHandler>();
     }
 
     public override void Activate()
     {
-        if (PhotonNetwork.IsMasterClient && !health.isDead)
-            StartCoroutine(DashRoutine());
+        if (!photonView.IsMine) return;
 
-        photonView.RPC("Client_Anim_Skill2", RpcTarget.All);
+        photonView.RPC(nameof(Client_Anim_Skill2), RpcTarget.All);
+        photonView.RPC(nameof(Server_DoDash), RpcTarget.MasterClient);
     }
 
-    private IEnumerator DashRoutine()
+    [PunRPC]
+    void Server_DoDash()
     {
-        float elapsed = 0f;
+        if (!PhotonNetwork.IsMasterClient) return;
+        StartCoroutine(Dash());
+    }
 
-        Vector3 dashDir = transform.forward;
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-
-        if (Mathf.Abs(h) > 0 || Mathf.Abs(v) > 0)
-            dashDir = (transform.right * h + transform.forward * v).normalized;
-
-        while (elapsed < dashDuration)
+    IEnumerator Dash()
+    {
+        float t = 0f;
+        while (t < duration)
         {
-            controller.Move(dashDir * (dashDistance / dashDuration) * Time.deltaTime);
-            elapsed += Time.deltaTime;
-            yield return null;
+            if (cc != null)
+                cc.Move(transform.forward * dashSpeed * Time.fixedDeltaTime);
+            t += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
         }
+
+        photonView.RPC(nameof(Client_DashEnd), RpcTarget.All);
     }
 
-    [PunRPC] 
-    void Client_Anim_Skill2()
-    { 
-        animationHandler?.Skill2Trigger(); 
-    }
+    [PunRPC] void Client_Anim_Skill2() => anim?.Skill2Trigger();
+    [PunRPC] void Client_DashEnd() => EndSkill(); // 쿨다운 자동
 }

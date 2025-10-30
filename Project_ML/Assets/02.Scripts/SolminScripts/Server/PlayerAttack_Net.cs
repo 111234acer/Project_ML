@@ -1,52 +1,31 @@
 using UnityEngine;
 using Photon.Pun;
 
+
+// 모든 캐릭터의 기본 공격용 공통 베이스 클래스.
+// 쿨다운 및 공격 가능 여부만 관리.
+// 실제 공격(발사, 스킬 등)은 자식 클래스에서 구현.
+
 public abstract class PlayerAttack_Net : MonoBehaviourPun
 {
-    [Header("Attack Settings")]
-    public Transform firePoint;           // 발사 위치
-    public float fireRate = 1f;           // 공격 속도
-    public float coolDown = 1f;           // 쿨타임
-    protected float nextFireTime = 0f;    // 다음 공격 가능 시간
+    [Header("Common Attack Settings")]
+    public float cooldown = 0.6f;           // 공격 쿨다운 (기본 0.6초)
+    protected float nextFireTime = 0f;      // 다음 공격 가능 시간
 
-    // 공격 가능한지 확인
+
+    // 지금 공격할 수 있는지 확인
     protected bool CanAttack()
     {
         return Time.time >= nextFireTime;
     }
 
-    // 쿨타임 갱신
-    protected void UpdateFireTime()
+    // 공격 후 쿨다운 초기화
+    protected void ResetCooldown()
     {
-        nextFireTime = Time.time + coolDown / fireRate;
+        nextFireTime = Time.time + cooldown;
     }
 
-    // 클라이언트 -> 서버 공격 요청
-    public void RequestAttack(float charge)
-    {
-        if (!photonView.IsMine) return; // 본인 캐릭터만 공격 가능
-        photonView.RPC(nameof(Server_Attack), RpcTarget.MasterClient, charge);
-    }
 
-    // 서버에서 실행되는 공격 (권한 보유자만)
-    [PunRPC]
-    protected virtual void Server_Attack(float charge, PhotonMessageInfo info)
-    {
-        if (!PhotonNetwork.IsMasterClient) return; // 서버(마스터)만 허용
-        if (!CanAttack()) return;
-
-        Attack(charge); // 하위 클래스의 공격 실행 (ex. 화살, 대시, 궁극기)
-        photonView.RPC(nameof(Client_OnAttack), RpcTarget.All, charge);
-        UpdateFireTime();
-    }
-
-    // 클라이언트 표시용 (이펙트, 사운드 등)
-    [PunRPC]
-    protected virtual void Client_OnAttack(float charge)
-    {
-        // 모든 클라이언트에 시각적 효과 표시 가능
-    }
-
-    // 하위 클래스 (예 : 루미아)에서 구현할 실제 공격 로직
-    protected abstract void Attack(float charge);
+    // 실제 공격 로직은 각 캐릭터에서 구현
+    public abstract void PerformAttack();
 }
