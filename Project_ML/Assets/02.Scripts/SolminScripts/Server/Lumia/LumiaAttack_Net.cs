@@ -33,7 +33,7 @@ public class LumiaAttack_Net : PlayerAttack_Net
         {
             isCharging = true;
             chargeTime = 0f;
-            GetComponentInChildren<AnimationHandler>()?.ChargeStartTrigger();
+            GetComponentInChildren<AnimationHandler>()?.OnAim();
         }
 
         if (isCharging && hold)
