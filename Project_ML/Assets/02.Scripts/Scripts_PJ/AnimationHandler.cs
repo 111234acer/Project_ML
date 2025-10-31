@@ -107,6 +107,7 @@ public class AnimationHandler : MonoBehaviour
         animator.SetTrigger(hashHitT);
     }
 
+
     public void ChargeStartTrigger()            // (¼Ö¹Î)
     {
         animator?.SetTrigger("ChargeStart");

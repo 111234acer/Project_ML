@@ -59,9 +59,24 @@ public class LumiaAttack_Net : PlayerAttack_Net
         float t = Mathf.InverseLerp(0f, maxCharge, Mathf.Max(minCharge, chargeTime));
         float power = powerCurve.Evaluate(t);
 
+        // 카메라 기준으로 조준선 방향 잡기
+        Camera cam = Camera.main;
         Vector3 shootDir = firePoint.forward;
-        Vector3 shootVel = shootDir * (muzzleSpeed * Mathf.Lerp(0.5f, 1f, power));
+
+        // 화면 중앙에서 Raycast
+        if (cam != null && Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, 100f))
+        {
+            // 조준점(hit.point)을 기준으로 활 끝에서 향하는 벡터로 보정
+            shootDir = (hit.point - firePoint.position).normalized;
+        }
+        else
+        {
+            // 만약 조준 대상이 없으면 카메라 전방 유지
+            shootDir = cam ? cam.transform.forward : firePoint.forward;
+        }
+
         Vector3 spawnPos = firePoint.position;
+        Vector3 shootVel = shootDir * (muzzleSpeed * Mathf.Lerp(0.5f, 1f, power));
 
         // 클라이언트가 직접 화살 생성 (전 클라 동기화)
         object[] data = new object[]

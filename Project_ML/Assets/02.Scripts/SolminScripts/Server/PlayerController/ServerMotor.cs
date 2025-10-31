@@ -71,7 +71,7 @@ public class ServerMotor : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        //if (!ServerActive) return;
+        if (!ServerActive) return;
         if (health != null && health.isDead) return;
 
         if (requestJump)
