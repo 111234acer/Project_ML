@@ -35,13 +35,13 @@ public class PlayerController_TD : MonoBehaviour
     [Tooltip("플레이어 카메라 Transform (시야 방향 기준)")]
     public Transform playerCamera;
     [Tooltip("타워 매니저 (HP 0 시 게임 종료)")]
-    public TowerManager_TD towerManager;
+    private TowerManager_TD towerManager;
     [Tooltip("게임 매니저 (카드 선택 / 일시정지 상태 확인용)")]
-    public SingleGameManager_TD singleGameManager;
+    private SingleGameManager_TD singleGameManager;
     [Tooltip("기본 공격 스크립트 (자동 공격용)")]
-    public PlayerAttack_TD playerAttack;
+    private PlayerAttack_TD playerAttack;
     [Tooltip("애니메이션 제어 핸들러 (이동 / 점프 / 착지 등)")]
-    public AnimationHandler animationHandler;
+    private AnimationHandler animationHandler;
 
     // 내부 전용
     private CharacterController controller;

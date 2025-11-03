@@ -2089,7 +2089,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1234830103252394173}
   - component: {fileID: 834931939661899798}
-  - component: {fileID: 7922864855316589072}
   - component: {fileID: 2582658466369958352}
   - component: {fileID: 7576224170969933773}
   - component: {fileID: 4741187086988186876}
@@ -2159,29 +2158,6 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.93, z: 0}
---- !u!136 &7922864855316589072
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7019567109801188797}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.4
-  m_Height: 1.7
-  m_Direction: 1
   m_Center: {x: 0, y: 0.93, z: 0}
 --- !u!95 &2582658466369958352
 Animator:
