@@ -792,33 +792,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7165ee2320b111f40a1f3033e9031103, type: 3}
---- !u!4 &2060482138 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3035094368890957058, guid: 8c6ac0a73a2275f4cb9e2756d1368784,
-    type: 3}
-  m_PrefabInstance: {fileID: 823626260}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &212831845315679
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7249469375072033903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f80956733c90580478d9efd1d1207646, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skillName: Storm Arrow
-  cooldown: 5
-  nextUseTime: 0
-  arrowPrefab: {fileID: 6135757702434522918, guid: d80f8637a2b6a7942ba7d6edeee99f14,
-    type: 3}
-  firePoint: {fileID: 5993449215800227148}
-  arrowSpeed: 100
-  fireInterval: 0.3
-  arrowCount: 3
 --- !u!4 &37146480558988720
 Transform:
   m_ObjectHideFlags: 0
@@ -1394,21 +1367,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3579839373210155298}
   m_Enabled: 1
---- !u!114 &2139463277836058391
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7249469375072033903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7b00ee14cf14bb4e843f57aca065e53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skill1: {fileID: 212831845315679}
-  skill2: {fileID: 8029609882363360654}
-  ultimate: {fileID: 3122499176805462262}
 --- !u!1 &2175597792701650460
 GameObject:
   m_ObjectHideFlags: 0
@@ -1735,51 +1693,6 @@ Transform:
   - {fileID: 4801796589849730316}
   m_Father: {fileID: 2238524269593540071}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3122499176805462262
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7249469375072033903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a8dda4fd9935ea4d80d292d50fa476f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skillName: Rain
-  cooldown: 10
-  nextUseTime: 0
-  indicatorPrefab: {fileID: 2196906228520095022, guid: 8f27d31d919f9d54bb68eb105a5c8fc5,
-    type: 3}
-  aoeEffectPrefab: {fileID: 2893411714665299601, guid: 47e7dacd943e24344b84985fba7d8851,
-    type: 3}
-  range: 20
-  duration: 5
-  damagePerSecond: 100
-  playerCamera: {fileID: 6876555823790997952}
-  player: {fileID: 7760514436992001763}
---- !u!114 &3122853484239432869
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7249469375072033903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e927d7f277af6b43940631a92f33739, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterName: Lumia
-  MaxHealth: 200
-  attackDamage: 40
-  currentHealth: 0
-  isDead: 0
-  respawnDelay: 8
-  spawnPoint: {fileID: 2060482138}
-  invincibleTime: 0.2
-  respawnInvincibleTime: 2
 --- !u!4 &3183791335234046393
 Transform:
   m_ObjectHideFlags: 0
@@ -1837,8 +1750,8 @@ Transform:
   m_GameObject: {fileID: 2260862313031382658}
   serializedVersion: 2
   m_LocalRotation: {x: -0.50000036, y: 0.49999967, z: 0.49999967, w: 0.50000036}
-  m_LocalPosition: {x: -0.0018005371, y: 1.0020943, z: 0.039016724}
-  m_LocalScale: {x: 0.9999999, y: 0.9999999, z: 0.99999994}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8685232289908970685}
@@ -1893,27 +1806,6 @@ Transform:
   - {fileID: 4555331268712760039}
   m_Father: {fileID: 7309052244478420653}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3528950780272974433
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7249469375072033903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ffa7a005245faa4da7f7eacbde0db9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  firePoint: {fileID: 5993449215800227148}
-  fireRate: 1
-  coolDown: 1
-  arrowPrefab: {fileID: 6135757702434522918, guid: d80f8637a2b6a7942ba7d6edeee99f14,
-    type: 3}
-  minArrowSpeed: 10
-  maxArrowSpeed: 80
-  chargeTime: 0.5
-  playerCamera: {fileID: 6876555823790997952}
 --- !u!1 &3579839373210155298
 GameObject:
   m_ObjectHideFlags: 0
@@ -2697,22 +2589,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &6089966686644663703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7249469375072033903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7619abbcb6a86a343a93df802b257e21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerCamera: {fileID: 8823606205192412522}
-  mouseSensitivity: 200
-  xRotationLimit: 80
-  smoothSpeed: 10
 --- !u!1 &6143933472963730878
 GameObject:
   m_ObjectHideFlags: 0
@@ -2849,7 +2725,7 @@ Transform:
   m_GameObject: {fileID: 6020433487640501426}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.0012879834, y: 0, z: -0.008230195}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2907,7 +2783,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2486193354038825415}
@@ -3037,16 +2913,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7760514436992001763}
   - component: {fileID: 1862164346203327548}
-  - component: {fileID: 8391932504316682478}
-  - component: {fileID: 3122853484239432869}
-  - component: {fileID: 6089966686644663703}
-  - component: {fileID: 3528950780272974433}
-  - component: {fileID: 2139463277836058391}
-  - component: {fileID: 212831845315679}
-  - component: {fileID: 8029609882363360654}
-  - component: {fileID: 3122499176805462262}
+  - component: {fileID: 7760514436992001764}
+  - component: {fileID: 7760514436992001765}
+  - component: {fileID: 7760514436992001766}
+  - component: {fileID: 7760514436992001767}
   m_Layer: 3
-  m_Name: Lumia Blue_Test
+  m_Name: Lumia Blue_Solmin
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3148,6 +3020,90 @@ Transform:
   - {fileID: 5993449215800227148}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &7760514436992001764
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7249469375072033903}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7760514436992001765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7249469375072033903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10008db243984ae439dd5f8c47295b0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
+  jumpHeight: 2
+  gravity: -20
+  fallMultiplier: 2.5
+  jumpBufferTime: 0.1
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 64
+  groundYOffset: 0.05
+  groundCheckRadius: 0
+  playerCamera: {fileID: 0}
+  towerManager: {fileID: 0}
+  singleGameManager: {fileID: 0}
+  playerAttack: {fileID: 7760514436992001766}
+  animationHandler: {fileID: 0}
+--- !u!114 &7760514436992001766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7249469375072033903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f94b77ba0dbc39429727e24a7e75f91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackInterval: 1
+  baseDamage: 30
+  attackRange: 50
+  projectilePrefab: {fileID: 0}
+  firePoint: {fileID: 4107235387298581848}
+  projectileSpeed: 40
+--- !u!114 &7760514436992001767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7249469375072033903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7619abbcb6a86a343a93df802b257e21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCamera: {fileID: 4107235387298581848}
+  mouseSensitivity: 200
+  xRotationLimit: 80
+  smoothSpeed: 10
 --- !u!1 &8015720156669200786
 GameObject:
   m_ObjectHideFlags: 0
@@ -3164,23 +3120,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &8029609882363360654
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7249469375072033903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95e017721396f754d89e68dbd84808be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skillName: Dash
-  cooldown: 6
-  nextUseTime: 0
-  dashDistance: 4
-  dashDuration: 0.2
 --- !u!4 &8067287041329774469
 Transform:
   m_ObjectHideFlags: 0
@@ -3265,31 +3204,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &8391932504316682478
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7249469375072033903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10008db243984ae439dd5f8c47295b0b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 10
-  gravity: -20
-  jumpHeight: 2
-  fallMultiplier: 2.5
-  jumpBufferTime: 0.1
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 64
-  velocity: {x: 0, y: 0, z: 0}
-  playerCamera: {fileID: 4107235387298581848}
-  health: {fileID: 3122853484239432869}
-  attack: {fileID: 3528950780272974433}
-  isDashing: 0
 --- !u!1 &8513087689068956660
 GameObject:
   m_ObjectHideFlags: 0
@@ -3397,7 +3311,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 69306edb2e2c6574ca63bd1f59d8a080, type: 2}
+  - {fileID: 2100000, guid: be19298b1fcaaac44aca2e068afebf39, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
