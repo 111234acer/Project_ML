@@ -641,7 +641,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startRotationX:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 0
       minScalar: 0
       maxCurve:
@@ -694,7 +694,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startRotationY:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 0
       minScalar: 0
       maxCurve:
@@ -747,8 +747,8 @@ ParticleSystem:
         m_RotationOrder: 4
     startRotation:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 0
+      minMaxState: 3
+      scalar: 6.283185
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -24161,22 +24161,22 @@ PrefabInstance:
     - target: {fileID: 1944244418570595700, guid: b936d39ad3ebfec4699f88e866e28e76,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9007666658291352601, guid: b936d39ad3ebfec4699f88e866e28e76,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 5.3
       objectReference: {fileID: 0}
     - target: {fileID: 9007666658291352601, guid: b936d39ad3ebfec4699f88e866e28e76,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 1.777
       objectReference: {fileID: 0}
     - target: {fileID: 9007666658291352601, guid: b936d39ad3ebfec4699f88e866e28e76,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 5.37
       objectReference: {fileID: 0}
     - target: {fileID: 9007666658291352601, guid: b936d39ad3ebfec4699f88e866e28e76,
         type: 3}
@@ -24211,6 +24211,11 @@ PrefabInstance:
     - target: {fileID: 9007666658291352601, guid: b936d39ad3ebfec4699f88e866e28e76,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9022598525600667544, guid: b936d39ad3ebfec4699f88e866e28e76,
+        type: 3}
+      propertyPath: m_RenderAlignment
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -24362,22 +24367,22 @@ PrefabInstance:
     - target: {fileID: 158601074904532239, guid: 2850cd014d3ea3744b03ca06a48be159,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2502608626725839694, guid: 2850cd014d3ea3744b03ca06a48be159,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 5.3
       objectReference: {fileID: 0}
     - target: {fileID: 2502608626725839694, guid: 2850cd014d3ea3744b03ca06a48be159,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.986
+      value: 1.763
       objectReference: {fileID: 0}
     - target: {fileID: 2502608626725839694, guid: 2850cd014d3ea3744b03ca06a48be159,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.78
+      value: 7.1499996
       objectReference: {fileID: 0}
     - target: {fileID: 2502608626725839694, guid: 2850cd014d3ea3744b03ca06a48be159,
         type: 3}
