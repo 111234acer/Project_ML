@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Projectile_TD : MonoBehaviour
 {
-    private float damage; // 공격력
+    public float damage; // 공격력
 
     /// 발사 시 공격력 초기화
     public void Init(float dmg)

@@ -17,13 +17,13 @@ public class TowerManager_TD : MonoBehaviour
 
 
     // 적이 타워를 공격할 때 데미지 적용
-    public void TakeDamage(float amount, Monster_TD attacker)
+    public void TakeDamage(float dmg, Monster_TD attacker)
     {
         if (isDestroyed) return;
 
-        currentHealth -= amount;
+        currentHealth -= dmg;
 
-        Debug.Log($"[Tower] {attacker.name} 에게 {amount} 데미지 받음, 현재 체력 : {currentHealth:F1}");
+        Debug.Log($"[Tower] {attacker.name} 에게 {dmg} 데미지 받음, 현재 체력 : {currentHealth:F1}");
 
         if (currentHealth <= 0f)
         {

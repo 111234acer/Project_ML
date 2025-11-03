@@ -6,11 +6,15 @@ public class PlayerAttack_TD : MonoBehaviour
 {
     [Header("공격 기본 설정")]
     [Tooltip("공격 간격 (초 단위)")]
-    public float attackInterval = 1.0f;      // 공격 주기
+    public float attackInterval;    
     [Tooltip("기본 공격력")]
-    public float baseDamage = 30f;           // 기본 데미지
+    public float baseDamage;           
     [Tooltip("공격 사거리 (투사체 생존 시간 계산용)")]
-    public float attackRange = 50f;          // 사거리
+    public float attackRange;
+    [Tooltip("치명타 확률")]
+    [Range(0f, 100f)] public float criticalChance = 5f; // 치명타 확률 5로 고정
+    [Tooltip("치명타 데미지")]
+    public float criticalMultiplier = 1.0f;             // 치명타 배율 (ex. 1배 = 100%)
 
     [Header("투사체 설정")]
     [Tooltip("투사체 프리팹 (활, 마법 등)")]
@@ -23,7 +27,7 @@ public class PlayerAttack_TD : MonoBehaviour
     // 내부 전용
     private float attackTimer;               // 다음 공격까지 남은 시간 계산용
     private bool isAttacking;                // 현재 공격 중인지 여부
-    private Camera mainCam;                  // 카메라 참조
+    public Camera mainCam;                  // 카메라 참조
 
     void Awake()
     {
@@ -71,12 +75,23 @@ public class PlayerAttack_TD : MonoBehaviour
 
         // 물리 속도 부여
         if (rb)
+            rb.useGravity = false;  // 포물선 true or 직선 false
             rb.velocity = dir * projectileSpeed;
+
+        // 치명타 확률 계산
+        float finalDamage = baseDamage;
+        float rand = Random.Range(0f, 100f);
+
+        if( rand <= criticalChance)
+        {
+            finalDamage *= criticalMultiplier;
+            Debug.Log($"[CRITICAL HIT!] Damage = {finalDamage}");
+        }
 
         // 데미지 전달
         Projectile_TD projectile = proj.GetComponent<Projectile_TD>();
         if (projectile)
-            projectile.Init(baseDamage);
+            projectile.Init(finalDamage);
 
         // 일정 시간 후 자동 제거 (사거리 기반 계산)
         Destroy(proj, attackRange / projectileSpeed);

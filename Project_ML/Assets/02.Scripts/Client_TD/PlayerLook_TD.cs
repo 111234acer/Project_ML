@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerLook : MonoBehaviour
+public class PlayerLook_TD : MonoBehaviour
 {
     [Header("Camera Settings")]
     public Transform playerCamera;                              // Ä«¸Þ¶ó Transform
