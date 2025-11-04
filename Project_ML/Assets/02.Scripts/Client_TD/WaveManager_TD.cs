@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WaveManager_TD : MonoBehaviour
-{    
+{
     [System.Serializable]
     public class MonsterWaveEntry
     {
         public GameObject prefab;
-
         public int startWave = 1;
         public int baseCount = 3;
         public int addPerWave = 1;
@@ -19,26 +18,31 @@ public class WaveManager_TD : MonoBehaviour
         public int tierStep = 3;
     }
 
+    [Header("참조")]
     [SerializeField] private MonsterSpawner_TD spawner;
-    [SerializeField] private SingleGameManager_TD gameManager;
+    [SerializeField] private CardManager_TD cardManager;        //  카드 매니저 연결
+    [SerializeField] private SingleGameManager_TD singleGameManager; //  일시정지 제어용
 
+    [Header("웨이브 설정")]
     public List<MonsterWaveEntry> monsterTable = new List<MonsterWaveEntry>();
-
-
     public float spawnInterval = 0.7f;
     private int currentWave = 0;
+    public int cardInterval = 3;                                //  n웨이브마다 카드 선택
     private int remainingMonsters = 0;
     private bool isWaveActive = false;
 
     private void Awake()
     {
         spawner = FindObjectOfType<MonsterSpawner_TD>();
-        gameManager = GetComponent<SingleGameManager_TD>();
+        if (!cardManager) cardManager = FindObjectOfType<CardManager_TD>();          //  자동 참조
+        if (!singleGameManager) singleGameManager = FindObjectOfType<SingleGameManager_TD>(); // 자동 참조
     }
+
     private void Start()
     {
         StartCoroutine(WaveRoutine());
     }
+
     IEnumerator WaveRoutine()
     {
         yield return new WaitForSeconds(1f);
@@ -47,12 +51,18 @@ public class WaveManager_TD : MonoBehaviour
         {
             StartWave();
 
+            // 웨이브가 끝날 때까지 대기
             while (isWaveActive)
                 yield return null;
 
-            if (gameManager != null)
+            // 카드 선택 대기 상태면, 다음 웨이브는 카드 선택이 끝날 때까지 대기
+            while (singleGameManager != null && singleGameManager.isPaused)
+                yield return null;
+
+            // 웨이브가 끝나고 휴식 타임 진입
+            if (singleGameManager != null)
             {
-                yield return gameManager.RestPhase();
+                yield return singleGameManager.RestPhase();
             }
         }
     }
@@ -69,27 +79,21 @@ public class WaveManager_TD : MonoBehaviour
             if (entry.prefab == null) continue;
             if (currentWave < entry.startWave) continue; // 아직 등장 안 하는 몬스터
 
-            // 이 몬스터가 등장한 이후로 몇 번째 웨이브인지
             int waveSinceStart = (currentWave - entry.startWave);
             if (waveSinceStart < 0) waveSinceStart = 0;
 
             int spawnCount = entry.baseCount + entry.addPerWave * waveSinceStart;
-
-            // 웨이브 최대치 제한이 있으면 걸어준다
             if (entry.maxPerWave > 0 && spawnCount > entry.maxPerWave)
                 spawnCount = entry.maxPerWave;
 
             if (spawnCount > 0)
-            {
                 waveSpawnList.Add((entry, spawnCount));
-            }
         }
 
         remainingMonsters = 0;
         foreach (var item in waveSpawnList)
             remainingMonsters += item.count;
 
-        // 스폰 시작
         StartCoroutine(SpawnWaveRoutine(waveSpawnList));
     }
 
@@ -100,7 +104,6 @@ public class WaveManager_TD : MonoBehaviour
             MonsterWaveEntry entry = item.entry;
             int count = item.count;
 
-            // 이 몬스터 전용 티어 계산
             int tier = (entry.tierStep > 0) ? (currentWave - 1) / entry.tierStep : 0;
             int addHP = tier * entry.hpBonusPerTier;
             int addATK = tier * entry.atkBonusPerTier;
@@ -115,11 +118,9 @@ public class WaveManager_TD : MonoBehaviour
                 }
                 else
                 {
-                    // 스폰 실패하면 카운트만 줄여주자
                     remainingMonsters--;
                 }
 
-                // 마지막 마리는 안기다려도 됨
                 if (!(i == count - 1 && item.Equals(waveSpawnList[waveSpawnList.Count - 1])))
                     yield return new WaitForSeconds(spawnInterval);
             }
@@ -129,11 +130,10 @@ public class WaveManager_TD : MonoBehaviour
     IEnumerator WatchMonster(Monster_TD mon)
     {
         while (mon != null && mon.gameObject.activeSelf)
-        {
             yield return null;
-        }
 
         remainingMonsters--;
+
         if (remainingMonsters <= 0)
         {
             EndWave();
@@ -143,7 +143,21 @@ public class WaveManager_TD : MonoBehaviour
     void EndWave()
     {
         isWaveActive = false;
-        // 여기서 보상 주거나 UI 업데이트 하면 됨
         Debug.Log($"Wave {currentWave} 끝!");
+
+        // 카드 시스템 연동 추가
+        if (cardManager != null && singleGameManager != null)
+        {
+            if (currentWave % cardInterval == 0)
+            {
+                // 카드 선택 타이밍이므로 게임을 잠시 멈춘다.
+                singleGameManager.SetPause(true);
+
+                // 카드 UI 호출
+                cardManager.ShowCardSelection();
+
+                Debug.Log($"[WaveManager_TD] Wave {currentWave} 클리어 → 카드 선택 시작");
+            }
+        }
     }
 }

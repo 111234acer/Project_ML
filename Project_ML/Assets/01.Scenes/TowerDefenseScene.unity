@@ -219,7 +219,7 @@ MonoBehaviour:
     m_Bits: 64
   groundYOffset: 0.05
   groundCheckRadius: 0.2
-  playerCamera: {fileID: 0}
+  playerCamera: {fileID: 1081364929}
 --- !u!143 &118020507
 CharacterController:
   m_ObjectHideFlags: 0
