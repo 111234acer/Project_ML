@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class Monster_TD : MonoBehaviour
@@ -11,8 +10,10 @@ public class Monster_TD : MonoBehaviour
     public float stopDistance = 1f;
     public float attackDamage = 20f;
     public float attackRate = 2f;
+    [HideInInspector] public float baseMaxHP;
+    [HideInInspector] public float baseAttackDamage;
 
-    private float nextAttackTime = 0f;    
+    private float nextAttackTime = 0f;
     private float monsterRadius;
 
     private float currentSpeed;
@@ -30,11 +31,14 @@ public class Monster_TD : MonoBehaviour
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();        
+        rb = GetComponent<Rigidbody>();
         cap = GetComponent<CapsuleCollider>();
 
         rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
         currentHP = maxHP;
+
+        baseMaxHP = maxHP;
+        baseAttackDamage = attackDamage;
 
         float xzScale = Mathf.Max(transform.lossyScale.x, transform.lossyScale.z);
         monsterRadius = Mathf.Max(0f, (cap.radius * xzScale) - 0.01f);
@@ -110,7 +114,7 @@ public class Monster_TD : MonoBehaviour
     {
         if (isDead) return;
         if (Time.time < nextAttackTime) return;
-                
+
         TowerManager_TD tower = target.GetComponent<TowerManager_TD>();
         if (tower != null)
         {
@@ -175,5 +179,12 @@ public class Monster_TD : MonoBehaviour
             animator.ResetTrigger("deadTrigger");
             animator.SetFloat("speed", 0f);
         }
+    }
+
+    public void ApplyWaveBuff(int addHP, int addATK)
+    {
+        maxHP = baseMaxHP + addHP;
+        attackDamage = baseAttackDamage + addATK;
+        currentHP = maxHP; // 새로 나온 몬스터니까 풀피로
     }
 }

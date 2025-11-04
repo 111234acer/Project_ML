@@ -12,13 +12,11 @@ public class Projectile_TD : MonoBehaviour
 
     /// 적과 충돌 시 데미지 적용 후 삭제
     private void OnCollisionEnter(Collision collision)
-    {
-        /*
-        if (collision.collider.TryGetComponent(out EnemyHealth_TD enemy))       // Enemy 체력 관련 스크립트 추가해야함
+    {        
+        if (collision.collider.TryGetComponent(out Monster_TD enemy))
         {
             enemy.TakeDamage(damage);
         }
-        */
 
         Destroy(gameObject);
     }

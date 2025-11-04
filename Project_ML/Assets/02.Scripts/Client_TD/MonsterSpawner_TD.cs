@@ -4,16 +4,9 @@ using UnityEngine;
 
 public class MonsterSpawner_TD : MonoBehaviour
 {
-    [Header("Spawn Settings")]
-    public float spawnInterval = 2f;
-    private float nextSpawnTime = 0f;
-
-    [Header("Monster Prefabs")]
     public List<GameObject> monsterPrefabs;
     public Transform[] spawnPoints;
 
-    [Header("Pooling")]
-    [Tooltip("각 프리팹마다 미리 만들어둘 개수")]
     public int preloadCount = 5;
 
     // 프리팹별 풀
@@ -42,43 +35,71 @@ public class MonsterSpawner_TD : MonoBehaviour
         }
     }
 
-    private void Update()
+    //랜덤 생성
+    /*
+    public Monster_TD SpawnOne()
     {
-        if (Time.time >= nextSpawnTime)
-        {
-            SpawnMonster();
-            nextSpawnTime = Time.time + spawnInterval;
-        }
-    }
-
-    void SpawnMonster()
-    {
-        if (monsterPrefabs == null || monsterPrefabs.Count == 0) return;
-        if (spawnPoints == null || spawnPoints.Length == 0) return;
+        if (monsterPrefabs == null || monsterPrefabs.Count == 0) return null;
+        if (spawnPoints == null || spawnPoints.Length == 0) return null;
 
         GameObject prefab = monsterPrefabs[Random.Range(0, monsterPrefabs.Count)];
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
-        GameObject monster = GetFromPool(prefab);
-        if (monster == null)
+        GameObject monsterObj = GetFromPool(prefab);
+        if (monsterObj == null)
         {
             // 풀에 없으면 최후의 수단으로 하나 만든다
-            monster = Instantiate(prefab);
-            var m = monster.GetComponent<Monster_TD>();
-            if (m != null)
-                m.OnSpawnedFromPool(this);
+            monsterObj = Instantiate(prefab);
+            var mm = monsterObj.GetComponent<Monster_TD>();
+            if (mm != null)
+                mm.OnSpawnedFromPool(this);
         }
 
-        monster.transform.position = spawnPoint.position;
-        monster.transform.rotation = spawnPoint.rotation;
+        monsterObj.transform.position = spawnPoint.position;
+        monsterObj.transform.rotation = spawnPoint.rotation;
 
-        // 리셋 후 켜기
-        monster.SetActive(true);
-
-        // 몬스터가 타워를 다시 찾아가도록 하고 싶으면 여기서도 한 번 리셋해줄 수 있음
-        var mon = monster.GetComponent<Monster_TD>();
+        // 몬스터가 타워를 다시 찾아가도록 초기화
+        var mon = monsterObj.GetComponent<Monster_TD>();
         if (mon != null)
-            mon.ResetMonster(); // 아래 Monster_TD에 만들 거
+        {
+            mon.originalPrefab = prefab;
+            mon.ResetMonster();
+        }
+
+        monsterObj.SetActive(true);
+
+        return mon;
+    }*/
+
+    //지정 생성
+    public Monster_TD SpawnSpecific(GameObject prefab)
+    {
+        if (prefab == null) return null;
+        if (spawnPoints == null || spawnPoints.Length == 0) return null;
+
+        Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+
+        GameObject monsterObj = GetFromPool(prefab);
+        if (monsterObj == null)
+        {
+            monsterObj = Instantiate(prefab);
+            var mm = monsterObj.GetComponent<Monster_TD>();
+            if (mm != null)
+                mm.OnSpawnedFromPool(this);
+        }
+
+        monsterObj.transform.position = spawnPoint.position;
+        monsterObj.transform.rotation = spawnPoint.rotation;
+
+        var mon = monsterObj.GetComponent<Monster_TD>();
+        if (mon != null)
+        {
+            mon.originalPrefab = prefab;
+            mon.ResetMonster();
+        }
+
+        monsterObj.SetActive(true);
+        return mon;
     }
 
     GameObject GetFromPool(GameObject prefab)

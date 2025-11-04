@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 5431103713082318222}
   - component: {fileID: 6689307772755043727}
   - component: {fileID: 8218196182235868668}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ghost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -345,11 +345,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentHP: 0
-  maxHP: 100
+  maxHP: 60
   speed: 10
   stopDistance: 1
-  attackDamage: 20
-  attackRate: 1.5
+  attackDamage: 6
+  attackRate: 1
+  baseMaxHP: 0
+  baseAttackDamage: 0
+  originalPrefab: {fileID: 0}
   target: {fileID: 0}
   animator: {fileID: 8225212244466419217}
 --- !u!1 &1901445764123762137
