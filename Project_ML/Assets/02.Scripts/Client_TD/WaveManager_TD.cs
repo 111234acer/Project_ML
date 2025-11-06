@@ -72,6 +72,11 @@ public class WaveManager_TD : MonoBehaviour
         currentWave++;
         isWaveActive = true;
 
+        if (singleGameManager != null)
+        {
+            singleGameManager.ShowWaveText(currentWave);
+        }
+
         List<(MonsterWaveEntry entry, int count)> waveSpawnList = new List<(MonsterWaveEntry, int)>();
 
         foreach (var entry in monsterTable)
@@ -143,7 +148,6 @@ public class WaveManager_TD : MonoBehaviour
     void EndWave()
     {
         isWaveActive = false;
-        Debug.Log($"Wave {currentWave} 끝!");
 
         // 카드 시스템 연동 추가
         if (cardManager != null && singleGameManager != null)
