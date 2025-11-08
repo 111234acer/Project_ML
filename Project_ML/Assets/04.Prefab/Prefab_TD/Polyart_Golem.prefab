@@ -332,7 +332,7 @@ GameObject:
   - component: {fileID: 1077356410}
   - component: {fileID: 1077356409}
   - component: {fileID: 7508972213535760478}
-  - component: {fileID: -2625881320653108165}
+  - component: {fileID: 8764917279290062230}
   - component: {fileID: -3586236206965340497}
   m_Layer: 0
   m_Name: Polyart_Golem
@@ -368,7 +368,7 @@ Animator:
   m_GameObject: {fileID: 1077356408}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 0f2c5202b918687408ac5bc7429a03ea, type: 3}
-  m_Controller: {fileID: 9100000, guid: 64e2ef14a02f69a4b94edbee54ca296a, type: 2}
+  m_Controller: {fileID: 22100000, guid: f9388fe79acff874699fc18bc32f420c, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -401,8 +401,8 @@ MonoBehaviour:
   baseAttackDamage: 0
   originalPrefab: {fileID: 0}
   target: {fileID: 0}
-  animator: {fileID: 0}
---- !u!136 &-2625881320653108165
+  animator: {fileID: 1077356409}
+--- !u!136 &8764917279290062230
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -421,10 +421,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1
+  m_Radius: 0.98207784
+  m_Height: 3.81624
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0.07477334, y: 1.9545652, z: 0.056913614}
 --- !u!54 &-3586236206965340497
 Rigidbody:
   m_ObjectHideFlags: 0
