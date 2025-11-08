@@ -1,8 +1,6 @@
-// ==========================================================
 // SkillManager_TD.cs
 // 자동 발동 스킬 관리 매니저
 // 스킬 등록 / 강화 / 쿨타임 체크 / 자동 발동 담당
-// ==========================================================
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,9 +31,7 @@ public class SkillManager_TD : MonoBehaviour
     [Header("스킬 목록")]
     public List<SkillData_TD> activeSkills = new List<SkillData_TD>();  // 현재 활성 스킬 목록
 
-    // ==========================================================
     // Unity Loop
-    // ==========================================================
     void Update()
     {
         if (activeSkills.Count == 0) return;
@@ -53,9 +49,7 @@ public class SkillManager_TD : MonoBehaviour
         }
     }
 
-    // ==========================================================
     // 스킬 발동 처리
-    // ==========================================================
     private void ActivateSkill(SkillData_TD skill)
     {
         if (!skill.skillEffectPrefab || !firePoint || !playerCamera)
@@ -135,9 +129,7 @@ public class SkillManager_TD : MonoBehaviour
         return (skill != null) ? skill.maxLevel : 5;
     }
 
-    // ==========================================================
     // 스킬 생성 헬퍼 (새 스킬 등록용)
-    // ==========================================================
 
     private SkillData_TD CreateSkillData(string skillId)
     {
@@ -193,7 +185,7 @@ public class SkillManager_TD : MonoBehaviour
             case "RockThrow":
                 skill.skillId = skillId;
                 skill.skillName = "바위 던지기";
-                skill.skillEffectPrefab = Resources.Load<GameObject>("Effects/RockThrow");
+                skill.skillEffectPrefab = Resources.Load<GameObject>("Effects/RockThrow");                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
                 skill.baseCooldown = 7f;
                 break;
 

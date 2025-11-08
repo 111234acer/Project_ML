@@ -789,6 +789,7 @@ GameObject:
   - component: {fileID: 7738742138649808147}
   - component: {fileID: 4130901179160832929}
   - component: {fileID: 3313176371403505122}
+  - component: {fileID: 1382708628205307225}
   m_Layer: 3
   m_Name: Lumia_TD
   m_TagString: Player
@@ -901,6 +902,22 @@ MonoBehaviour:
   mouseSensitivity: 200
   xRotationLimit: 80
   smoothSpeed: 10
+--- !u!114 &1382708628205307225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3789762561142484220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299641fd3e6f18f4faf9adca48061ae5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firePoint: {fileID: 118998672848145690}
+  playerCamera: {fileID: 7358511919283167904}
+  playerAttack: {fileID: 4130901179160832929}
+  activeSkills: []
 --- !u!1 &3929880729229526708
 GameObject:
   m_ObjectHideFlags: 0

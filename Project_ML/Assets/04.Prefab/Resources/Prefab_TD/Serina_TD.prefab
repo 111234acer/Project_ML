@@ -76,6 +76,7 @@ GameObject:
   - component: {fileID: 721227336031498014}
   - component: {fileID: 2221665650725564023}
   - component: {fileID: 7617401104423120453}
+  - component: {fileID: 9179181165475947278}
   m_Layer: 0
   m_Name: Serina_TD
   m_TagString: Untagged
@@ -188,6 +189,22 @@ MonoBehaviour:
   mouseSensitivity: 200
   xRotationLimit: 80
   smoothSpeed: 10
+--- !u!114 &9179181165475947278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7008133291432153177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299641fd3e6f18f4faf9adca48061ae5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firePoint: {fileID: 2094998941962342659}
+  playerCamera: {fileID: 6306650171349371344}
+  playerAttack: {fileID: 2221665650725564023}
+  activeSkills: []
 --- !u!1 &7029202619884593021
 GameObject:
   m_ObjectHideFlags: 0
