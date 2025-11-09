@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7080424265117068570}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 356944500383669015}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Camera Postion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 2893560494069792945}
   - component: {fileID: 4959042323395330008}
   - component: {fileID: 559722158204938199}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ GameObject:
   - component: {fileID: 1002890757501000477}
   - component: {fileID: 3063726496280540517}
   - component: {fileID: 94130826597970267}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Eris_TD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -426,16 +426,41 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 6bfdf3fd500080745986bc311b2dbefd, type: 2}
+    - target: {fileID: -4819223349682164798, guid: 2b03d3fac5fbbe741b51200006327f87,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2b03d3fac5fbbe741b51200006327f87,
         type: 3}
       propertyPath: m_Name
       value: Eris_Rig
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2b03d3fac5fbbe741b51200006327f87,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6829485909940997511, guid: 2b03d3fac5fbbe741b51200006327f87,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8449996119470504636, guid: 2b03d3fac5fbbe741b51200006327f87,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 53d6c5fd5ac1f874783571b97a0d7485, type: 2}
+    - target: {fileID: 8502549445762705191, guid: 2b03d3fac5fbbe741b51200006327f87,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8540762849855351454, guid: 2b03d3fac5fbbe741b51200006327f87,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8580556916236814144, guid: 2b03d3fac5fbbe741b51200006327f87,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

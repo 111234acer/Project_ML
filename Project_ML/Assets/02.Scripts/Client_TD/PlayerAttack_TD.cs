@@ -24,6 +24,9 @@ public class PlayerAttack_TD : MonoBehaviour
     [Tooltip("투사체 속도 (m/s)")]
     public float projectileSpeed = 40f;      // 투사체 속도
 
+    AnimationHandler_TD ani;
+    PlayerSFX_TD playerSFX;
+
     // 내부 전용
     private float attackTimer;               // 다음 공격까지 남은 시간 계산용
     private bool isAttacking;                // 현재 공격 중인지 여부
@@ -32,6 +35,8 @@ public class PlayerAttack_TD : MonoBehaviour
     void Awake()
     {
         mainCam = Camera.main;
+        ani = GetComponentInChildren<AnimationHandler_TD>();
+        playerSFX = GetComponent<PlayerSFX_TD>();
     }
 
     void Update()
@@ -68,6 +73,9 @@ public class PlayerAttack_TD : MonoBehaviour
         // 카메라 중앙 방향으로 발사
         Vector3 dir = mainCam.transform.forward;
         Quaternion rot = Quaternion.LookRotation(dir);
+
+        ani.AttackTrigger();
+        playerSFX.PlayAttack();
 
         // 투사체 생성
         GameObject proj = Instantiate(projectilePrefab, firePoint.position, rot);

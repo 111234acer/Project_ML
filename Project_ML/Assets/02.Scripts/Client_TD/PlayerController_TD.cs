@@ -41,19 +41,26 @@ public class PlayerController_TD : MonoBehaviour
     [Tooltip("기본 공격 스크립트 (자동 공격용)")]
     private PlayerAttack_TD playerAttack;
     [Tooltip("애니메이션 제어 핸들러 (이동 / 점프 / 착지 등)")]
-    private AnimationHandler animationHandler;
+    private AnimationHandler_TD animationHandler;
+    
+    private PlayerSFX_TD playerSFX;
 
     // 내부 전용
     private CharacterController controller;
     private Vector3 velocity;   // 수직 속도 (점프/낙하)
     private bool canJump = true;
+    private bool wasPaused = false;
 
     void Awake()
     {
         controller = GetComponent<CharacterController>();
+        playerSFX = GetComponent<PlayerSFX_TD>();
 
+        if (!towerManager) towerManager = FindObjectOfType<TowerManager_TD>();
+        if (!singleGameManager) singleGameManager = FindObjectOfType<SingleGameManager_TD>();
+        if (!playerAttack) playerAttack = GetComponent<PlayerAttack_TD>();
         if (!animationHandler)
-            animationHandler = GetComponentInChildren<AnimationHandler>();
+            animationHandler = GetComponentInChildren<AnimationHandler_TD>();
     }
 
     void Start()
@@ -64,15 +71,26 @@ public class PlayerController_TD : MonoBehaviour
 
     void Update()
     {
-        // 게임 상태 확인 (입력 차단 조건)
-        if (towerManager && towerManager.isDestroyed) return;       // 타워 파괴 시 정지
-        if (singleGameManager && singleGameManager.isPaused) return; // 일시정지 / 카드 선택 시 정지
+        bool paused = (towerManager && towerManager.isDestroyed) || (singleGameManager && singleGameManager.isPaused);
+
+        if (paused)
+        {
+            if (!wasPaused)
+            {
+                if (playerSFX != null) playerSFX.PauseAll();
+                wasPaused = true;
+            }
+            return;
+        }
+        else if(wasPaused)
+        {
+            if (playerSFX != null) playerSFX.ResumeAll();
+            wasPaused = false;
+        }
 
         GroundCheck();
         HandleJumpInput();
         Move();
-
-        // 공격은 PlayerAttack_TD에서 자동으로 수행됨
     }
 
     // 지면 감지 처리
@@ -133,6 +151,8 @@ public class PlayerController_TD : MonoBehaviour
 
             if (animationHandler)
                 animationHandler.JumpTrigger();
+
+            playerSFX.PlayJump();
         }
     }
 
@@ -154,6 +174,15 @@ public class PlayerController_TD : MonoBehaviour
 
         if (animationHandler)
             animationHandler.OnMovement(horizontal, vertical);
+
+        bool isMoving = (horizontal != 0f || vertical != 0f);
+
+        if (playerSFX != null)
+        {
+            if (isGrounded && isMoving) playerSFX.SetMoving(true);
+            else playerSFX.SetMoving(false);
+        }
+
 
         Vector3 move = transform.right * horizontal + transform.forward * vertical;
         controller.Move(move * moveSpeed * Time.deltaTime);

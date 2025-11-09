@@ -4,17 +4,17 @@
 // - 일시정지 / 카드선택 / 게임오버 관리
 // ==========================================================
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro;
 
 public class SingleGameManager_TD : MonoBehaviour
 {
     [Header("게임 상태")]
     public bool isPaused = false;            // 일시정지 여부
     public bool isGameOver = false;          // 게임 종료 여부
-    private bool isResting = false;
 
     [Header("참조")]
     public TowerManager_TD towerManager;     // 타워
@@ -22,14 +22,22 @@ public class SingleGameManager_TD : MonoBehaviour
     public CardManager_TD cardManager;       // 카드 매니저
     public SkillManager_TD skillManager;     // 스킬 매니저
 
-    [Header("UI (선택)")]
-    public GameObject gameOverUI;            // 게임 오버 UI
-    public GameObject pauseUI;               // 일시정지 UI
-
     [SerializeField] private TextMeshProUGUI waveText;
     [SerializeField] private GameObject rewardPanel;
-    [SerializeField] private GameObject skillStatPanel;
+    //[SerializeField] private GameObject skillStatPanel;
     [SerializeField] private float restSeconds = 20f;
+    [SerializeField] private Transform spawnPoint;
+
+    [SerializeField] private GameObject fadePanel;
+    [SerializeField] private GameObject failurePanel;
+    [SerializeField] private GameObject recordPanel;
+    [SerializeField] private TextMeshProUGUI finalWaveText;
+    [SerializeField] private TextMeshProUGUI recordText;
+    [SerializeField] private string mainSceneName = "MainScene";
+
+    private GameObject playerInstance;
+    private int currentWaveIndex = 0;
+    private const string KEY_WAVE_RECORDS = "TD_WAVE_RECORDS";
 
     private void Awake()
     {
@@ -39,12 +47,21 @@ public class SingleGameManager_TD : MonoBehaviour
         if (!skillManager) skillManager = FindObjectOfType<SkillManager_TD>();
     }
 
-    private void Update()
+    private void Start()
     {
-        // ESC로 일시정지/해제
-        if (Input.GetKeyDown(KeyCode.Escape) && !isGameOver)
+        SpawnPlayer();
+
+        if (fadePanel) fadePanel.SetActive(false);
+        if (failurePanel) failurePanel.SetActive(false);
+        if (recordPanel) recordPanel.SetActive(false);
+    }
+
+    private void SpawnPlayer()
+    {
+        if (CharacterSelectManager_TD.SelectedCharacterPrefab != null)
         {
-            SetPause(!isPaused);
+            playerInstance = Instantiate(CharacterSelectManager_TD.SelectedCharacterPrefab,
+                spawnPoint.position, spawnPoint.rotation);
         }
     }
 
@@ -55,11 +72,6 @@ public class SingleGameManager_TD : MonoBehaviour
     {
         isPaused = value;
         Time.timeScale = (isPaused) ? 0f : 1f;
-
-        if (pauseUI)
-            pauseUI.SetActive(isPaused);
-
-        Debug.Log($"[SingleGameManager_TD] 일시정지 상태: {isPaused}");
     }
 
     // ==========================================================
@@ -70,63 +82,85 @@ public class SingleGameManager_TD : MonoBehaviour
         if (isGameOver) return;
 
         isGameOver = true;
-        SetPause(true);
-        Time.timeScale = 0f;
 
-        Debug.Log("[SingleGameManager_TD] 게임 오버 - 타워 파괴됨");
-
-        if (gameOverUI)
-            gameOverUI.SetActive(true);
+        StartCoroutine(GameOverFlow());
     }
 
+    private IEnumerator GameOverFlow()
+    {
+        SetPause(true);
+        Time.timeScale = 0f;
+        SetCursor(true);
+
+        failurePanel.SetActive(true);
+        fadePanel.SetActive(true);
+
+        SaveWaveRecord(currentWaveIndex);
+
+        yield return new WaitForSecondsRealtime(2f);
+
+        if (recordPanel)
+        {
+            UpdateRecordPanelUI(currentWaveIndex);
+            failurePanel.SetActive(false);
+            recordPanel.SetActive(true);
+        }
+
+        yield return new WaitForSecondsRealtime(3f);
+
+        Time.timeScale = 1f;
+        if (!string.IsNullOrEmpty(mainSceneName))
+        {
+            SceneManager.LoadScene(mainSceneName);
+        }
+    }
     // ==========================================================
     // 웨이브 종료 후 휴식 페이즈
     // ==========================================================
     public IEnumerator RestPhase()
     {
-        isResting = true;
-
-        // 런치타임 들어가자마자 게임은 멈춰서 플레이어는 못 움직이게 하고
         SetPause(true);
-        // 보상 선택해야 하니까 커서 보이게
         SetCursor(true);
 
-        // 이때 리워드/스킬 패널 켜기
         if (rewardPanel)
             rewardPanel.SetActive(true);
-        if (skillStatPanel)
-            skillStatPanel.SetActive(true);
 
         float remain = restSeconds;
+        bool resumedAfterReward = false;
 
-        // 첫 표시
         if (waveText)
             waveText.text = $"Lunch Time\n{Mathf.CeilToInt(remain)}";
 
-        // 타임스케일 0이어도 흘러야 하니까 Realtime으로
         while (remain > 0f)
         {
-            yield return new WaitForSecondsRealtime(1f);
+            if (rewardPanel != null && rewardPanel.activeSelf)
+            {
+                yield return new WaitForSecondsRealtime(1f);
+            }
+            else
+            {
+                if (!resumedAfterReward)
+                {
+                    SetPause(false);
+                    SetCursor(false);
+                    resumedAfterReward = true;
+                }
+
+                yield return new WaitForSeconds(1f);
+            }
+
             remain -= 1f;
 
             if (waveText)
                 waveText.text = $"Lunch Time\n{Mathf.CeilToInt(remain)}";
         }
 
-        // 런치타임 끝
-        if (skillStatPanel)
-            skillStatPanel.SetActive(false);
-
-        isResting = false;
-
-        // 여기서 보상 패널이 이미 닫혀 있으면 바로 재개
-        if (rewardPanel == null || !rewardPanel.activeSelf)
+        if (rewardPanel.activeSelf)
         {
+            rewardPanel.SetActive(false);
             SetPause(false);
             SetCursor(false);
         }
-
-        Debug.Log("[SingleGameManager_TD] Rest end");
     }
 
     // ==========================================================
@@ -148,6 +182,8 @@ public class SingleGameManager_TD : MonoBehaviour
     {
         if (waveText)
             waveText.text = $"Wave\n{waveIndex}";
+
+        currentWaveIndex = waveIndex;
     }
 
     public void OnClickRewardButton()
@@ -157,7 +193,6 @@ public class SingleGameManager_TD : MonoBehaviour
 
         SetPause(false);
         SetCursor(false);
-
     }
 
     void SetCursor(bool show)
@@ -171,6 +206,65 @@ public class SingleGameManager_TD : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+    }
+
+    private void SaveWaveRecord(int wave)
+    {
+        List<int> list = LoadWaveRecords();
+
+        list.Add(wave);
+        list.Sort((a, b) => b.CompareTo(a));
+
+        if (list.Count > 5)
+            list = list.GetRange(0, 5);
+
+        string save = string.Join(",", list);
+        PlayerPrefs.SetString(KEY_WAVE_RECORDS, save);
+        PlayerPrefs.Save();
+    }
+
+    private List<int> LoadWaveRecords()
+    {
+        List<int> list = new List<int>();
+        string saved = PlayerPrefs.GetString(KEY_WAVE_RECORDS, string.Empty);
+        if (string.IsNullOrEmpty(saved))
+            return list;
+
+        string[] tokens = saved.Split(',');
+        foreach (var t in tokens)
+        {
+            if (int.TryParse(t, out int v))
+                list.Add(v);
+        }
+        return list;
+    }
+
+    private void UpdateRecordPanelUI(int finalWave)
+    {
+        if (finalWaveText)
+            finalWaveText.text = $"Final Wave: {finalWave}";
+
+        List<int> list = LoadWaveRecords();
+
+        if (recordText)
+        {
+            if (list.Count == 0)
+            {
+                recordText.text = string.Empty;
+            }
+            else
+            {
+                int count = Mathf.Min(5, list.Count);
+                System.Text.StringBuilder sb = new System.Text.StringBuilder(64);
+                for (int i = 0; i < count; i++)
+                {
+                    if (i > 0) sb.Append('\n');
+                    sb.Append(i + 1).Append("th ")
+                      .Append(list[i]).Append(" wave");
+                }
+                recordText.text = sb.ToString();
+            }
         }
     }
 }

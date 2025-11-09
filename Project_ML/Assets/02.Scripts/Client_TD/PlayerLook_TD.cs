@@ -12,9 +12,15 @@ public class PlayerLook_TD : MonoBehaviour
 
     private float xRotation = 0f;                               // 카메라 상하 회전 값
 
+    private const string KEY_MOUSE_SENS = "TD_MouseSensitivity";
+    private const float DEFAULT_SENS = 200f;
+
     void Start()
     {
+        if (!playerCamera && Camera.main)
+            playerCamera = Camera.main.transform;
 
+        mouseSensitivity = PlayerPrefs.GetFloat(KEY_MOUSE_SENS, DEFAULT_SENS);
     }
 
     // Update is called once per frame
@@ -39,5 +45,16 @@ public class PlayerLook_TD : MonoBehaviour
 
         Quaternion targetCameraRotation = Quaternion.Euler(xRotation, 0, 0);
         playerCamera.localRotation = Quaternion.Slerp(playerCamera.localRotation, targetCameraRotation, smoothSpeed * Time.deltaTime);
+    }
+
+    public void SetMouseSensitivity(float value, bool save = false)
+    {
+        mouseSensitivity = Mathf.Max(1f, value);
+
+        if (save)
+        {
+            PlayerPrefs.SetFloat(KEY_MOUSE_SENS, mouseSensitivity);
+            PlayerPrefs.Save();
+        }    
     }
 }

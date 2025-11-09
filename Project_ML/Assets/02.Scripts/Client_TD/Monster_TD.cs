@@ -147,6 +147,14 @@ public class Monster_TD : MonoBehaviour
         if (isDead) yield break;
         isDead = true;
 
+        // [MOD] 사망 즉시 물리 영향 차단 (밀림/미끄럼 방지)
+        if (rb)
+        {
+            rb.velocity = Vector3.zero;        // [MOD]
+            rb.isKinematic = true;             // [MOD] 외력/충돌 반응 차단
+        }
+        if (cap) cap.enabled = false;          // [MOD] 접촉 제거(추가 밀림 방지)
+
         animator.SetTrigger("deadTrigger");
         yield return new WaitForSeconds(2f);
 
@@ -170,9 +178,14 @@ public class Monster_TD : MonoBehaviour
         currentSpeed = 0f;
         targetCol = null;
 
-        // 리지드바디 멈춰두기
+        // [MOD] 풀 재활용 시 물리/콜라이더 원복
         if (rb)
+        {
+            rb.isKinematic = false; // [MOD]
             rb.velocity = Vector3.zero;
+            rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY; // [MOD: 안전]
+        }
+        if (cap) cap.enabled = true; // [MOD]
 
         if (animator)
         {

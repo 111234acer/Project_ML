@@ -15,9 +15,8 @@ public class TowerManager_TD : MonoBehaviour
     [Tooltip("파괴 여부")]
     public bool isDestroyed = false;
 
-    [Header("UI 설정 (선택사항)")]
-    public Slider hpBar;              // HP 슬라이더 (선택)
-    public Canvas hpCanvas;           // HP 캔버스 (선택)
+    public Slider hpBar;
+    public Canvas hpCanvas;
 
     [Header("참조")]
     public SingleGameManager_TD singleGameManager; // 게임 루프 제어 매니저
@@ -33,6 +32,8 @@ public class TowerManager_TD : MonoBehaviour
 
         if (hpBar)
             hpBar.maxValue = maxHealth;
+
+        UpdateHPUI();
     }
 
     // ==========================================================

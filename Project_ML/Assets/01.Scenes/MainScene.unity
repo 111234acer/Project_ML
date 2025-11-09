@@ -155,7 +155,7 @@ RectTransform:
   m_Father: {fileID: 1440812407}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -30, y: 0}
   m_SizeDelta: {x: 60, y: 20}
   m_Pivot: {x: 0, y: 0.5}
@@ -300,6 +300,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 126994909}
+  - component: {fileID: 126994910}
+  - component: {fileID: 126994911}
   m_Layer: 0
   m_Name: MainManager
   m_TagString: Untagged
@@ -322,6 +324,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &126994910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126994908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a2ef4dc9baf0df4b898a060e6d616b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  multiScene: PhotonLobby
+  singleScene: CharacterSelectScene_TD
+--- !u!114 &126994911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126994908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db00662a3697ab54a9fb4bd21257cfc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingPanel: {fileID: 228951372}
+  fadePanel: {fileID: 1414009521}
+  soundSlider: {fileID: 2124269040}
+  sensitivitySlider: {fileID: 1360719694}
+  pauseWhenOpen: 1
+  lockCursorWhenClose: 1
 --- !u!1 &206428430
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,7 +456,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 228951372}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -432,7 +466,7 @@ RectTransform:
   - {fileID: 1630280606}
   - {fileID: 2124269039}
   - {fileID: 1360719693}
-  m_Father: {fileID: 1414009522}
+  m_Father: {fileID: 815683225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1247,7 +1281,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 785467002}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 126994910}
+        m_TargetAssemblyTypeName: MainMgr, Assembly-CSharp
+        m_MethodName: OnClickCP
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &785467002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1323,6 +1369,7 @@ RectTransform:
   - {fileID: 1056735725}
   - {fileID: 785315968}
   - {fileID: 1414009522}
+  - {fileID: 228951373}
   m_Father: {fileID: 1110939513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1450,7 +1497,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1056735727}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 126994910}
+        m_TargetAssemblyTypeName: MainMgr, Assembly-CSharp
+        m_MethodName: OnExit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1056735727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1758,7 +1817,7 @@ RectTransform:
   m_Father: {fileID: 1581334538}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0.5}
@@ -1901,7 +1960,7 @@ RectTransform:
   m_Father: {fileID: 1999945010}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -30, y: 0}
   m_SizeDelta: {x: 60, y: 20}
   m_Pivot: {x: 0, y: 0.5}
@@ -2179,12 +2238,12 @@ GameObject:
   - component: {fileID: 1414009524}
   - component: {fileID: 1414009523}
   m_Layer: 5
-  m_Name: SettingPanel
+  m_Name: FadePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1414009522
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2196,8 +2255,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 228951373}
+  m_Children: []
   m_Father: {fileID: 815683225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2225,7 +2283,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2531,7 +2589,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1638518196}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 126994911}
+        m_TargetAssemblyTypeName: SettingPanel, Assembly-CSharp
+        m_MethodName: OpenSetting
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1638518196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2695,7 +2765,7 @@ RectTransform:
   m_Father: {fileID: 1983974486}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0.5}
@@ -2819,7 +2889,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1792283088}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 126994910}
+        m_TargetAssemblyTypeName: MainMgr, Assembly-CSharp
+        m_MethodName: OnClickTD
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1792283088
 MonoBehaviour:
   m_ObjectHideFlags: 0

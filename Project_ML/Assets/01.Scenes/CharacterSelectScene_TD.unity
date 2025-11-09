@@ -958,6 +958,72 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 791293148}
   m_CullTransparentMesh: 1
+--- !u!1 &942007188
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 942007190}
+  - component: {fileID: 942007189}
+  m_Layer: 0
+  m_Name: CSManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &942007189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 942007188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034c33f1af3306842848311964c5d9e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characters:
+  - CharacterName: Serina
+    displayName: Serina
+    selectButton: {fileID: 791293150}
+    portraitImage: {fileID: 953812255}
+    playerPrefab: {fileID: 7008133291432153177, guid: a556025e15b3d454eb5d6ac0f4c0934e,
+      type: 3}
+  - CharacterName: Lumia
+    displayName: Lumia
+    selectButton: {fileID: 1057322873}
+    portraitImage: {fileID: 1534499880}
+    playerPrefab: {fileID: 3789762561142484220, guid: 7b6a0cab08a148145a6e658b482b82dd,
+      type: 3}
+  - CharacterName: Eris
+    displayName: Eris
+    selectButton: {fileID: 274809607}
+    portraitImage: {fileID: 978127977}
+    playerPrefab: {fileID: 7621051851278605681, guid: 3d9c168d55ba48147977040aee6b813f,
+      type: 3}
+  currentNameLabel: {fileID: 1405639978}
+  currentPortraitImage: {fileID: 685856335}
+  ingameSceneTD: TowerDefence
+--- !u!4 &942007190
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 942007188}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.4264655, y: 0.72270286, z: -0.00000017881393}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &953812253
 GameObject:
   m_ObjectHideFlags: 0
@@ -2053,7 +2119,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2104663837}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 942007189}
+        m_TargetAssemblyTypeName: CharacterSelectManager_TD, Assembly-CSharp
+        m_MethodName: OnClickDone
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2104663837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2176,3 +2254,4 @@ SceneRoots:
   - {fileID: 1146815193}
   - {fileID: 340398020}
   - {fileID: 483861425}
+  - {fileID: 942007190}

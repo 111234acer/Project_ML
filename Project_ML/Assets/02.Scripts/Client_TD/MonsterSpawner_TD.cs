@@ -6,7 +6,6 @@ public class MonsterSpawner_TD : MonoBehaviour
 {
     public List<GameObject> monsterPrefabs;
     public Transform[] spawnPoints;
-
     public int preloadCount = 5;
 
     // 프리팹별 풀
@@ -34,42 +33,6 @@ public class MonsterSpawner_TD : MonoBehaviour
             }
         }
     }
-
-    //랜덤 생성
-    /*
-    public Monster_TD SpawnOne()
-    {
-        if (monsterPrefabs == null || monsterPrefabs.Count == 0) return null;
-        if (spawnPoints == null || spawnPoints.Length == 0) return null;
-
-        GameObject prefab = monsterPrefabs[Random.Range(0, monsterPrefabs.Count)];
-        Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-
-        GameObject monsterObj = GetFromPool(prefab);
-        if (monsterObj == null)
-        {
-            // 풀에 없으면 최후의 수단으로 하나 만든다
-            monsterObj = Instantiate(prefab);
-            var mm = monsterObj.GetComponent<Monster_TD>();
-            if (mm != null)
-                mm.OnSpawnedFromPool(this);
-        }
-
-        monsterObj.transform.position = spawnPoint.position;
-        monsterObj.transform.rotation = spawnPoint.rotation;
-
-        // 몬스터가 타워를 다시 찾아가도록 초기화
-        var mon = monsterObj.GetComponent<Monster_TD>();
-        if (mon != null)
-        {
-            mon.originalPrefab = prefab;
-            mon.ResetMonster();
-        }
-
-        monsterObj.SetActive(true);
-
-        return mon;
-    }*/
 
     //지정 생성
     public Monster_TD SpawnSpecific(GameObject prefab)
