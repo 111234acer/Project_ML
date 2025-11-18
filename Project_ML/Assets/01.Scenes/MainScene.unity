@@ -352,10 +352,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settingPanel: {fileID: 228951372}
   fadePanel: {fileID: 1414009521}
+  mixer: {fileID: 0}
   soundSlider: {fileID: 2124269040}
   sensitivitySlider: {fileID: 1360719694}
-  pauseWhenOpen: 1
-  lockCursorWhenClose: 1
+  exposedSFXParam: SFXVolume
 --- !u!1 &206428430
 GameObject:
   m_ObjectHideFlags: 0
@@ -838,7 +838,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TowerDefense
+  m_text: Roguelite Defense
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
