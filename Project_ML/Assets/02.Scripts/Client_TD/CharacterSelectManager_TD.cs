@@ -10,11 +10,12 @@ public class CharacterSelectManager_TD : MonoBehaviour
     [System.Serializable]
     public class CharacterSlot
     {
-        public string CharacterName;
+        public string characterName;
         public string displayName;
 
         public Button selectButton;
         public Image portraitImage;
+        public Sprite hugePortrait;
 
         public GameObject playerPrefab;
     }
@@ -52,7 +53,7 @@ public class CharacterSelectManager_TD : MonoBehaviour
 
         currentNameLabel.text = slot.displayName;
 
-        currentPortraitImage.sprite = slot.portraitImage.sprite;
+        currentPortraitImage.sprite = slot.hugePortrait;
 
         for (int i = 0; i < characters.Length; i++)
         {
@@ -66,7 +67,7 @@ public class CharacterSelectManager_TD : MonoBehaviour
 
         CharacterSlot slot = characters[_currentIndex];
 
-        SelectedCharacterName = slot.CharacterName;
+        SelectedCharacterName = slot.characterName;
         SelectedCharacterPrefab = slot.playerPrefab;
 
         if (string.IsNullOrEmpty(ingameSceneTD) == false)

@@ -988,22 +988,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characters:
-  - CharacterName: Serina
+  - characterName: Serina
     displayName: Serina
     selectButton: {fileID: 791293150}
     portraitImage: {fileID: 953812255}
+    hugePortrait: {fileID: 0}
     playerPrefab: {fileID: 7008133291432153177, guid: a556025e15b3d454eb5d6ac0f4c0934e,
       type: 3}
-  - CharacterName: Lumia
+  - characterName: Lumia
     displayName: Lumia
     selectButton: {fileID: 1057322873}
     portraitImage: {fileID: 1534499880}
+    hugePortrait: {fileID: 21300000, guid: 154b102fc9cb8274289d767c5d4ec03a, type: 3}
     playerPrefab: {fileID: 3789762561142484220, guid: 7b6a0cab08a148145a6e658b482b82dd,
       type: 3}
-  - CharacterName: Eris
+  - characterName: Eris
     displayName: Eris
     selectButton: {fileID: 274809607}
     portraitImage: {fileID: 978127977}
+    hugePortrait: {fileID: 21300000, guid: bd4f0f645fccb3f47b36a9330df3bf81, type: 3}
     playerPrefab: {fileID: 7621051851278605681, guid: 3d9c168d55ba48147977040aee6b813f,
       type: 3}
   currentNameLabel: {fileID: 1405639978}
@@ -1156,7 +1159,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 5c274ac496137f6488e757a45e649b2d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1771,7 +1774,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 5}
-  m_SizeDelta: {x: 128, y: 160}
+  m_SizeDelta: {x: 190, y: 158}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1534499880
 MonoBehaviour:
@@ -1793,7 +1796,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 4780514c8037dda4b9d854ccbfe1907e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
