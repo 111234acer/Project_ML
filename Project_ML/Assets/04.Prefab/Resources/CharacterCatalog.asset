@@ -13,27 +13,27 @@ MonoBehaviour:
   m_Name: CharacterCatalog
   m_EditorClassIdentifier: 
   list:
-  - displayName: Lumia
+  - displayName: Serina
     role: 0
-    portrait: {fileID: 21300000, guid: c50f4bab429559b4e9a1c24e96f9abb9, type: 3}
+    portrait: {fileID: 0}
     skillIcons:
-    - {fileID: 21300000, guid: 522897480a1587f40bfe1c618ce76254, type: 3}
-    - {fileID: 21300000, guid: a526bde77652fbb43879bb5a58837ef7, type: 3}
+    - {fileID: 21300000, guid: c4bce571aab07c647816db9418164b58, type: 3}
+    - {fileID: 21300000, guid: 90786fecbafb61f42b07d6f4561ff280, type: 3}
+    - {fileID: 0}
+    prefabName: Serena
+  - displayName: Lumia
+    role: 1
+    portrait: {fileID: 21300000, guid: 154b102fc9cb8274289d767c5d4ec03a, type: 3}
+    skillIcons:
+    - {fileID: 21300000, guid: bb0538a09e8d682438e3c6097c9e9cb3, type: 3}
     - {fileID: 21300000, guid: 1ed96ed6a8986ff499034ff8266d5501, type: 3}
+    - {fileID: 21300000, guid: a526bde77652fbb43879bb5a58837ef7, type: 3}
     prefabName: Lumia Blue_CT
-  - displayName: Serina
-    role: 1
-    portrait: {fileID: 21300000, guid: 74fcf99895b86bc448880e4785602bd0, type: 3}
+  - displayName: Eris
+    role: 0
+    portrait: {fileID: 21300000, guid: bd4f0f645fccb3f47b36a9330df3bf81, type: 3}
     skillIcons:
-    - {fileID: 21300000, guid: 90786fecbafb61f42b07d6f4561ff280, type: 3}
-    - {fileID: 21300000, guid: c4bce571aab07c647816db9418164b58, type: 3}
-    - {fileID: 21300000, guid: 87fc0b7a449e23b4aa2995ab01dcbf74, type: 3}
-    prefabName: Serena
-  - displayName: Serina
-    role: 1
-    portrait: {fileID: 21300000, guid: 74fcf99895b86bc448880e4785602bd0, type: 3}
-    skillIcons:
-    - {fileID: 21300000, guid: 90786fecbafb61f42b07d6f4561ff280, type: 3}
-    - {fileID: 21300000, guid: c4bce571aab07c647816db9418164b58, type: 3}
-    - {fileID: 21300000, guid: 87fc0b7a449e23b4aa2995ab01dcbf74, type: 3}
-    prefabName: Serena
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    prefabName: Eris

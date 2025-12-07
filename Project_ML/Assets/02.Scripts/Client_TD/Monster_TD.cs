@@ -118,7 +118,7 @@ public class Monster_TD : MonoBehaviour
         TowerManager_TD tower = target.GetComponent<TowerManager_TD>();
         if (tower != null)
         {
-            //tower.TakeDamage(attackDamage,this); 이거 수정해야함
+            tower.TakeDamage(attackDamage);
         }
 
         animator.SetTrigger("attackTrigger");

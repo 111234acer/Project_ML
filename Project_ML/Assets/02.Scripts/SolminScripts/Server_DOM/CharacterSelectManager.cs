@@ -12,7 +12,6 @@ public class CharacterSelectManager : MonoBehaviourPunCallbacks
     [Header("UI")]
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI charNameText;     // 우측상단 이름
-    public TextMeshProUGUI jobText;          // 우측상단 직업
     public Image[] skillIcons;               // 아래 3개
     public Image centerPortrait;             // 중앙 큰 이미지
     public Button confirmBtn;
@@ -253,7 +252,6 @@ public class CharacterSelectManager : MonoBehaviourPunCallbacks
             if (!_portraitActivated)
             {
                 if (charNameText) charNameText.text = "";
-                if (jobText) jobText.text = "";
                 if (centerPortrait) centerPortrait.sprite = null;
                 for (int i = 0; i < skillIcons.Length; i++)
                     if (skillIcons[i]) skillIcons[i].sprite = null;
@@ -262,7 +260,6 @@ public class CharacterSelectManager : MonoBehaviourPunCallbacks
         }
 
         if (charNameText) charNameText.text = data.displayName;
-        if (jobText) jobText.text = data.role.ToString(); // Dealer/Healer/Tanker
         if (centerPortrait) centerPortrait.sprite = data.portrait;
         for (int i = 0; i < skillIcons.Length; i++)
             if (i < data.skillIcons.Count && skillIcons[i]) skillIcons[i].sprite = data.skillIcons[i];
