@@ -1688,7 +1688,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2bc06b64a43c9b94e938a96a87badf29, type: 2}
+  - {fileID: 2100000, guid: be19298b1fcaaac44aca2e068afebf39, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2162,7 +2162,7 @@ MonoBehaviour:
   arrowPrefab: {fileID: 5428142936862869010, guid: fca93bf4255ebe44aa2f6c4bc2535285,
     type: 3}
   minCharge: 0.1
-  maxCharge: 1
+  maxCharge: 0.5
   powerCurve:
     serializedVersion: 2
     m_Curve:
@@ -2187,7 +2187,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  muzzleSpeed: 60
+  muzzleSpeed: 100
 --- !u!114 &3722403317478618768
 MonoBehaviour:
   m_ObjectHideFlags: 0
