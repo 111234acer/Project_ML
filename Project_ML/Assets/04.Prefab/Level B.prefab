@@ -2403,7 +2403,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 4250
+  m_VersionIndex: 4253
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2520,7 +2520,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 93317825666708560}
-  sceneViewId: 1
+  sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1740526373615919029
